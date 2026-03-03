@@ -1,0 +1,930 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>RoboMME Leaderboard</title>
+  <link href="https://fonts.googleapis.com/css?family=Google+Sans|Noto+Sans|Castoro" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bulma/0.9.4/css/bulma.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <style>
+    body { font-family: 'Noto Sans', sans-serif; }
+    .leaderboard-hero .title { font-family: 'Google Sans', sans-serif; font-size: 3rem; font-weight: bold; }
+    .navbar .navbar-item,
+    .navbar .navbar-link { font-size: 1.0rem; }
+
+    .stat-card {
+      background: linear-gradient(135deg, #f8f9fa 0%, #fff 100%);
+      border-radius: 12px; padding: 1.25rem; text-align: center;
+      box-shadow: 0 2px 12px rgba(0,0,0,0.06); border: 1px solid #eee;
+    }
+    .stat-value { font-size: 2.5rem; font-weight: 700; color: #3273dc; }
+    .stat-label { font-size: 1rem; color: #666; margin-top: 0.25rem; }
+
+    /* Leaderboard section: one shared width for heading, toolbar, table, About/Submit */
+    .leaderboard-content {
+      max-width: 90%;
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+    /* Table */
+    .lb-wrap {
+      background: #fff; border-radius: 12px;
+      box-shadow: 0 2px 12px rgba(0,0,0,0.08);
+      overflow-x: auto; margin-top: 1.25rem;
+    }
+    .lb-wrap table { width: 100%; border-collapse: collapse; table-layout: fixed; }
+
+    /* Toolbar row inside table */
+    .toolbar-row td {
+      background: #f5f5f5; padding: 0.6rem 1rem;
+      border-bottom: 2px solid #ddd;
+    }
+    .mode-btn {
+      padding: 0.5rem 1.15rem; border-radius: 20px; border: 1.5px solid #dbdbdb;
+      background: #fff; cursor: pointer; font-size: 1rem; font-family: inherit;
+      transition: all 0.15s; color: #363636; margin-right: 0.4rem;
+    }
+    .mode-btn:hover { border-color: #3273dc; color: #3273dc; }
+    .mode-btn.is-active { background: #3273dc; color: #fff; border-color: #3273dc; }
+
+    /* Column headers */
+    .lb-wrap th {
+      background: #363636; color: #fff; font-weight: 600;
+      padding: 0.65rem 1rem 0.65rem 0.75rem; text-align: center;
+      white-space: normal; min-width: 5rem;
+      cursor: pointer; user-select: none;
+      position: relative; vertical-align: middle;
+      line-height: 1.25; height: 3rem;
+    }
+    .lb-wrap th:hover { background: #4a4a4a; }
+    .lb-wrap th[data-sort="Avg"] { background: #3273dc !important; }
+    .lb-wrap th[data-sort="Avg"]:hover { background: #2360c4 !important; }
+    .lb-wrap th .sort-arrow {
+      font-size: 0.55rem; opacity: 0.4;
+      position: absolute; bottom: 0.3rem; right: 0.3rem;
+    }
+    .lb-wrap th.sorted .sort-arrow { opacity: 1; }
+    .lb-wrap th.no-sort { cursor: default; }
+    .lb-wrap th.no-sort:hover { background: #363636; }
+
+    /* Memory type badges */
+    .mem-badge {
+      display: inline-block; font-size: 0.7rem; font-weight: 600;
+      padding: 0.15rem 0.45rem; border-radius: 999px; line-height: 1.3;
+      white-space: nowrap; margin: 1px 2px;
+    }
+    .mem-badge.perceptual  { background: #e8f5e9; color: #2e7d32; }
+    .mem-badge.symbolic    { background: #e3f2fd; color: #1565c0; }
+    .mem-badge.recurrent   { background: #fce4ec; color: #c62828; }
+
+    /* Data rows */
+    .lb-wrap td { padding: 0.65rem 0.75rem; border-bottom: 1px solid #eee; white-space: nowrap; text-align: center; vertical-align: middle; overflow: hidden; text-overflow: ellipsis; }
+    .lb-wrap td:nth-child(1), .lb-wrap td:nth-child(2) { text-align: left; }
+    .lb-wrap th:nth-child(1), .lb-wrap th:nth-child(2) { text-align: left; }
+    .lb-wrap th:nth-child(n+3) { text-align: center; }
+    .lb-wrap td:nth-child(n+3) { text-align: center; }
+    .lb-wrap tbody tr:hover { background: #f0f4ff; }
+    .lb-wrap tbody tr.baseline-row { background: #f9f9f9; }
+    .lb-wrap tbody tr.baseline-row:hover { background: #f4f4f4; }
+    .lb-wrap tbody tr.baseline-row td { color: #999; }
+    .lb-wrap tbody tr.baseline-row td strong { color: #888; }
+    .lb-wrap tbody tr.baseline-separator td { padding: 0; height: 2px; background: #ddd; border: none; }
+    .rank { font-weight: 700; color: #3273dc; }
+    .best-score { font-weight: 700; color: #3273dc; }
+    .rank-medal { font-size: 1rem; }
+
+
+    .section-block h2 { font-size: 1.5rem; margin-bottom: 0.75rem; padding-bottom: 0.4rem; border-bottom: 2px solid #3273dc; }
+    .navbar .navbar-item:hover,
+    .navbar .navbar-link:hover { background: #f5f5f5; }
+
+    /* Radar / Table view toggle */
+    .view-toggle-btn {
+      cursor: pointer; display: inline-flex; align-items: center; gap: 0.5rem;
+      padding: 0.45rem 1rem; background: #3273dc; border-radius: 8px;
+      border: 1px solid #2860b8; user-select: none; transition: background 0.15s;
+      color: #fff; font-weight: 600; font-size: 1rem;
+    }
+    .view-toggle-btn:hover { background: #2860b8; }
+    #radar-container {
+      background: #fff; border-radius: 12px;
+      box-shadow: 0 2px 12px rgba(0,0,0,0.08); padding: 1.5rem 1rem;
+      max-width: 780px; margin-left: auto; margin-right: auto;
+    }
+
+    /* All desktop/tablet: same scale on laptop and large monitors */
+    @media screen and (min-width: 769px) {
+      .container { max-width: 90%; }
+      .leaderboard-hero .title.is-1 { font-size: 2.75rem; }
+      .stat-value { font-size: 2.2rem; }
+      .stat-label { font-size: 1rem; }
+      .section-block h2 { font-size: 1.3rem; }
+      .lb-wrap td { font-size: 0.95rem; }
+      .lb-wrap th { font-size: 0.9rem; }
+      #radar-container { max-width: 680px; }
+    }
+
+    @media screen and (min-width: 769px) and (max-width: 1200px) {
+      .container { max-width: 90%; }
+      .leaderboard-hero .title.is-1 { font-size: 2.2rem; }
+      .stat-value { font-size: 2rem; }
+      #radar-container { max-width: 600px; }
+    }
+  </style>
+</head>
+<body>
+
+<nav class="navbar" role="navigation" aria-label="main navigation">
+  <div class="navbar-brand">
+    <a role="button" class="navbar-burger" aria-label="menu" aria-expanded="false" data-target="navMenu">
+      <span aria-hidden="true"></span><span aria-hidden="true"></span><span aria-hidden="true"></span>
+    </a>
+  </div>
+  <div id="navMenu" class="navbar-menu">
+    <div class="navbar-start" style="flex-grow: 1; justify-content: center;">
+      <a class="navbar-item" href="index.html">
+        <span class="icon"><i class="fas fa-home"></i></span>
+        <span style="margin-left: 0.5rem;">Home</span>
+      </a>
+      <div class="navbar-item has-dropdown is-hoverable">
+        <a class="navbar-link">More Research</a>
+        <div class="navbar-dropdown">
+          <a class="navbar-item" href="https://aimbot-reticle.github.io/" target="_blank">AimBot (CoRL'25)</a>
+          <a class="navbar-item" href="https://rich-language-failure-recovery.github.io" target="_blank">RACER (ICRA'25)</a>
+          <a class="navbar-item" href="https://github.com/sled-group/navchat" target="_blank">NavChat (ICRA'24)</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</nav>
+
+<!-- Hero -->
+<section class="leaderboard-hero hero">
+  <div class="hero-body" style="padding: 2rem 1.5rem 1rem;">
+    <div class="container">
+      <h1 class="title is-1 has-text-centered" style="font-family:'Google Sans',sans-serif;">🏆 RoboMME Leaderboard</h1>
+      <p class="subtitle is-4 has-text-centered" style="color:#666;margin-bottom:0.75rem;">Benchmarking memory-augmented robotic generalist policies</p>
+      <div class="columns is-multiline is-centered" style="margin-top:0.75rem;gap:0.75rem;">
+        <div class="column is-narrow"><div class="stat-card"><div class="stat-value">16</div><div class="stat-label">Tasks</div></div></div>
+        <div class="column is-narrow"><div class="stat-card"><div class="stat-value">800</div><div class="stat-label">Test Episodes</div></div></div>
+        <div class="column is-narrow"><div class="stat-card"><div class="stat-value" id="stat-models">—</div><div class="stat-label">Models Evaluated</div></div></div>
+      </div>
+
+      <p class="has-text-centered" style="margin-top:0.75rem;font-size:0.95rem;color:#999;">(Data updated at 03/01/2026)</p>
+      <!-- <div class="has-text-centered" style="margin-top:1.5rem;">
+        <a href="#" class="button is-link is-rounded is-light" style="margin:0.25rem;"><span class="icon"><i class="fas fa-file-pdf"></i></span><span>Paper</span></a>
+        <a href="https://github.com/RoboMME/robomme_benchmark" class="button is-link is-rounded is-light" target="_blank" style="margin:0.25rem;"><span class="icon"><i class="fab fa-github"></i></span><span>Benchmark Code</span></a>
+        <a href="https://github.com/RoboMME/robomme_policy_learning" class="button is-link is-rounded is-light" target="_blank" style="margin:0.25rem;"><span class="icon"><i class="fab fa-github"></i></span><span>Policy Learning</span></a>
+        <a href="https://huggingface.co/datasets/Yinpei/robomme_h5_data" class="button is-link is-rounded is-light" target="_blank" style="margin:0.25rem;"><span class="icon"><i class="fas fa-database"></i></span><span>Dataset</span></a>
+        <a href="https://huggingface.co/collections/Yinpei/tbd" class="button is-link is-rounded is-light" target="_blank" style="margin:0.25rem;"><span class="icon"><i class="fas fa-cube"></i></span><span>Models</span></a>
+      </div> -->
+    </div>
+  </div>
+</section>
+
+<!-- Leaderboard -->
+<section class="section" style="padding-top: 1.5rem;">
+  <div class="container">
+    <div class="leaderboard-content">
+      <h2 class="title is-4">📊 Leaderboard</h2>
+      <div style="display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; margin-bottom:0.75rem;">
+        <div id="lb-toolbar" style="display:inline-flex; align-items:center; flex-wrap:wrap;"></div>
+        <div id="view-toggle" class="view-toggle-btn">
+          <i id="view-toggle-icon" class="fas fa-chart-area"></i>
+          <span id="view-toggle-label">Radar View</span>
+        </div>
+      </div>
+
+      <div id="radar-container" style="display:none;">
+        <canvas id="radar-chart"></canvas>
+        <p style="font-size:0.85rem; color:#999; margin-top:0.75rem; text-align:center;">
+          Only models with the <b>best score</b> in at least one category or in the <b>top 5</b> overall are shown. <br>
+          Click a model name in the legend to show or hide its line.
+        </p>
+      </div>
+
+      <div class="lb-wrap">
+        <table id="lb-table">
+          <colgroup id="lb-cols"></colgroup>
+          <thead id="lb-head"></thead>
+          <tbody id="lb-body"></tbody>
+        </table>
+      </div>
+
+      <div class="columns" style="margin-top:3rem;">
+        <div class="column section-block">
+          <h2 class="title is-5">📋 About</h2>
+          <p class="content">A benchmark for evaluating <b>memory-augmented</b> robotic policies across <b>16</b> tasks in four suites: <i>Counting</i>, <i>Permanence</i>, <i>Reference</i>, and <i>Imitation</i>.</p>
+        </div>
+        <div class="column section-block">
+          <h2 class="title is-5">⚖️ Evaluation</h2>
+          <p class="content">Models are evaluated on  episodes (50 per task). Multiple runs with different model seeds are recommended.</a></p>
+        </div>
+        <div class="column section-block">
+          <h2 class="title is-5" id="submit">🔄 Submit</h2>
+          <p class="content">(1) Download the <a href="https://huggingface.co/datasets/Yinpei/robomme_data" target="_blank">dataset</a> and <a href="https://github.com/RoboMME/robomme_benchmark" target="_blank">RoboMME repository</a>, (2) train and evaluate with your policy, (3) submit a PR following the <a href="https://github.com/RoboMME/robomme_benchmark?tab=readme-ov-file#-submit-your-models" target="_blank">submission instructions</a>.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer class="footer">
+  <div class="content has-text-centered">
+    <p><a href="index.html">RoboMME</a> · <a href="https://github.com/RoboMME/robomme_benchmark" target="_blank">GitHub</a> · <a href="https://huggingface.co/collections/Yinpei/RoboMME" target="_blank">Hugging Face</a></p>
+  </div>
+</footer>
+
+<script>
+var RESULTS = {
+  "task_suites": {
+    "Counting":    ["BinFill", "PickXtimes", "SwingXtimes", "StopCube"],
+    "Permanence":  ["VideoUnmask", "VideoUnmaskSwap", "ButtonUnmask", "ButtonUnmaskSwap"],
+    "Reference":   ["PickHighlight", "VideoRepick", "VideoPlaceButton", "VideoPlaceOrder"],
+    "Imitation":   ["MoveCube", "InsertPeg", "PatternLock", "RouteStick"]
+  },
+  "task_suites_labels": {
+    "Counting":   "temporal memory",
+    "Permanence": "spatial memory",
+    "Reference":  "object memory",
+    "Imitation":  "procedural memory"
+  },
+  "task_characteristics": {
+    "Event-Salient":                ["PickXtimes", "BinFill", "MoveCube"],
+    "Dynamic Scene-Change":         ["ButtonUnmask", "ButtonUnmaskSwap", "PickHighlight"],
+    "Short-Horizon Video":          ["VideoUnmask", "VideoRepick", "VideoUnmaskSwap"],
+    "Long-Horizon Video":           ["VideoPlaceButton", "VideoPlaceOrder"],
+    "Time-Sensitive":               ["StopCube"],
+    "Motion-Centric":               ["PatternLock", "RouteStick", "SwingXtimes", "InsertPeg"]
+  },
+  "models": [
+    {
+      "name": "Human Performance",
+      "organization": "\u2014",
+      "memory": "\u2014",
+      "baseline": true,
+      "tasks": {
+        "BinFill": 0.9600, "PickXtimes": 1.0000, "SwingXtimes": 0.8000, "StopCube": 0.7800,
+        "VideoUnmask": 0.9000, "ButtonUnmask": 0.9200, "VideoUnmaskSwap": 0.9200, "ButtonUnmaskSwap": 0.9000,
+        "PickHighlight": 0.9200, "VideoRepick": 0.9200, "VideoPlaceButton": 0.9800, "VideoPlaceOrder": 0.9000,
+        "MoveCube": 0.9000, "InsertPeg": 0.9800, "PatternLock": 0.8400, "RouteStick": 0.8600
+      }
+    },
+    {
+      "name": "SimpleSG+Oracle",
+      "organization": "RoboMME",
+      "memory": "Symbolic",
+      "baseline": true,
+      "tasks": {
+        "BinFill": 0.8578, "PickXtimes": 0.9978, "SwingXtimes": 1.0000, "StopCube": 0.4467,
+        "VideoUnmask": 0.3311, "ButtonUnmask": 0.2200, "VideoUnmaskSwap": 0.1556, "ButtonUnmaskSwap": 0.1556,
+        "PickHighlight": 0.4400, "VideoRepick": 0.2778, "VideoPlaceButton": 0.3133, "VideoPlaceOrder": 0.2600,
+        "MoveCube": 0.8733, "InsertPeg": 0.1000, "PatternLock": 0.9533, "RouteStick": 0.5511
+      }
+    },
+    {
+      "name": "GroundSG+Oracle",
+      "organization": "RoboMME",
+      "memory": "Symbolic",
+      "baseline": true,
+      "tasks": {
+        "BinFill": 0.8578, "PickXtimes": 1.0000, "SwingXtimes": 1.0000, "StopCube": 0.4967,
+        "VideoUnmask": 0.9878, "ButtonUnmask": 0.9500, "VideoUnmaskSwap": 0.9922, "ButtonUnmaskSwap": 0.8022,
+        "PickHighlight": 0.8333, "VideoRepick": 0.9733, "VideoPlaceButton": 1.0000, "VideoPlaceOrder": 1.0000,
+        "MoveCube": 0.8778, "InsertPeg": 0.1556, "PatternLock": 0.9700, "RouteStick": 0.5556
+      }
+    },
+    {
+      "name": "SimpleSG+Gemini",
+      "organization": "RoboMME",
+      "memory": "Symbolic",
+      "tasks": {
+        "BinFill": 0.4600, "PickXtimes": 0.6300, "SwingXtimes": 0.4500, "StopCube": 0.0200,
+        "VideoUnmask": 0.2900, "ButtonUnmask": 0.0900, "VideoUnmaskSwap": 0.1400, "ButtonUnmaskSwap": 0.0200,
+        "PickHighlight": 0.2000, "VideoRepick": 0.1500, "VideoPlaceButton": 0.2600, "VideoPlaceOrder": 0.2900,
+        "MoveCube": 0.6100, "InsertPeg": 0.0400, "PatternLock": 0.0700, "RouteStick": 0.0000
+      }
+    },
+    {
+      "name": "SimpleSG+QwenVL",
+      "organization": "RoboMME",
+      "memory": "Symbolic",
+      "tasks": {
+        "BinFill": 0.7756, "PickXtimes": 0.9533, "SwingXtimes": 0.0511, "StopCube": 0.0044,
+        "VideoUnmask": 0.3422, "ButtonUnmask": 0.1933, "VideoUnmaskSwap": 0.1533, "ButtonUnmaskSwap": 0.0956,
+        "PickHighlight": 0.1711, "VideoRepick": 0.2533, "VideoPlaceButton": 0.3333, "VideoPlaceOrder": 0.2511,
+        "MoveCube": 0.8200, "InsertPeg": 0.0378, "PatternLock": 0.1267, "RouteStick": 0.0778
+      }
+    },
+    {
+      "name": "GroundSG+Gemini",
+      "organization": "RoboMME",
+      "memory": "Symbolic",
+      "tasks": {
+        "BinFill": 0.2600, "PickXtimes": 0.1800, "SwingXtimes": 0.0400, "StopCube": 0.0300,
+        "VideoUnmask": 0.3600, "ButtonUnmask": 0.1400, "VideoUnmaskSwap": 0.1300, "ButtonUnmaskSwap": 0.0000,
+        "PickHighlight": 0.0900, "VideoRepick": 0.1700, "VideoPlaceButton": 0.1200, "VideoPlaceOrder": 0.0700,
+        "MoveCube": 0.1700, "InsertPeg": 0.0000, "PatternLock": 0.0700, "RouteStick": 0.0200
+      }
+    },
+    {
+      "name": "GroundSG+QwenVL",
+      "organization": "RoboMME",
+      "memory": "Symbolic",
+      "tasks": {
+        "BinFill": 0.5200, "PickXtimes": 0.9267, "SwingXtimes": 0.0733, "StopCube": 0.0000,
+        "VideoUnmask": 0.8867, "ButtonUnmask": 0.2400, "VideoUnmaskSwap": 0.3067, "ButtonUnmaskSwap": 0.1400,
+        "PickHighlight": 0.1511, "VideoRepick": 0.2533, "VideoPlaceButton": 0.5400, "VideoPlaceOrder": 0.3178,
+        "MoveCube": 0.7156, "InsertPeg": 0.0333, "PatternLock": 0.0667, "RouteStick": 0.0600
+      }
+    },
+    {
+      "name": "TokenDrop+Context",
+      "organization": "RoboMME",
+      "memory": "Perceptual",
+      "tasks": {
+        "BinFill": 0.4867, "PickXtimes": 0.8511, "SwingXtimes": 0.9467, "StopCube": 0.0311,
+        "VideoUnmask": 0.3378, "ButtonUnmask": 0.3156, "VideoUnmaskSwap": 0.2622, "ButtonUnmaskSwap": 0.1600,
+        "PickHighlight": 0.2067, "VideoRepick": 0.1778, "VideoPlaceButton": 0.3111, "VideoPlaceOrder": 0.2533,
+        "MoveCube": 0.8133, "InsertPeg": 0.0400, "PatternLock": 0.1267, "RouteStick": 0.2000
+      }
+    },
+    {
+      "name": "TokenDrop+Modul",
+      "organization": "RoboMME",
+      "memory": "Perceptual",
+      "tasks": {
+        "BinFill": 0.3444, "PickXtimes": 0.8356, "SwingXtimes": 0.8600, "StopCube": 0.0533,
+        "VideoUnmask": 0.2822, "ButtonUnmask": 0.2933, "VideoUnmaskSwap": 0.2844, "ButtonUnmaskSwap": 0.2133,
+        "PickHighlight": 0.2133, "VideoRepick": 0.2200, "VideoPlaceButton": 0.5956, "VideoPlaceOrder": 0.3600,
+        "MoveCube": 0.6200, "InsertPeg": 0.0711, "PatternLock": 0.3244, "RouteStick": 0.5156
+      }
+    },
+    {
+      "name": "TokenDrop+Expert",
+      "organization": "RoboMME",
+      "memory": "Perceptual",
+      "tasks": {
+        "BinFill": 0.5422, "PickXtimes": 0.8756, "SwingXtimes": 0.9178, "StopCube": 0.0422,
+        "VideoUnmask": 0.2667, "ButtonUnmask": 0.3044, "VideoUnmaskSwap": 0.1844, "ButtonUnmaskSwap": 0.1889,
+        "PickHighlight": 0.1933, "VideoRepick": 0.2089, "VideoPlaceButton": 0.3644, "VideoPlaceOrder": 0.2467,
+        "MoveCube": 0.8756, "InsertPeg": 0.0222, "PatternLock": 0.1622, "RouteStick": 0.1822
+      }
+    },
+    {
+      "name": "FrameSamp+Context",
+      "organization": "RoboMME",
+      "memory": "Perceptual",
+      "tasks": {
+        "BinFill": 0.4122, "PickXtimes": 0.7200, "SwingXtimes": 0.7367, "StopCube": 0.1367,
+        "VideoUnmask": 0.2689, "ButtonUnmask": 0.3022, "VideoUnmaskSwap": 0.2089, "ButtonUnmaskSwap": 0.1522,
+        "PickHighlight": 0.1767, "VideoRepick": 0.1522, "VideoPlaceButton": 0.3000, "VideoPlaceOrder": 0.2089,
+        "MoveCube": 0.7722, "InsertPeg": 0.0122, "PatternLock": 0.1522, "RouteStick": 0.1967
+      }
+    },
+    {
+      "name": "FrameSamp+Modul",
+      "organization": "RoboMME",
+      "memory": "Perceptual",
+      "tasks": {
+        "BinFill": 0.3956, "PickXtimes": 0.8733, "SwingXtimes": 0.9200, "StopCube": 0.4200,
+        "VideoUnmask": 0.3267, "ButtonUnmask": 0.2511, "VideoUnmaskSwap": 0.2444, "ButtonUnmaskSwap": 0.1822,
+        "PickHighlight": 0.2289, "VideoRepick": 0.3044, "VideoPlaceButton": 0.6000, "VideoPlaceOrder": 0.3200,
+        "MoveCube": 0.7778, "InsertPeg": 0.0756, "PatternLock": 0.5356, "RouteStick": 0.6667
+      }
+    },
+    {
+      "name": "FrameSamp+Expert",
+      "organization": "RoboMME",
+      "memory": "Perceptual",
+      "tasks": {
+        "BinFill": 0.5733, "PickXtimes": 0.8622, "SwingXtimes": 0.9467, "StopCube": 0.2889,
+        "VideoUnmask": 0.3178, "ButtonUnmask": 0.2578, "VideoUnmaskSwap": 0.2289, "ButtonUnmaskSwap": 0.2022,
+        "PickHighlight": 0.1911, "VideoRepick": 0.2311, "VideoPlaceButton": 0.3000, "VideoPlaceOrder": 0.2422,
+        "MoveCube": 0.8311, "InsertPeg": 0.1356, "PatternLock": 0.1711, "RouteStick": 0.0200
+      }
+    },
+    {
+      "name": "TTT+Context",
+      "organization": "RoboMME",
+      "memory": "Recurrent",
+      "tasks": {
+        "BinFill": 0.3556, "PickXtimes": 0.6289, "SwingXtimes": 0.4244, "StopCube": 0.0333,
+        "VideoUnmask": 0.2978, "ButtonUnmask": 0.2289, "VideoUnmaskSwap": 0.1844, "ButtonUnmaskSwap": 0.1444,
+        "PickHighlight": 0.2044, "VideoRepick": 0.1311, "VideoPlaceButton": 0.3422, "VideoPlaceOrder": 0.2022,
+        "MoveCube": 0.3244, "InsertPeg": 0.0111, "PatternLock": 0.0156, "RouteStick": 0.0356
+      }
+    },
+    {
+      "name": "TTT+Modul",
+      "organization": "RoboMME",
+      "memory": "Recurrent",
+      "tasks": {
+        "BinFill": 0.3422, "PickXtimes": 0.6511, "SwingXtimes": 0.3667, "StopCube": 0.0211,
+        "VideoUnmask": 0.2722, "ButtonUnmask": 0.2211, "VideoUnmaskSwap": 0.2522, "ButtonUnmaskSwap": 0.1411,
+        "PickHighlight": 0.1456, "VideoRepick": 0.1211, "VideoPlaceButton": 0.3267, "VideoPlaceOrder": 0.2233,
+        "MoveCube": 0.3122, "InsertPeg": 0.0111, "PatternLock": 0.0356, "RouteStick": 0.0700
+      }
+    },
+    {
+      "name": "TTT+Expert",
+      "organization": "RoboMME",
+      "memory": "Recurrent",
+      "tasks": {
+        "BinFill": 0.3489, "PickXtimes": 0.6378, "SwingXtimes": 0.4133, "StopCube": 0.0400,
+        "VideoUnmask": 0.3178, "ButtonUnmask": 0.2244, "VideoUnmaskSwap": 0.1956, "ButtonUnmaskSwap": 0.1800,
+        "PickHighlight": 0.1222, "VideoRepick": 0.0956, "VideoPlaceButton": 0.3400, "VideoPlaceOrder": 0.2289,
+        "MoveCube": 0.3356, "InsertPeg": 0.0089, "PatternLock": 0.0311, "RouteStick": 0.0556
+      }
+    },
+    {
+      "name": "RMT+Context",
+      "organization": "RoboMME",
+      "memory": "Recurrent",
+      "tasks": {
+        "BinFill": 0.3244, "PickXtimes": 0.5689, "SwingXtimes": 0.3356, "StopCube": 0.0578,
+        "VideoUnmask": 0.3133, "ButtonUnmask": 0.1089, "VideoUnmaskSwap": 0.1733, "ButtonUnmaskSwap": 0.0200,
+        "PickHighlight": 0.1400, "VideoRepick": 0.0378, "VideoPlaceButton": 0.3200, "VideoPlaceOrder": 0.2911,
+        "MoveCube": 0.2578, "InsertPeg": 0.0200, "PatternLock": 0.0556, "RouteStick": 0.0889
+      }
+    },
+    {
+      "name": "RMT+Modul",
+      "organization": "RoboMME",
+      "memory": "Recurrent",
+      "tasks": {
+        "BinFill": 0.3333, "PickXtimes": 0.6078, "SwingXtimes": 0.3778, "StopCube": 0.0467,
+        "VideoUnmask": 0.3111, "ButtonUnmask": 0.1178, "VideoUnmaskSwap": 0.1778, "ButtonUnmaskSwap": 0.0244,
+        "PickHighlight": 0.1711, "VideoRepick": 0.0422, "VideoPlaceButton": 0.3200, "VideoPlaceOrder": 0.3111,
+        "MoveCube": 0.2467, "InsertPeg": 0.0221, "PatternLock": 0.0378, "RouteStick": 0.0800
+      }
+    },
+    {
+      "name": "RMT+Expert",
+      "organization": "RoboMME",
+      "memory": "Recurrent",
+      "tasks": {
+        "BinFill": 0.3578, "PickXtimes": 0.6022, "SwingXtimes": 0.3600, "StopCube": 0.0556,
+        "VideoUnmask": 0.2800, "ButtonUnmask": 0.1711, "VideoUnmaskSwap": 0.1578, "ButtonUnmaskSwap": 0.0200,
+        "PickHighlight": 0.1178, "VideoRepick": 0.0022, "VideoPlaceButton": 0.2267, "VideoPlaceOrder": 0.2267,
+        "MoveCube": 0.2000, "InsertPeg": 0.0189, "PatternLock": 0.0422, "RouteStick": 0.0489
+      }
+    },
+    {
+      "name": "\u03c00.5",
+      "organization": "Physical Intelligence",
+      "memory": "\u2014",
+      "tasks": {
+        "BinFill": 0.3000, "PickXtimes": 0.4289, "SwingXtimes": 0.3556, "StopCube": 0.0667,
+        "VideoUnmask": 0.2044, "ButtonUnmask": 0.2222, "VideoUnmaskSwap": 0.1867, "ButtonUnmaskSwap": 0.0667,
+        "PickHighlight": 0.1133, "VideoRepick": 0.0044, "VideoPlaceButton": 0.3111, "VideoPlaceOrder": 0.2578,
+        "MoveCube": 0.2600, "InsertPeg": 0.0156, "PatternLock": 0.0289, "RouteStick": 0.0467
+      }
+    },
+    {
+      "name": "\u03c00.5 w/ action history",
+      "organization": "Physical Intelligence",
+      "memory": "Symbolic",
+      "tasks": {
+        "BinFill": 0.2667, "PickXtimes": 0.5833, "SwingXtimes": 0.2667, "StopCube": 0.0467,
+        "VideoUnmask": 0.3067, "ButtonUnmask": 0.2367, "VideoUnmaskSwap": 0.2067, "ButtonUnmaskSwap": 0.1600,
+        "PickHighlight": 0.1233, "VideoRepick": 0.0867, "VideoPlaceButton": 0.1867, "VideoPlaceOrder": 0.1867,
+        "MoveCube": 0.3400, "InsertPeg": 0.0100, "PatternLock": 0.0400, "RouteStick": 0.0567
+      }
+    },
+    {
+      "name": "SAM2Act+ (Fang et al.)",
+      "link": "https://sam2act.github.io/",
+      "memory": "Perceptual",
+      "tasks": {
+        "BinFill": 0.4000, "PickXtimes": 0.7600, "SwingXtimes": 0.2533, "StopCube": 0.0000,
+        "VideoUnmask": 0.2733, "ButtonUnmask": 0.3200, "VideoUnmaskSwap": 0.1800, "ButtonUnmaskSwap": 0.2667,
+        "PickHighlight": 0.1733, "VideoRepick": 0.0533, "VideoPlaceButton": 0.2467, "VideoPlaceOrder": 0.2000,
+        "MoveCube": 0.2933, "InsertPeg": 0.0000, "PatternLock": 0.0000, "RouteStick": 0.0000
+      }
+    },
+    {
+      "name": "MemER (Sridhar et al.)",
+      "link": "https://jen-pan.github.io/memer/",
+      "memory": "Perceptual+Symbolic",
+      "tasks": {
+        "BinFill": 0.5667, "PickXtimes": 0.7933, "SwingXtimes": 0.5933, "StopCube": 0.0000,
+        "VideoUnmask": 0.8133, "ButtonUnmask": 0.7200, "VideoUnmaskSwap": 0.3800, "ButtonUnmaskSwap": 0.2133,
+        "PickHighlight": 0.7067, "VideoRepick": 0.2533, "VideoPlaceButton": 0.3000, "VideoPlaceOrder": 0.2600,
+        "MoveCube": 0.8267, "InsertPeg": 0.0667, "PatternLock": 0.1667, "RouteStick": 0.1200
+      }
+    },
+    {
+      "name": "DP-Unet (Chi et al.)",
+      "link": "https://diffusion-policy.cs.columbia.edu/",
+      "memory": "\u2014",
+      "tasks": {
+        "BinFill": 0.3067, "PickXtimes": 0.0533, "SwingXtimes": 0.0667, "StopCube": 0.0000,
+        "VideoUnmask": 0.1400, "ButtonUnmask": 0.0400, "VideoUnmaskSwap": 0.0400, "ButtonUnmaskSwap": 0.0000,
+        "PickHighlight": 0.0000, "VideoRepick": 0.0000, "VideoPlaceButton": 0.2200, "VideoPlaceOrder": 0.0433,
+        "MoveCube": 0.0800, "InsertPeg": 0.0000, "PatternLock": 0.0333, "RouteStick": 0.1000
+      }
+    }
+  ]
+};
+
+(function() {
+  var D = RESULTS;
+  var allTasks = Object.keys(D.models[0].tasks);
+
+  // View modes: 'suite', 'char', 'task'
+  var mode = 'suite';
+  var sortCol = 'Avg';
+  var sortAsc = false;
+
+  var viewMode = 'table';
+  var radarChart = null;
+  var pendingRadarData = null;
+  var radarColors = [
+    { bg: 'rgba(50, 115, 220, 0.18)',  border: 'rgb(50, 115, 220)' },
+    { bg: 'rgba(255, 56, 96, 0.18)',   border: 'rgb(255, 56, 96)' },
+    { bg: 'rgba(0, 184, 148, 0.18)',   border: 'rgb(0, 184, 148)' },
+    { bg: 'rgba(253, 167, 0, 0.18)',   border: 'rgb(253, 167, 0)' },
+    { bg: 'rgba(142, 68, 173, 0.18)',  border: 'rgb(142, 68, 173)' },
+    { bg: 'rgba(52, 73, 94, 0.18)',    border: 'rgb(52, 73, 94)' },
+    { bg: 'rgba(230, 126, 34, 0.18)',  border: 'rgb(230, 126, 34)' },
+    { bg: 'rgba(26, 188, 156, 0.18)',  border: 'rgb(26, 188, 156)' },
+    { bg: 'rgba(241, 196, 15, 0.18)',  border: 'rgb(241, 196, 15)' },
+    { bg: 'rgba(155, 89, 182, 0.18)',  border: 'rgb(155, 89, 182)' }
+  ];
+
+  function cleanLabel(html) {
+    var parts = html.split(/<br\s*\/?>/gi).map(function(s) {
+      return s.replace(/<[^>]+>/g, '').trim();
+    }).filter(function(s) { return s.length > 0; });
+    return parts.length > 1 ? parts : parts[0] || '';
+  }
+
+  function updateRadar(cols, ranked) {
+    var bestInCol = {};
+    cols.forEach(function(c) {
+      var maxVal = -1;
+      ranked.forEach(function(r) { if (r[c.key] > maxVal) maxVal = r[c.key]; });
+      bestInCol[c.key] = maxVal;
+    });
+
+    var byAvg = ranked.slice().sort(function(a, b) { return b.Avg - a.Avg; });
+    var top5Ids = {};
+    for (var t = 0; t < Math.min(5, byAvg.length); t++) { top5Ids[byAvg[t].id] = true; }
+
+    var rankMap = {};
+    byAvg.forEach(function(r, i) { rankMap[r.id] = i; });
+    var medals = ['🥇', '🥈', '🥉'];
+
+    var topModels = ranked.filter(function(r) {
+      if (top5Ids[r.id]) return true;
+      for (var i = 0; i < cols.length; i++) {
+        if (r[cols[i].key] === bestInCol[cols[i].key] && bestInCol[cols[i].key] > 0) return true;
+      }
+      return false;
+    });
+    topModels.sort(function(a, b) { return rankMap[a.id] - rankMap[b.id]; });
+
+    var labels = cols.map(function(c) { return cleanLabel(c.label); });
+    var datasets = topModels.map(function(m, i) {
+      var color = radarColors[i % radarColors.length];
+      var ri = rankMap[m.id];
+      var prefix = ri < 3 ? medals[ri] + ' ' : '#' + (ri + 1) + ' ';
+      return {
+        label: prefix + m.name,
+        data: cols.map(function(c) { return +(m[c.key] * 100).toFixed(2); }),
+        fill: true,
+        backgroundColor: color.bg,
+        borderColor: color.border,
+        pointBackgroundColor: color.border,
+        pointBorderColor: '#fff',
+        pointHoverBackgroundColor: '#fff',
+        pointHoverBorderColor: color.border,
+        borderWidth: 2
+      };
+    });
+
+    pendingRadarData = { labels: labels, datasets: datasets };
+    if (viewMode === 'radar') {
+      applyRadarData();
+    }
+  }
+
+  function applyRadarData() {
+    if (!pendingRadarData) return;
+    if (radarChart) {
+      radarChart.data.labels = pendingRadarData.labels;
+      radarChart.data.datasets = pendingRadarData.datasets;
+      radarChart.update();
+    } else {
+      var ctx = document.getElementById('radar-chart').getContext('2d');
+      radarChart = new Chart(ctx, {
+        type: 'radar',
+        data: pendingRadarData,
+        options: {
+          responsive: true,
+          maintainAspectRatio: true,
+          scales: {
+            r: {
+              beginAtZero: true,
+              max: 100,
+              ticks: { stepSize: 20, font: { size: 13 }, backdropColor: 'transparent' },
+              pointLabels: { font: { size: 14, weight: '600' } },
+              grid: { color: 'rgba(0,0,0,0.06)' },
+              angleLines: { color: 'rgba(0,0,0,0.08)' }
+            }
+          },
+          plugins: {
+            legend: {
+              position: 'bottom',
+              labels: { padding: 20, usePointStyle: true, pointStyle: 'circle', font: { size: 14 } }
+            },
+            tooltip: {
+              titleFont: { size: 14 },
+              bodyFont: { size: 13 },
+              callbacks: {
+                label: function(context) {
+                  return context.dataset.label + ': ' + context.parsed.r.toFixed(2) + '%';
+                }
+              }
+            }
+          },
+          elements: { line: { borderWidth: 2 }, point: { radius: 4, hoverRadius: 6 } }
+        }
+      });
+    }
+  }
+
+  function pct(v) { return (Math.round(v * 10000) / 100).toFixed(2); }
+
+  function medal(i) {
+    if (i === 0) return '<span class="rank-medal">🥇</span>';
+    if (i === 1) return '<span class="rank-medal">🥈</span>';
+    if (i === 2) return '<span class="rank-medal">🥉</span>';
+    return i + 1;
+  }
+
+  function avgTasks(model, tasks) {
+    if (!tasks.length) return 0;
+    var s = 0;
+    tasks.forEach(function(t) { s += (model.tasks[t] || 0); });
+    return s / tasks.length;
+  }
+
+  var charLabels = {
+    "Motion-Centric":      "Motion<br>Centric",
+    "Time-Sensitive":      "Time<br>Sensitive",
+    "Short-Horizon Video": "Short Video<br> Reasoning",
+    "Long-Horizon Video":  "Long Video<br> Reasoning",
+    "Dynamic Scene-Change":"Dynamic<br> Scene Change",
+    "Event-Salient":       "Event<br>Salient"
+  };
+
+  var taskLabels = {
+    "BinFill": "Bin<br>Fill",
+    "PickXtimes": "Pick<br>Xtimes",
+    "SwingXtimes": "Swing<br>Xtimes",
+    "StopCube": "Stop<br>Cube",
+    "VideoUnmask": "Video<br>Umsk",
+    "ButtonUnmask": "Button<br>Umsk",
+    "VideoUnmaskSwap": "Video<br>UmskS",
+    "ButtonUnmaskSwap": "Button<br>UmskS",
+    "PickHighlight": "Pick<br>HighL",
+    "VideoRepick": "Video<br>Repick",
+    "VideoPlaceButton": "Video<br>PlcBtn",
+    "VideoPlaceOrder": "Video<br>PlcOrd",
+    "MoveCube": "Move<br>Cube",
+    "InsertPeg": "Insert<br>Peg",
+    "PatternLock": "Pattern<br>Lock",
+    "RouteStick": "Route<br>Stick"
+  };
+
+  var taskOrder = [
+    "BinFill", "PickXtimes", "SwingXtimes", "StopCube",
+    "VideoUnmask", "ButtonUnmask", "VideoUnmaskSwap", "ButtonUnmaskSwap",
+    "PickHighlight", "VideoRepick", "VideoPlaceButton", "VideoPlaceOrder",
+    "MoveCube", "InsertPeg", "PatternLock", "RouteStick"
+  ];
+
+  var suiteLabels = {
+    "Counting":   "Counting<br>(Temporal Memory)",
+    "Permanence": "Permanence<br>(Spatial Memory)",
+    "Reference":  "Reference<br>(Object Memory)",
+    "Imitation":  "Imitation<br>(Procedural Memory)"
+  };
+
+  function getColumns() {
+    var cols = [];
+    if (mode === 'suite') {
+      Object.keys(D.task_suites).forEach(function(k) {
+        cols.push({ key: k, label: suiteLabels[k] || k, tasks: D.task_suites[k] });
+      });
+    } else if (mode === 'char') {
+      Object.keys(D.task_characteristics).forEach(function(k) {
+        cols.push({ key: k, label: charLabels[k] || k, tasks: D.task_characteristics[k] });
+      });
+    } else {
+      taskOrder.forEach(function(t) {
+        cols.push({ key: t, label: taskLabels[t] || t, tasks: [t] });
+      });
+    }
+    return cols;
+  }
+
+  function buildRows(cols) {
+    return D.models.map(function(m, idx) {
+      var row = { id: idx, name: m.name, org: m.organization, memory: m.memory || '\u2014', tasks: m.tasks, baseline: !!m.baseline, link: m.link || null };
+      row.Avg = avgTasks(m, allTasks);
+      cols.forEach(function(c) { row[c.key] = avgTasks(m, c.tasks); });
+      return row;
+    });
+  }
+
+  function sortRows(rows) {
+    rows.sort(function(a, b) {
+      var va = a[sortCol] || 0, vb = b[sortCol] || 0;
+      return sortAsc ? va - vb : vb - va;
+    });
+  }
+
+  function renderToolbar() {
+    var html = '<span style="font-weight:600;font-size:1rem;color:#555;margin-right:0.75rem;">Group by</span>';
+    [['suite', 'Task Suite'], ['char', 'Task Characteristics'], ['task', 'Each Task']].forEach(function(m) {
+      html += '<button class="mode-btn' + (mode === m[0] ? ' is-active' : '') + '" data-mode="' + m[0] + '">' + m[1] + '</button>';
+    });
+    document.getElementById('lb-toolbar').innerHTML = html;
+
+    document.querySelectorAll('.mode-btn').forEach(function(btn) {
+      btn.addEventListener('click', function() {
+        mode = this.getAttribute('data-mode');
+        sortCol = 'Avg';
+        sortAsc = false;
+        render();
+      });
+    });
+  }
+
+  function renderHead(cols) {
+    var arrow = function(key) {
+      var active = sortCol === key;
+      var dir = active ? (sortAsc ? '▲' : '▼') : '▼';
+      return '<span class="sort-arrow">' + dir + '</span>';
+    };
+
+    var labelWithArrow = function(label, key) {
+      return label + arrow(key);
+    };
+
+    var colW = mode === 'task' ? 'width:5rem;' : '';
+    var cg = '<col style="width:3rem;">';
+    cg += '<col style="width:12rem;">';
+    cg += '<col style="width:5rem;">';
+    cols.forEach(function() { cg += '<col style="' + colW + '">'; });
+    document.getElementById('lb-cols').innerHTML = cg;
+
+    var tableEl = document.getElementById('lb-table');
+    tableEl.style.minWidth = mode === 'task' ? (3 + 12 + 5 + cols.length * 5) + 'rem' : '';
+
+    var html = '<tr>';
+    html += '<th class="no-sort">Rank</th>';
+    html += '<th class="no-sort">Model</th>';
+    html += '<th data-sort="Avg"' + (sortCol === 'Avg' ? ' class="sorted"' : '') + ' style="white-space:nowrap;background:#3273dc;">Overall ' + arrow('Avg') + '</th>';
+    cols.forEach(function(c) {
+      html += '<th data-sort="' + c.key + '"' + (sortCol === c.key ? ' class="sorted"' : '') + '>' + labelWithArrow(c.label, c.key) + '</th>';
+    });
+    html += '</tr>';
+    document.getElementById('lb-head').innerHTML = html;
+
+    document.querySelectorAll('#lb-head th[data-sort]').forEach(function(th) {
+      th.addEventListener('click', function() {
+        var key = this.getAttribute('data-sort');
+        if (sortCol === key) {
+          sortAsc = !sortAsc;
+        } else {
+          sortCol = key;
+          sortAsc = false;
+        }
+        render();
+      });
+    });
+  }
+
+  function render() {
+    var cols = getColumns();
+    var rows = buildRows(cols);
+
+    var baselines = rows.filter(function(r) { return r.baseline; });
+    var ranked = rows.filter(function(r) { return !r.baseline; });
+    sortRows(ranked);
+
+    // Best per column among ranked models only
+    var best = {};
+    cols.forEach(function(c) { best[c.key] = 0; });
+    best.Avg = 0;
+    ranked.forEach(function(r) {
+      cols.forEach(function(c) { if (r[c.key] > best[c.key]) best[c.key] = r[c.key]; });
+      if (r.Avg > best.Avg) best.Avg = r.Avg;
+    });
+
+    renderToolbar();
+    renderHead(cols);
+
+    var html = '';
+
+    function nameHtml(r) {
+      if (r.link) return '<a href="' + r.link + '" target="_blank" style="color:inherit;text-decoration:underline dotted;"><strong>' + r.name + '</strong></a>';
+      return '<strong>' + r.name + '</strong>';
+    }
+
+    function memoryHtml(mem) {
+      if (mem === '\u2014') return '\u2014';
+      return mem.split('+').map(function(t) {
+        var cls = t.trim().toLowerCase();
+        return '<span class="mem-badge ' + cls + '">' + t.trim() + '</span>';
+      }).join('');
+    }
+
+    function renderRow(r, rankLabel, rowClass) {
+      html += '<tr' + (rowClass ? ' class="' + rowClass + '"' : '') + '>';
+      html += '<td class="rank">' + rankLabel + '</td>';
+      html += '<td>' + nameHtml(r) + '</td>';
+      html += '<td>' + pct(r.Avg) + '</td>';
+      cols.forEach(function(c) {
+        html += '<td>' + pct(r[c.key]) + '</td>';
+      });
+      html += '</tr>';
+    }
+
+    // Baselines at top
+    baselines.forEach(function(r) {
+      renderRow(r, '—', 'baseline-row');
+    });
+
+    // Separator
+    if (baselines.length && ranked.length) {
+      html += '<tr class="baseline-separator"><td colspan="' + (cols.length + 3) + '"></td></tr>';
+    }
+
+    // Ranked models
+    ranked.forEach(function(r, i) {
+      html += '<tr>';
+      html += '<td class="rank">' + medal(i) + '</td>';
+      html += '<td>' + nameHtml(r) + '</td>';
+
+      var avgCls = (r.Avg > 0 && r.Avg === best.Avg) ? ' class="best-score"' : '';
+      html += '<td' + avgCls + '>' + pct(r.Avg) + '</td>';
+
+      cols.forEach(function(c) {
+        var v = r[c.key];
+        var cls = (v > 0 && v === best[c.key]) ? ' class="best-score"' : '';
+        html += '<td' + cls + '>' + pct(v) + '</td>';
+      });
+
+      html += '</tr>';
+    });
+
+    document.getElementById('lb-body').innerHTML = html;
+    updateRadar(cols, ranked);
+  }
+
+  document.addEventListener('DOMContentLoaded', function() {
+    document.querySelectorAll('.navbar-burger').forEach(function(el) {
+      el.addEventListener('click', function() {
+        var t = document.getElementById(el.getAttribute('data-target'));
+        el.classList.toggle('is-active');
+        if (t) t.classList.toggle('is-active');
+      });
+    });
+    document.getElementById('stat-models').textContent = D.models.filter(function(m) { return !m.baseline || m.name !== 'Human Performance'; }).length;
+
+    document.getElementById('view-toggle').addEventListener('click', function() {
+      var radarEl = document.getElementById('radar-container');
+      var tableEl = document.querySelector('.lb-wrap');
+      var icon = document.getElementById('view-toggle-icon');
+      var label = document.getElementById('view-toggle-label');
+      if (viewMode === 'table') {
+        viewMode = 'radar';
+        tableEl.style.display = 'none';
+        radarEl.style.display = 'block';
+        icon.className = 'fas fa-table';
+        label.textContent = 'Table View';
+        applyRadarData();
+        if (radarChart) setTimeout(function() { radarChart.resize(); }, 10);
+      } else {
+        viewMode = 'table';
+        radarEl.style.display = 'none';
+        tableEl.style.display = '';
+        icon.className = 'fas fa-chart-area';
+        label.textContent = 'Radar View';
+      }
+    });
+
+    render();
+  });
+})();
+</script>
+</body>
+</html>
