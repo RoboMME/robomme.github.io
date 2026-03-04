@@ -173,7 +173,7 @@
         <div class="column is-narrow"><div class="stat-card"><div class="stat-value" id="stat-models">—</div><div class="stat-label">Models Evaluated</div></div></div>
       </div>
 
-      <p class="has-text-centered" style="margin-top:0.75rem;font-size:0.95rem;color:#999;">(Data updated at 03/01/2026)</p>
+      <p class="has-text-centered" style="margin-top:0.75rem;font-size:0.95rem;color:#999;">(Data updated on 03/01/2026)</p>
       <!-- <div class="has-text-centered" style="margin-top:1.5rem;">
         <a href="#" class="button is-link is-rounded is-light" style="margin:0.25rem;"><span class="icon"><i class="fas fa-file-pdf"></i></span><span>Paper</span></a>
         <a href="https://github.com/RoboMME/robomme_benchmark" class="button is-link is-rounded is-light" target="_blank" style="margin:0.25rem;"><span class="icon"><i class="fab fa-github"></i></span><span>Benchmark Code</span></a>
@@ -186,7 +186,7 @@
 </section>
 
 <!-- Leaderboard -->
-<section class="section" style="padding-top: 1.5rem;">
+<section class="section" id="radar-view" style="padding-top: 1.5rem;">
   <div class="container">
     <div class="leaderboard-content">
       <h2 class="title is-4">📊 Leaderboard</h2>
@@ -221,7 +221,7 @@
         </div>
         <div class="column section-block">
           <h2 class="title is-5">⚖️ Evaluation</h2>
-          <p class="content">Models are evaluated on  episodes (50 per task). Multiple runs with different model seeds are recommended.</a></p>
+          <p class="content">Models are evaluated on 800 test episodes (50 per task). Multiple runs with different random seeds are recommended.</p>
         </div>
         <div class="column section-block">
           <h2 class="title is-5" id="submit">🔄 Submit</h2>
@@ -496,7 +496,7 @@ var RESULTS = {
       }
     },
     {
-      "name": "SAM2Act+ (Fang et al.)",
+      "name": "SAM2Act (Fang et al.)",
       "link": "https://sam2act.github.io/",
       "memory": "Perceptual",
       "tasks": {
@@ -834,9 +834,24 @@ var RESULTS = {
 
     var html = '';
 
+    function formatModelName(name) {
+      var plus = name.indexOf('+');
+      if (plus !== -1) {
+        var method = name.substring(0, plus).trim();
+        var integration = name.substring(plus + 1).trim();
+        if (method && integration)
+          return  method + '+' + integration;
+          // return '<b><span style="font-variant: small-caps;">' + method + '</span>+<span style="font-variant: small-caps;">' + integration + '</span></b>';
+      }
+      return name;
+    }
+
+    // <b><span style="font-variant: small-caps; color: #060606;">GroundSG</span>+<span style="font-variant: small-caps; color: #e83636;">Oracle</span></b>
+
     function nameHtml(r) {
-      if (r.link) return '<a href="' + r.link + '" target="_blank" style="color:inherit;text-decoration:underline dotted;"><strong>' + r.name + '</strong></a>';
-      return '<strong>' + r.name + '</strong>';
+      var content = formatModelName(r.name);
+      if (r.link) return '<a href="' + r.link + '" target="_blank" style="color:inherit;text-decoration:underline dotted;"><strong>' + content + '</strong></a>';
+      return '<strong>' + content + '</strong>';
     }
 
     function memoryHtml(mem) {
@@ -923,6 +938,28 @@ var RESULTS = {
     });
 
     render();
+
+    // If linked with #radar-view, group by task characteristics and switch to radar view
+    if (window.location.hash === '#radar-view') {
+      mode = 'char';
+      render();
+      viewMode = 'radar';
+      document.querySelector('.lb-wrap').style.display = 'none';
+      var radarEl = document.getElementById('radar-container');
+      radarEl.style.display = 'block';
+      document.getElementById('view-toggle-icon').className = 'fas fa-table';
+      document.getElementById('view-toggle-label').textContent = 'Table View';
+      applyRadarData();
+      if (radarChart) setTimeout(function() { radarChart.resize(); }, 10);
+    }
+
+    // If linked with #each-task, group by each task
+    if (window.location.hash === '#each-task') {
+      mode = 'task';
+      sortCol = 'Avg';
+      sortAsc = false;
+      render();
+    }
   });
 })();
 </script>

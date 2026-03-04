@@ -449,7 +449,7 @@
           </div>
 
           <div class="is-size-5 publication-authors">
-            <span class="author-block"><sup><span style="font-size:50%;">★</span></sup>Equal Advising</span> <br>
+            <span class="author-block"><sup><span style="font-size:50%;">★</span></sup>Equal Supervision</span> <br>
             <span class="author-block"><sup>1</sup>University of Michigan,</span>
             <span class="author-block"><sup>2</sup>Stanford University,</span>
             <span class="author-block"><sup>3</sup>Figure AI</span>
@@ -458,7 +458,7 @@
           <div class="column has-text-centered" style="margin-top: 1.5rem;">
             <div class="publication-links">
               <span class="link-block">
-                <a href="#" class="button is-link is-rounded" target="_blank">
+                <a href="#" class="button is-link is-rounded">
                   <span class="icon"><i class="fas fa-file-pdf"></i></span>
                   <span>Paper</span>
                 </a>
@@ -470,7 +470,7 @@
                 </a>
               </span>
               <span class="link-block">
-                <a href="#" class="button is-link is-rounded" target="_blank">
+                <a href="#" class="button is-link is-rounded">
                   <span class="icon"><i class="fab fa-github"></i></span>
                   <span>Code (Coming Soon)</span>
                 </a>
@@ -482,7 +482,7 @@
                 </a>
               </span> -->
               <span class="link-block">
-                <a href="#" class="button is-link is-rounded" target="_blank">
+                <a href="#" class="button is-link is-rounded">
                   <span class="icon"><i class="fas fa-database"></i></span>
                   <span>Dataset (Coming Soon)</span>
                 </a>
@@ -722,7 +722,7 @@
           <div class="task-card">
             <div class="task-name">Task 3.2: VideoRepick</div>
             <div class="task-instructions">
-              <strong>Instruction:</strong> Watch the video carefully, then pick up the same cube that was previously picked up for two times, finally press the button to stop.
+              <strong>Instruction:</strong> Watch the video carefully, then pick up the same cube that was previously picked up twice, and finally press the button to stop.
             </div>
             <div class="video-wrapper">
               <div class="video-container">
@@ -873,11 +873,11 @@
     <!-- MME-VLA Variants Description -->
     <div style="color: #4a4a4a; font-size: 1.1rem; line-height: 1.6; margin-bottom: 1.5rem;">
       <p style="margin-bottom: 1rem; margin-left: 4.5rem;">We fine-tune a total of <b>14 memory-augmented VLA</b> variants based on π<sub>0.5</sub>:</p>
-      
+      <!-- <span style="font-variant: small-caps;">GroundSG+Oracle</span>. -->
       <ul style="margin-left: 6rem; max-width: 1150px; font-size: 1.05rem; line-height: 1.6; list-style-type: disc;">
-        <li style="margin-bottom: 0.5rem;"><b>Symbolic:</b> <span style="font-variant: small-caps;">SimpleSG</span> (Simple Subgoal) or <span style="font-variant: small-caps;">GroundSG</span> (Grounded Subgoal), and leverage <code>Gemini</code> (prompt-based Gemini-2.5-Pro), <code>QwenVL</code> (fine-tuned Qwen3-VL-4B), or <code>Oracle</code> (simulator ground-truth) as subgoal predictors → <b>2 VLA variants & 3 subgoal predictors</b></li>
-        <li style="margin-bottom: 0.5rem;"><b>Perceptual:</b> <span style="font-variant: small-caps;">TokenDrop</span> (Token dropping) or <span style="font-variant: small-caps;">FrameSamp</span> (Frame sampling), combined with <code>Context</code> (memory-as-context), <code>Modul</code> (memory-as-modulator), or <code>Expert</code> (memory-as-expert) integration mechanisms → <b>2 × 3 = 6 VLA variants</b></li>
-        <li style="margin-bottom: 0.5rem;"><b>Recurrent:</b> <span style="font-variant: small-caps;">TTT</span> (Test-Time Training) or <span style="font-variant: small-caps;">RMT</span> (Recurrent Memory Transformer), combined with <code>Context</code> (memory-as-context), <code>Modul</code> (memory-as-modulator), or <code>Expert</code> (memory-as-expert) integration mechanisms → <b>2 × 3 = 6 VLA variants</b></li>
+        <li style="margin-bottom: 0.5rem;"><b>Symbolic Memory Variants:</b> <span style="font-variant: small-caps; color: #060606;">SimpleSG</span> (Simple Subgoal) or <span style="font-variant: small-caps; color: #060606;">GroundSG</span> (Grounded Subgoal), and leverage <span style="font-variant: small-caps; color: #e83636;">Gemini</span> (prompt-based Gemini-2.5-Pro), <span style="font-variant: small-caps; color: #e83636;">QwenVL</span> (fine-tuned Qwen3-VL-4B), or <span style="font-variant: small-caps; color: #e83636;">Oracle</span> (simulator ground-truth) as subgoal predictors → <b>2 VLA variants & 3 subgoal predictors</b></li>
+        <li style="margin-bottom: 0.5rem;"><b>Perceptual Memory Variants:</b> <span style="font-variant: small-caps; color: #060606;">TokenDrop</span> (Token dropping) or <span style="font-variant: small-caps; color: #060606;">FrameSamp</span> (Frame sampling), combined with <span style="font-variant: small-caps; color: #e83636;">Context</span> (memory-as-context), <span style="font-variant: small-caps; color: #e83636;">Modul</span> (memory-as-modulator), or <span style="font-variant: small-caps; color: #e83636;">Expert</span> (memory-as-expert) integration  mechanisms → <b>2 × 3 = 6 VLA variants</b></li>
+        <li style="margin-bottom: 0.5rem;"><b>Recurrent Memory Variants:</b> <span style="font-variant: small-caps; color: #060606;">TTT</span> (Test-Time Training) or <span style="font-variant: small-caps; color: #060606;">RMT</span> (Recurrent Memory Transformer), combined with <span style="font-variant: small-caps; color: #e83636;">Context</span> (memory-as-context), <span style="font-variant: small-caps; color: #e83636;">Modul</span> (memory-as-modulator), or <span style="font-variant: small-caps; color: #e83636;">Expert</span> (memory-as-expert) integration mechanisms → <b>2 × 3 = 6 VLA variants</b></li>
       </ul>
       
       <table style="width: auto; max-width: 900px; margin: 1rem auto; border-collapse: collapse; font-size: 1.05rem;">
@@ -889,32 +889,55 @@
         </tr>
         <tr>
           <td style="padding: 0.75rem; border: 1px solid #ddd;">Symbolic</td>
-          <td style="padding: 0.75rem; border: 1px solid #ddd;"><span style="font-variant: small-caps;">SimpleSG</span>, <span style="font-variant: small-caps;">GroundSG</span></td>
-          <td style="padding: 0.75rem; border: 1px solid #ddd;"><code>Gemini</code>, <code>QwenVL</code>, <code>Oracle</code></td>
+          <td style="padding: 0.75rem; border: 1px solid #ddd;"><span style="font-variant: small-caps; color: #060606;">SimpleSG</span>, <span style="font-variant: small-caps; color: #060606;">GroundSG</span></td>
+          <td style="padding: 0.75rem; border: 1px solid #ddd;"><span style="font-variant: small-caps; color: #e83636;">Gemini</span>, <span style="font-variant: small-caps; color: #e83636;">QwenVL</span>, <span style="font-variant: small-caps; color: #e83636;">Oracle</span></td>
           <td style="padding: 0.75rem; border: 1px solid #ddd;">--</td>
         </tr>
         <tr>
           <td style="padding: 0.75rem; border: 1px solid #ddd;">Perceptual</td>
-          <td style="padding: 0.75rem; border: 1px solid #ddd;"><span style="font-variant: small-caps;">TokenDrop</span>, <span style="font-variant: small-caps;">FrameSamp</span></td>
+          <td style="padding: 0.75rem; border: 1px solid #ddd;"><span style="font-variant: small-caps; color: #060606;">TokenDrop</span>, <span style="font-variant: small-caps; color: #060606;">FrameSamp</span></td>
           <td style="padding: 0.75rem; border: 1px solid #ddd;">--</td>
-          <td style="padding: 0.75rem; border: 1px solid #ddd;"><code>Context</code>, <code>Modul</code>, <code>Expert</code></td>
+          <td style="padding: 0.75rem; border: 1px solid #ddd;"><span style="font-variant: small-caps; color: #e83636;">Context</span>, <span style="font-variant: small-caps; color: #e83636;">Modul</span>, <span style="font-variant: small-caps; color: #e83636;">Expert</span></td>
         </tr>
         <tr>
           <td style="padding: 0.75rem; border: 1px solid #ddd;">Recurrent</td>
-          <td style="padding: 0.75rem; border: 1px solid #ddd;"><span style="font-variant: small-caps;">TTT</span>, <span style="font-variant: small-caps;">RMT</span></td>
+          <td style="padding: 0.75rem; border: 1px solid #ddd;"><span style="font-variant: small-caps; color: #060606;">TTT</span>, <span style="font-variant: small-caps; color: #060606;">RMT</span></td>
           <td style="padding: 0.75rem; border: 1px solid #ddd;">--</td>
-          <td style="padding: 0.75rem; border: 1px solid #ddd;"><code>Context</code>, <code>Modul</code>, <code>Expert</code></td>
+          <td style="padding: 0.75rem; border: 1px solid #ddd;"><span style="font-variant: small-caps; color: #e83636;">Context</span>, <span style="font-variant: small-caps; color: #e83636;">Modul</span>, <span style="font-variant: small-caps; color: #e83636;">Expert</span></td>
         </tr>
       </table>
 
-      <p style="margin-left: 15rem; font-size: 0.95rem; margin-right: 4.5rem;">Naming Convention: <span style="font-variant: small-caps;">Method</span>+<code>Integration Mechanism/Subgoal Predictor</code>, e.g., <span style="font-variant: small-caps;">FrameSamp</span>+<code>Modul</code> or <span style="font-variant: small-caps;">SimpleSG</span>+<code>QwenVL</code></p>
+      <p style="margin-left: 14rem; font-size: 1rem; margin-right: 4.5rem; font-weight: 500; color: #444;"><span style="font-weight: 600;">Naming Convention:</span> <span style="font-variant: small-caps; color: #060606;">Method</span>+<span style="font-variant: small-caps; color: #e83636;">Integration Mechanism/Subgoal Predictor</span>, e.g., <b><span style="font-variant: small-caps; color: #060606;">FrameSamp</span>+<span style="font-variant: small-caps; color: #e83636;">Modul</span></b> or <b><span style="font-variant: small-caps; color: #060606;">SimpleSG</span>+<span style="font-variant: small-caps; color: #e83636;">QwenVL</span></b></p>
+
+    </div>
+
+    <div style="color: #4a4a4a; font-size: 1.1rem; line-height: 1.6; margin-bottom: 1.5rem;">
+
+      <p style="margin-left: 4.5rem; margin-right: 4.5rem; color: #040404; font-size: 1.2rem; line-height: 1.6; margin-top: 1rem; margin-bottom: 0.5rem;">
+        <b>Key Takeaways:</b>
+      </p>
+
+      <ul style="margin-left: 6rem; margin-right: 4.5rem; color: #4a4a4a; font-size: 1.05rem; line-height: 1.6; margin-bottom: 0.75rem; list-style-type: disc;">
+        <li style="margin-bottom: 0.4rem;">
+          There is no “one-size-fits-all” memory design: <b>No single representation or integration strategy dominates across all tasks</b>.
+        </li>
+        <li style="margin-bottom: 0.4rem;"> <b>Symbolic memory</b> excels at counting and visual grounding, while <b>perceptual memory</b> is essential for motion mimicking.
+        </li>
+        <li style="margin-bottom: 0.4rem;">
+          <b>Memory-as-Modulator</b> is the most effective integration strategy.
+        </li>
+      </ul>
+
+      <p style="margin-left: 4.5rem; margin-right: 4.5rem; color: #4a4a4a; font-size: 1.05rem; line-height: 1.6; margin-bottom: 0.75rem;">
+        More specifically, we investigate the following research questions (RQs):
+      </p>
     </div>
 
     <div class="findings-grid" style="display: flex; flex-direction: column; gap: 1rem; max-width: 1000px; margin: 1rem auto 0 auto;">
       <!-- Finding 1 -->
       <details>
         <summary style="cursor: pointer; font-size: 1.2rem; font-weight: bold; color: #3273dc; padding: 1rem; background: white; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); list-style: none; display: flex; align-items: center; gap: 0.5rem;">
-          <span style="transition: transform 0.3s;">▶</span> Q1: Which memory representations and integration mechanisms yield the strongest performance?
+          <span style="transition: transform 0.3s;">▶</span> RQ1: Which memory representations and integration mechanisms yield the strongest performance?
         </summary>
         <div style="margin-top: 0.5rem; background: white; border-radius: 8px; padding: 1.5rem; box-shadow: 0 2px 8px rgba(0,0,0,0.1);">
           <div class="finding-caption" style="margin-bottom: 1rem; color: #4a4a4a; font-size: 1.05rem; line-height: 1.6;">
@@ -932,42 +955,83 @@
           </figure>
         </div>
       </details>
-      
+
       <!-- Finding 2 -->
       <details>
         <summary style="cursor: pointer; font-size: 1.2rem; font-weight: bold; color: #3273dc; padding: 1rem; background: white; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); list-style: none; display: flex; align-items: center; gap: 0.5rem;">
-          <span style="transition: transform 0.3s;">▶</span> Q2: How does the effectiveness of different memory designs depend on task characteristics?
+          <span style="transition: transform 0.3s;">▶</span> RQ2: Is high-level symbolic reasoning alone sufficient for memory-augmented manipulation?
+        </summary>
+        <div style="margin-top: 0.5rem; background: white; border-radius: 8px; padding: 1.5rem; box-shadow: 0 2px 8px rgba(0,0,0,0.1);">
+          <div class="finding-caption" style="margin-bottom: 1rem; color: #4a4a4a; font-size: 1.05rem; line-height: 1.6;">
+            <p style="margin-bottom: 0.75rem;"><b>High-level symbolic reasoning is powerful yet not sufficient on its own:</b></p>
+            <ul style="margin-left: 1.5rem; list-style-type: disc;">
+              <li style="margin-bottom: 0.5rem;">As the upper bound of symbolic memory, <b><span style="font-variant: small-caps; color: #060606;">GroundSG</span>+<span style="font-variant: small-caps; color: #e83636;">Oracle</span></b> successfully solves many tasks (84% overall success rate), confirming the strong representational capacity of language for high-level reasoning (<a href="leaderboard.html#each-task" style="color: #3273dc;" target="_blank">see leaderboard</a>).</li>
+              <li style="margin-bottom: 0.5rem;">Performance still degrades on manipulation-intensive tasks such as <i>StopCube</i> and <i>InsertPeg</i>, where language offers limited guidance and precise visuomotor control becomes the primary bottleneck.</li>
+              <li style="margin-bottom: 0.5rem;">The VLA policy still struggles in cluttered scenes, often manipulating wrong objects and causing unintended collisions despite unambiguous subgoals (see <a href="#sim-binfill-groundsg-oracle-ep3" style="color: #3273dc;">simulation demo</a> below). </li>
+            </ul>
+          </div>
+        </div>
+      </details>
+
+      <!-- Finding 3 -->
+      <details>
+        <summary style="cursor: pointer; font-size: 1.2rem; font-weight: bold; color: #3273dc; padding: 1rem; background: white; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); list-style: none; display: flex; align-items: center; gap: 0.5rem;">
+          <span style="transition: transform 0.3s;">▶</span> RQ3: How do humans perform on RoboMME?
+        </summary>
+        <div style="margin-top: 0.5rem; background: white; border-radius: 8px; padding: 1.5rem; box-shadow: 0 2px 8px rgba(0,0,0,0.1);">
+          <div class="finding-caption" style="margin-bottom: 1rem; color: #4a4a4a; font-size: 1.05rem; line-height: 1.6;">
+            <p style="margin-bottom: 0.75rem;"><b>Humans are strong but not perfect on RoboMME:</b></p>
+            <ul style="margin-left: 1.5rem; list-style-type: disc;">
+              <li style="margin-bottom: 0.5rem;">Each task is posed as an online VideoQA problem: videos are revealed incrementally, participants pick the next high-level action from a fixed candidate set, and an oracle planner executes actions perfectly.</li>
+              <li style="margin-bottom: 0.5rem;">Humans reach 90.5% success but still fail to fully solve the benchmark, with consistent errors on long-horizon tasks (e.g., <i>PatternLock</i>) and time-sensitive tasks (e.g., <i>StopCube</i>) (<a href="leaderboard.html#each-task" style="color: #3273dc;" target="_blank">see leaderboard</a>).</li>
+              <li style="margin-bottom: 0.5rem;">RoboMME therefore remains challenging and serves as a rigorous testbed for memory-augmented policies.</li>
+              <p style="margin-top: 1rem; margin-bottom: 0;">
+                <a href="" style="color: #3273dc; display: inline-flex; align-items: center; gap: 0.4rem;">
+                  <img src="image/huggingface_logo.svg" alt="Hugging Face demo" style="height: 1.25rem; vertical-align: middle;">
+                  <span>Play with an interactive demo to test your memory →</span>
+                </a>
+              </p>
+            </ul>
+          </div>
+        </div>
+      </details>
+      
+      <!-- Finding 4 -->
+      <details>
+        <summary style="cursor: pointer; font-size: 1.2rem; font-weight: bold; color: #3273dc; padding: 1rem; background: white; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); list-style: none; display: flex; align-items: center; gap: 0.5rem;">
+          <span style="transition: transform 0.3s;">▶</span> RQ4: How does the effectiveness of different memory designs depend on task characteristics?
         </summary>
         <div style="margin-top: 0.5rem; background: white; border-radius: 8px; padding: 1.5rem; box-shadow: 0 2px 8px rgba(0,0,0,0.1);">
           <div class="finding-caption" style="margin-bottom: 1rem; color: #4a4a4a; font-size: 1.05rem; line-height: 1.6;">
             <p style="margin-bottom: 0.75rem;"><b>Different memory designs provide complementary strengths:</b></p>
             <ul style="margin-left: 1.5rem; list-style-type: disc;">
-              <li style="margin-bottom: 0.5rem;"><b>Symbolic Memory:</b> excels on Event-Salient (e.g., counting) and Short-Horizon Video Reasoning tasks</li>
-              <li style="margin-bottom: 0.5rem;"><b>Perceptual Memory:</b> excels on Motion-Centric and Time-Sensitive tasks</li>
-              <li style="margin-bottom: 0.5rem;"><b>MemER <a href="https://arxiv.org/abs/2510.20328" target="_blank" style="color: #3273dc;">(Sridhar et al., 2025)</a></b>: excels on Dynamic Scene-Change tasks due to its reuse of all past keyframe images</li>
+              <li style="margin-bottom: 0.5rem;"><b>Symbolic Memory</b> excels on Event-Salient (e.g., counting) and Short-Horizon Video Reasoning tasks</li>
+              <li style="margin-bottom: 0.5rem;"><b>Perceptual Memory</b> excels on Motion-Centric and Time-Sensitive tasks</li>
+              <li style="margin-bottom: 0.5rem;"><b>MemER <a href="https://arxiv.org/abs/2510.20328" target="_blank" style="color: #3273dc;">(Sridhar et al., 2025)</a></b> excels on Dynamic Scene-Change tasks due to its reuse of all past keyframe images</li>
             </ul>
           </div>
-          <figure class="image" style="max-width: 80%; margin: 0 auto 1rem auto;">
+          <figure class="image" style="max-width: 75%; margin: 0 auto 1rem auto;">
             <img src="image/task_memory_correspondence.jpg" alt="Task Memory Correspondence" style="width: 100%; display: block; border-radius: 4px;">
           </figure>
-          <p style="color: #4a4a4a; font-size: 1.1rem; line-height: 1.6; margin-bottom: 1rem;">To better analyze the effectiveness of memory representations, we group the 16 tasks by their primary functional requirements:</p>
+          <p style="color: #4a4a4a; font-size: 1.1rem; line-height: 1.6; margin-bottom: 1rem;">To better analyze the effectiveness of memory representations, we group the 16 tasks by their primary functional requirements as shown below:</p>
           <figure class="image" style="max-width: 100%; margin: 0 auto;">
             <img src="image/task_category.png" alt="Task Category" style="width: 100%; display: block; border-radius: 4px;">
           </figure>
+          <p style="margin-top: 1rem; margin-bottom: 0;"><a href="leaderboard.html#radar-view" style="color: #3273dc;" target="_blank">View radar chart by task characteristics on the leaderboard →</a></p>
         </div>
       </details>
       
-      <!-- Finding 3 -->
+      <!-- Finding 5 -->
       <details>
         <summary style="cursor: pointer; font-size: 1.2rem; font-weight: bold; color: #3273dc; padding: 1rem; background: white; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); list-style: none; display: flex; align-items: center; gap: 0.5rem;">
-          <span style="transition: transform 0.3s;">▶</span> Q3: How does memory affect the efficiency-performance balance of memory-augmented policies?
+          <span style="transition: transform 0.3s;">▶</span> RQ5: How does memory affect the efficiency-performance balance of memory-augmented policies?
         </summary>
         <div style="margin-top: 0.5rem; background: white; border-radius: 8px; padding: 1.5rem; box-shadow: 0 2px 8px rgba(0,0,0,0.1);">
           <div class="finding-caption" style="margin-bottom: 1rem; color: #4a4a4a; font-size: 1.05rem; line-height: 1.6;">
             <p style="margin-bottom: 0.75rem;"><b>Perceptual memory achieves the best efficiency-performance balance:</b></p>
             <ul style="margin-left: 1.5rem; list-style-type: disc;">
-              <li style="margin-bottom: 0.5rem;"><b><span style="font-variant: small-caps;">FrameSamp</span>/<span style="font-variant: small-caps;">TokenDrop</span>+<code>Modul</code></b>: consistent gains with modest cost increase</li>
-              <li style="margin-bottom: 0.5rem;"><b><span style="font-variant: small-caps;">SimpleSG</span>/<span style="font-variant: small-caps;">GroundSG</span>+<code>QwenVL</code></b>: ~3× computation of π<sub>0.5</sub></li>
+              <li style="margin-bottom: 0.5rem;"><b><span style="font-variant: small-caps;">FrameSamp</span>/<span style="font-variant: small-caps;">TokenDrop</span>+<span style="font-variant: small-caps; color: #e83636;">Modul</span></b>: consistent gains with modest cost increase</li>
+              <li style="margin-bottom: 0.5rem;"><b><span style="font-variant: small-caps;">SimpleSG</span>/<span style="font-variant: small-caps;">GroundSG</span>+<span style="font-variant: small-caps; color: #e83636;">QwenVL</span></b>: ~3× computation of π<sub>0.5</sub></li>
               <li style="margin-bottom: 0.5rem;"><b>MemER <a href="https://arxiv.org/abs/2510.20328" target="_blank" style="color: #3273dc;">(Sridhar et al., 2025)</a></b>: ~5× computation of π<sub>0.5</sub></li>
             </ul>
           </div>
@@ -977,17 +1041,17 @@
         </div>
       </details>
       
-      <!-- Finding 4 -->
+      <!-- Finding 6 -->
       <details>
         <summary style="cursor: pointer; font-size: 1.2rem; font-weight: bold; color: #3273dc; padding: 1rem; background: white; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); list-style: none; display: flex; align-items: center; gap: 0.5rem;">
-          <span style="transition: transform 0.3s;">▶</span> Q4: Do the trends observed on RoboMME transfer to real-world robotic manipulation?
+          <span style="transition: transform 0.3s;">▶</span> RQ6: Do the trends observed on RoboMME transfer to real-world robotic manipulation?
         </summary>
         <div style="margin-top: 0.5rem; background: white; border-radius: 8px; padding: 1.5rem; box-shadow: 0 2px 8px rgba(0,0,0,0.1);">
           <div class="finding-caption" style="margin-bottom: 1rem; color: #4a4a4a; font-size: 1.05rem; line-height: 1.6;">
             <p style="margin-bottom: 0.75rem;"><b>Yes</b>. We evaluate four real-world tasks designed to mirror simulation tasks on each task suite:</p>
             <ul style="margin-left: 1.5rem; margin-bottom: 1rem; list-style-type: disc;">
               <li style="margin-bottom: 0.5rem;"><b>Counting</b>: <i>PutFruits</i> → <i>BinFill</i></li>
-              <li style="margin-bottom: 0.5rem;"><b>Permanence</b>: <i>TrackCube</i> → <i>VideoUnmask(Swap)</i></li>
+              <li style="margin-bottom: 0.5rem;"><b>Permanence</b>: <i>TrackCube</i> → <i>VideoUnmask/VideoUnmaskSwap</i></li>
               <li style="margin-bottom: 0.5rem;"><b>Reference</b>: <i>RepickBlock</i> → <i>VideoRepick</i></li>
               <li style="margin-bottom: 0.5rem;"><b>Imitation</b>: <i>PatternLock</i> → <i>DrawPattern</i></li>
             </ul>
@@ -999,6 +1063,7 @@
           <figure class="image" style="max-width: 70%; margin: 0 auto;">
             <img src="image/real_world_result.png" alt="Real World Results" style="width: 100%; display: block; border-radius: 4px;">
           </figure>
+          <p style="margin-top: 1rem; margin-bottom: 0;"><a href="#sec-real-rollouts" style="color: #3273dc;">View more real-world robot rollout demos below →</a></p>
         </div>
       </details>
 
@@ -1530,7 +1595,7 @@
             <select class="sim-episode-selector" onchange="switchSimEpisode(this)" style="padding: 0.4rem; border-radius: 4px; border: 1px solid #ddd;">
               <option value="1">Episode 1</option><option value="2">Episode 2</option><option value="3">Episode 3</option><option value="4">Episode 4</option><option value="5">Episode 5</option><option value="6">Episode 6</option><option value="7">Episode 7</option><option value="8">Episode 8</option><option value="9">Episode 9</option><option value="10">Episode 10</option>
             </select>
-            <span style="color: #666;"><strong>Task Goal:</strong> <span class="sim-goal-text">first press the button, then pick up all cubes that have been highlighteted with white areas on the table</span></span>
+            <span style="color: #666;"><strong>Task Goal:</strong> <span class="sim-goal-text">first press the button, then pick up all cubes that have been highlighted with white areas on the table</span></span>
           </div>
           <div class="demo-video-row" style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
             <div class="demo-video-col">
@@ -4773,16 +4838,16 @@
     },
     reference: {
       pickhighlight: {
-        1: "first press the button, then pick up all cubes that have been highlighteted with white areas on the table",
-        2: "first press the button, then pick up all cubes that have been highlighteted with white areas on the table",
-        3: "first press the button, then pick up all cubes that have been highlighteted with white areas on the table",
-        4: "first press the button, then pick up all cubes that have been highlighteted with white areas on the table",
-        5: "first press the button, then pick up all cubes that have been highlighteted with white areas on the table",
-        6: "first press the button, then pick up all cubes that have been highlighteted with white areas on the table",
-        7: "first press the button, then pick up all cubes that have been highlighteted with white areas on the table",
-        8: "first press the button, then pick up all cubes that have been highlighteted with white areas on the table",
-        9: "first press the button, then pick up all cubes that have been highlighteted with white areas on the table",
-        10: "first press the button, then pick up all cubes that have been highlighteted with white areas on the table",
+        1: "first press the button, then pick up all cubes that have been highlighted with white areas on the table",
+        2: "first press the button, then pick up all cubes that have been highlighted with white areas on the table",
+        3: "first press the button, then pick up all cubes that have been highlighted with white areas on the table",
+        4: "first press the button, then pick up all cubes that have been highlighted with white areas on the table",
+        5: "first press the button, then pick up all cubes that have been highlighted with white areas on the table",
+        6: "first press the button, then pick up all cubes that have been highlighted with white areas on the table",
+        7: "first press the button, then pick up all cubes that have been highlighted with white areas on the table",
+        8: "first press the button, then pick up all cubes that have been highlighted with white areas on the table",
+        9: "first press the button, then pick up all cubes that have been highlighted with white areas on the table",
+        10: "first press the button, then pick up all cubes that have been highlighted with white areas on the table",
       },
       videorepick: {
         1: "watch the video carefully, then repeatedly pick up and put down the same block that was previously picked up for three times, finally press the button to stop",
@@ -4919,6 +4984,54 @@
     updateResultLabel(video, newPath);
   }
 
+  // Deep-link handler for Simulation Rollout Demos
+  // Counting suite, BinFill task, episode 4, GroundSG+Oracle model
+  function handleSimDeepLink() {
+    if (window.location.hash !== '#sim-binfill-groundsg-oracle-ep3') return;
+
+    // Activate Simulation Rollout Demos → Suite 1: Counting
+    const countingTab = document.querySelector('#sim-demo-tabs .task-tab[data-tab="sim-counting"]');
+    if (!countingTab) return;
+
+    document.querySelectorAll('#sim-demo-tabs .task-tab').forEach(t => t.classList.remove('active'));
+    document.querySelectorAll('.sim-demo-content').forEach(c => c.classList.remove('active'));
+    countingTab.classList.add('active');
+
+    const countingContent = document.getElementById('sim-counting');
+    if (countingContent) countingContent.classList.add('active');
+
+    // Select BinFill row within Counting suite
+    const binfillRow = document.querySelector('.sim-task-row[data-suite="counting"][data-task="binfill"]');
+    if (!binfillRow) return;
+
+    // Set episode selector to 4 and update videos
+    const episodeSelect = binfillRow.querySelector('.sim-episode-selector');
+    if (episodeSelect) {
+      episodeSelect.value = '3';
+      switchSimEpisode(episodeSelect);
+    }
+
+    // Set left video to π0.5 baseline and right video to GroundSG+Oracle
+    const videoCols = binfillRow.querySelectorAll('.demo-video-col');
+    if (videoCols[0]) {
+      const leftModel = videoCols[0].querySelector('.sim-model-selector');
+      if (leftModel) {
+        leftModel.value = 'pi05';
+        switchSimModel(leftModel);
+      }
+    }
+    if (videoCols[1]) {
+      const rightModel = videoCols[1].querySelector('.sim-model-selector');
+      if (rightModel) {
+        rightModel.value = 'groundsg_oracle';
+        switchSimModel(rightModel);
+      }
+    }
+
+    // Scroll the BinFill row into view
+    binfillRow.scrollIntoView({ behavior: 'smooth', block: 'center' });
+  }
+
   // Real robot episode data - goals for each task and episode
   const realEpisodeData = {
     put_fruits: {
@@ -5040,6 +5153,12 @@
         select.value = '4';
       }
     });
+
+    // Apply deep link on initial load
+    handleSimDeepLink();
+
+    // Re-apply when hash changes (e.g., clicking in-page link)
+    window.addEventListener('hashchange', handleSimDeepLink);
   });
 
   // Tab switching functionality for RoboMME Task Examples
