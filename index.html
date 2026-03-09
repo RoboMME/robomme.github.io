@@ -27,6 +27,26 @@
       display: block;
       white-space: nowrap;
     }
+    .announcement-banner {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      margin: 1.25rem auto 0;
+      padding: 0.4rem 1.25rem;
+      border-radius: 999px;
+      border: 1.5px solid #f39c12;
+      background-color: #fff7f0;
+      font-size: 1.2rem;
+      color: #b95a00;
+    }
+    .announcement-banner a {
+      color: #b95a00;
+      text-decoration: underline;
+      text-decoration-thickness: 1px;
+    }
+    .announcement-badge {
+      font-weight: 600;
+    }
     
     .publication-authors {
       font-size: 1.2rem;
@@ -465,6 +485,16 @@
             <span class="author-block"><sup>3</sup>Figure AI</span>
           </div>
 
+          <div class="announcement-banner">
+            <span>🔥</span>
+            <span>
+              RoboMME will be part of the challenges in the
+              <a href="https://foundation-models-meet-embodied-agents.github.io/cvpr2026/" target="_blank">
+                Foundation Models Meet Embodied Agents workshop at CVPR 2026
+              </a>.
+            </span>
+          </div>
+
           <div class="column has-text-centered" style="margin-top: 1.5rem;">
             <div class="publication-links">
               <span class="link-block">
@@ -497,14 +527,14 @@
                   <span>Dataset</span>
                 </a>
               </span>
-              <!-- <span class="link-block">
+              <span class="link-block">
                 <a href="https://huggingface.co/spaces/HongzeFu/RoboMME" class="button is-link is-rounded" target="_blank">
                   <span class="icon">
                     <img src="image/huggingface_logo.svg" alt="Hugging Face" style="height: 1em; vertical-align: middle;">
                   </span>
                   <span>Interactive Demo</span>
                 </a>
-              </span> -->
+              </span>
             </div>
           </div>
         </div>
@@ -2333,17 +2363,18 @@
   </section>
   
 <!-- Citation -->
-<!-- <section class="section">
+<section class="section">
   <div class="container is-max-desktop content">
-    <h2 class="title">BibTeX</h2>
-    <pre><code>@article{historybench2025,
-  title={HistoryBench},
-  author={Anonymous},
-  journal={Under Review},
-  year={2025}
+    <h2 class="title is-4">Citation</h2>
+    <p>If you find RoboMME useful, please cite:</p>
+    <pre><code>@article{dai2026robomme,
+  title={RoboMME: Benchmarking and Understanding Memory for Robotic Generalist Policies},
+  author={Dai, Yinpei and Fu, Hongze and Lee, Jayjun and Zhang, Haoran and Yang, Jianing and Finn, Chelsea and Fazeli, Nima and Chai, Joyce},
+  journal={arXiv preprint arXiv:2603.04639},
+  year={2026}
 }</code></pre>
   </div>
-</section> -->
+</section>
 
 <!-- Footer -->
 <footer class="footer">
