@@ -139,6 +139,25 @@
       padding-bottom: 1.5rem; /* Reserve space for caption */
       position: relative;
     }
+
+    .publication-links.one-line {
+      display: flex;
+      flex-wrap: nowrap;
+      justify-content: center;
+      align-items: center;
+      gap: 0.4rem;
+      overflow-x: auto;
+      white-space: nowrap;
+      padding-bottom: 0.25rem;
+    }
+
+    .publication-links.one-line .link-block {
+      flex: 0 0 auto;
+    }
+
+    .publication-links.one-line .button {
+      margin: 0;
+    }
     
     .video-container video {
       display: block;
@@ -492,15 +511,15 @@
           <div class="announcement-banner">
             <span>🔥</span>
             <span>
-              RoboMME will be part of the challenges in the
-              <a href="https://foundation-models-meet-embodied-agents.github.io/cvpr2026/" target="_blank">
-                Foundation Models Meet Embodied Agents workshop at CVPR 2026
-              </a>! Stay tuned.
+              RoboMME Challenge is <a href="challenge.html">started</a> and will be part of the challenges at the
+                <a href="https://foundation-models-meet-embodied-agents.github.io/cvpr2026/" target="_blank">
+                  FMEA workshop at CVPR 2026
+              </a>!
             </span>
           </div>
 
           <div class="column has-text-centered" style="margin-top: 1.5rem;">
-            <div class="publication-links">
+            <div class="publication-links one-line">
               <span class="link-block">
                 <a href="https://arxiv.org/abs/2603.04639" class="button is-link is-rounded" target="_blank">
                   <span class="icon"><i class="fas fa-file-pdf"></i></span>
