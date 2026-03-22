@@ -95,6 +95,12 @@
           </a>
         </span>
         <span class="link-block">
+          <a href="https://groups.google.com/g/robomme-cvpr-challenge-2026" class="button is-link is-rounded" target="_blank">
+            <span class="icon"><i class="fas fa-users"></i></span>
+            <span>Google Group</span>
+          </a>
+        </span>
+        <span class="link-block">
         <a href="https://eval.ai/" target="_blank" class="button is-light is-rounded">
           <span class="icon"><i class="fas fa-external-link-alt"></i></span>
           <span>Submit on EvalAI</span>
@@ -120,8 +126,7 @@
       <p>
         Teams will be ranked on the RoboMME Challenge leaderboard hosted on EvalAI, and
         top entries will be highlighted live during the workshop session. 🏅
-        The 1st, 2nd, and 3rd place winners will receive prizes of <strong>$300</strong>, <strong>$200</strong>,
-        and <strong>$100</strong>, respectively.
+        The 1st, 2nd, and 3rd place winners will receive prizes (TBA).
       </p>
     </div>
   </div>
@@ -142,14 +147,13 @@
           <a href="https://github.com/RoboMME/robomme_benchmark/blob/main/scripts/evaluation.py" target="_blank">
             RoboMME benchmark tools
           </a>
-          on the open-source test
+          on the open-source validation and test
           <a href="https://github.com/RoboMME/robomme_benchmark/tree/main/src/robomme/env_metadata" target="_blank">
             episodes
           </a>.
         </li>
         <li>
-          🌐 <strong>Serve</strong> your policy as a server by following the <a href="#submission">submission instructions</a>.
-          We will remotely evaluate your policy on our held-out test set.
+          🚀 <strong>Submit</strong> your model information via <a href="https://eval.ai/" target="_blank">EvalAI</a> and prepare your policy server either via Docker or remote API.
         </li>
       </ol>
     </div>
@@ -177,18 +181,19 @@
   <div class="container">
     <h2 class="title is-3">Evaluation 🎯</h2>
     <div class="content" style="font-size:1.25rem;">
-      <p><strong>Phase 1 — Partial Evaluation.</strong> 🔍
-        We run an initial evaluation on a small subset of the open-source test episodes for all
-        participants. This phase checks that each policy server is accessible and stable, and that
-        performance is within a reasonable range. We then select the top 5–10 participants to move on.
+      <p><strong>Phase 1 — Validation.</strong> 🔍
+        We verify that each submitted Docker image or remote policy server is accessible, stable, and
+        functioning correctly. If issues are found, we will contact teams and they may update models or
+        Docker images during this stage.
       </p>
-      <p style="margin-top:0.75rem;"><strong>Phase 2 — Full Evaluation.</strong> 🧮
-        We evaluate the selected participants on the full held-out test set. The final ranking is
-        determined by performance on this full test set.
+      <p style="margin-top:0.75rem;"><strong>Phase 2 — Evaluation.</strong> 🧮
+        We select the top 5–10 teams (depending on participation) and run full evaluation on held-out
+        episodes. Final rankings are determined by this full evaluation.
       </p>
     </div>
   </div>
 </section>
+
 
 
 <!-- Submission -->
@@ -196,10 +201,13 @@
   <div class="container">
     <h2 class="title is-3">Submission 📦</h2>
     <div class="content" style="font-size:1.25rem;">
+      All you need to submit a JSON file to the EvalAI portal including your policy server information (e.g., hostname, port, docker image, etc.). 
+      <br>
       Detailed submission instructions will be released soon.
     </div>
   </div>
 </section>
+
 
 <!-- FAQ -->
 <section class="section" style="background-color:#f5f5f5;">
@@ -211,8 +219,8 @@
         <p>A: The <a href="leaderboard.html" target="_blank">regular leaderboard</a> is evaluated by participants themselves, who run the evaluation and <a href="https://github.com/RoboMME/robomme_benchmark/tree/main?tab=readme-ov-file#-submit-your-models" target="_blank">open a pull request</a> to update their results. Submissions can be made at any time. The RoboMME Challenge leaderboard is evaluated by the organizers using a set of held-out test episodes, and the results are updated and maintained on EvalAI. Submissions are only accepted during the challenge period.</p>
       </div>
       <div class="box">
-        <p class="has-text-weight-semibold">Q: Can I use external data or other VLA backbones?</p>
-        <p>A: Yes. Any methods or resources are allowed, but you may not use the RoboMME repository itself to generate additional training data, as this would be unfair. You are welcome to use training data beyond the RoboMME repository, as long as all external data and resources are clearly described in your method description.</p>
+        <p class="has-text-weight-semibold">Q: Can I use external data, other VLA backbones, LLM APIs, etc.?</p>
+        <p>A: Yes. Any methods or resources are allowed, but you may not use the RoboMME repository itself to generate additional training data, as this would be unfair. You are welcome to use training data beyond RoboMME, as long as all external resources are clearly described in your method description.</p>
       </div>
       <div class="box">
         <p class="has-text-weight-semibold">Q: Can I use human-in-the-loop methods during testing?</p>
@@ -220,7 +228,7 @@
       </div>
       <div class="box">
         <p class="has-text-weight-semibold">Q: Can I write rules or design prompts to improve policy performance?</p>
-        <p>A: The goal of RoboMME is to evaluate robotic generalist policies, so we do not encourage participants to write task-specific rules or prompts solely to boost performance on particular tasks.</p>
+        <p>A: The goal of RoboMME is to evaluate robotic generalist policies, so we do not encourage participants to write hard-coded task-specific rules or prompts solely to boost performance on particular tasks.</p>
       </div>
       <div class="box">
         <p class="has-text-weight-semibold">Q: Is there a team size limit?</p>
@@ -231,6 +239,10 @@
         <p>A: Yes. Top teams will be asked to share a brief method description and reproducibility details.</p>
       </div>
       <div class="box">
+        <p class="has-text-weight-semibold">Q: Can I present my work at the workshop?</p>
+        <p>A: Workshop presentations follow the <a href="https://foundation-models-meet-embodied-agents.github.io/cvpr2026/#call" target="_blank">official procedure</a>. The challenge is independent of the workshop paper track, so if you want to present at the workshop, you must submit your paper separately.</p>
+      </div>
+      <div class="box">
         <p class="has-text-weight-semibold">Q: Where can I find baselines and the starter kit?</p>
         <p>
           Baselines, environment setup, and evaluation scripts are available in the official
@@ -238,20 +250,25 @@
           <a href="https://github.com/RoboMME/robomme_policy_learning" target="_blank">RoboMME policy learning repository</a>. You can start by downloading MME-VLA checkpoints from <a href="https://huggingface.co/Yinpei/mme_vla_suite" target="_blank">Hugging Face</a> and evaluate them locally using the <a href="https://github.com/RoboMME/robomme_policy_learning/tree/main?tab=readme-ov-file#evaluation" target="_blank">code in the repository</a>.
         </p>
       </div>
-      <!-- <div class="box">
-        <p class="has-text-weight-semibold">Q: How should I test and deploy my policy?</p>
+
+      <div class="box">
+        <p class="has-text-weight-semibold">Q: What if my internet connection is unstable for remote evaluation?</p>
         <p>
-          Start by reviewing the
-          <a href="https://github.com/RoboMME/robomme_policy_learning/blob/main/examples/robomme/eval.py" target="_blank">
-            MME-VLA evaluation code
-          </a>
-          for local testing, then follow the
-          <a href="https://github.com/RoboMME/robomme_policy_learning/blob/cvpr26challenge/scripts/challenge_serve_policy.py" target="_blank">
-            policy serving example
-          </a>
-          to deploy your policy as a server for remote evaluation.
+          A: We will work with you together to help you complete setup before Phase 2 starts, so we recommend submitting early to
+          leave enough time to debug connection issues. If your own server does not allow public IP, you can
+          either rent a cloud server (e.g., Lambda Labs) that allows public IP or choose Docker submission instead.
         </p>
-      </div> -->
+      </div>
+
+      <div class="box">
+        <p class="has-text-weight-semibold">Q: How can I contact the organizers if I have issues?</p>
+        <p>
+          A: For any RoboMME Challenge-related questions, please email <a href="mailto:robomme2026@gmail.com">robomme2026@gmail.com</a>.
+          You can also join our mailing list, <a href="mailto:robomme-cvpr-challenge-2026@googlegroups.com">robomme-cvpr-challenge-2026@googlegroups.com</a>, to receive the latest updates.
+          For real-time discussion, please join the WeChat and Discord channels linked above.
+        </p>
+      </div>
+
     </div>
   </div>
 </section>
@@ -283,4 +300,3 @@ document.addEventListener('DOMContentLoaded', function () {
 
 </body>
 </html>
-
