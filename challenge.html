@@ -1,0 +1,1083 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>RoboMME Challenge at CVPR 2026</title>
+  <link href="https://fonts.googleapis.com/css?family=Google+Sans|Noto+Sans|Castoro" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bulma/0.9.4/css/bulma.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <style>
+    body {
+      font-family: 'Noto Sans', sans-serif;
+      font-size: 18px;
+      line-height: 1.6;
+    }
+    .hero-title {
+      font-family: 'Google Sans', sans-serif;
+      font-size: 3.2rem;
+      font-weight: 700;
+    }
+    .subtitle-text { color: #555; font-size: 1.25rem; }
+    .pill-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      padding: 0.25rem 0.9rem;
+      border-radius: 999px;
+      border: 1px solid #f39c12;
+      background: #fff7f0;
+      color: #b95a00;
+      font-weight: 600;
+      font-size: 1.05rem;
+    }
+    .section h2.title {
+      border-bottom: 2px solid #3273dc;
+      padding-bottom: 0.4rem;
+      margin-bottom: 1rem;
+      font-size: 2.1rem;
+    }
+    @media screen and (min-width: 769px) {
+      .container { max-width: 1100px; }
+    }
+
+    /* ---- Challenge leaderboard styles (copied from leaderboard.html) ---- */
+    .lb-wrap {
+      background: #fff; border-radius: 12px;
+      box-shadow: 0 2px 12px rgba(0,0,0,0.08);
+      overflow-x: auto; margin-top: 1.25rem;
+    }
+    .lb-wrap table { width: 100%; border-collapse: collapse; table-layout: fixed; }
+
+    .mode-btn {
+      padding: 0.5rem 1.15rem; border-radius: 20px; border: 1.5px solid #dbdbdb;
+      background: #fff; cursor: pointer; font-size: 1rem; font-family: inherit;
+      transition: all 0.15s; color: #363636; margin-right: 0.4rem;
+    }
+    .mode-btn:hover { border-color: #3273dc; color: #3273dc; }
+    .mode-btn.is-active { background: #3273dc; color: #fff; border-color: #3273dc; }
+
+    .lb-wrap th {
+      background: #363636; color: #fff; font-weight: 600;
+      padding: 0.65rem 1rem 0.65rem 0.75rem; text-align: center;
+      white-space: normal; min-width: 5rem;
+      cursor: pointer; user-select: none;
+      position: relative; vertical-align: middle;
+      line-height: 1.25; height: 3rem;
+    }
+    /* Bulma may set table header text color; force it to white */
+    .lb-wrap thead th { color: #fff !important; text-align: center !important; }
+    .lb-wrap th:hover { background: #4a4a4a; }
+    .lb-wrap th[data-sort="Avg"] { background: #3273dc !important; }
+    .lb-wrap th[data-sort="Avg"]:hover { background: #2360c4 !important; }
+    .lb-wrap th .sort-arrow {
+      font-size: 0.55rem; opacity: 0.4;
+      position: absolute; bottom: 0.3rem; right: 0.3rem;
+    }
+    .lb-wrap th.sorted .sort-arrow { opacity: 1; }
+    .lb-wrap th.no-sort { cursor: default; }
+    .lb-wrap th.no-sort:hover { background: #363636; }
+
+    .lb-wrap td {
+      padding: 0.65rem 0.75rem; border-bottom: 1px solid #eee;
+      white-space: nowrap; text-align: center; vertical-align: middle;
+      overflow: hidden; text-overflow: ellipsis;
+    }
+    .lb-wrap td:nth-child(1), .lb-wrap td:nth-child(2) { text-align: left; }
+    .lb-wrap th:nth-child(1), .lb-wrap th:nth-child(2) { text-align: left; }
+    .lb-wrap th:nth-child(n+3) { text-align: center; }
+    .lb-wrap td:nth-child(n+3) { text-align: center; }
+    .lb-wrap tbody tr:hover { background: #f0f4ff; }
+    .lb-wrap tbody tr.baseline-row { background: #f9f9f9; }
+    .lb-wrap tbody tr.baseline-row:hover { background: #f4f4f4; }
+    .lb-wrap tbody tr.baseline-row td { color: #999; }
+    .lb-wrap tbody tr.baseline-row td strong { color: #888; }
+    .lb-wrap tbody tr.baseline-separator td { padding: 0; height: 2px; background: #ddd; border: none; }
+
+    .rank { font-weight: 700; color: #3273dc; }
+    .best-score { font-weight: 700; color: #3273dc; }
+    .rank-medal { font-size: 1rem; }
+
+    .view-toggle-btn {
+      cursor: pointer; display: inline-flex; align-items: center; gap: 0.5rem;
+      padding: 0.45rem 1rem; background: #3273dc; border-radius: 8px;
+      border: 1px solid #2860b8; user-select: none; transition: background 0.15s;
+      color: #fff; font-weight: 600; font-size: 1rem;
+    }
+    .view-toggle-btn:hover { background: #2860b8; }
+
+    .baseline-indicator {
+      display: inline-block;
+      font-size: 0.85rem;
+      color: #b95a00;
+      font-weight: 700;
+      line-height: 1.1;
+      margin-left: 0.2rem;
+    }
+
+    .challenge-radar-container {
+      background: #fff; border-radius: 12px;
+      box-shadow: 0 2px 12px rgba(0,0,0,0.08); padding: 1.5rem 1rem;
+      max-width: 780px; margin-left: auto; margin-right: auto;
+    }
+
+    /* Sticky section nav (hidden until scroll) */
+    .section-nav {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 100;
+      background: rgba(255, 255, 255, 0.97);
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+      transform: translateY(-100%);
+      transition: transform 0.3s ease;
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+    }
+    .section-nav.visible {
+      transform: translateY(0);
+    }
+    .section-nav-inner {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 0.25rem;
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 0.55rem 1rem;
+    }
+    .section-nav-link {
+      padding: 0.4rem 1rem;
+      font-size: 0.88rem;
+      font-weight: 600;
+      color: #555;
+      text-decoration: none;
+      border-radius: 20px;
+      transition: all 0.2s ease;
+      white-space: nowrap;
+      border: 1.5px solid transparent;
+    }
+    .section-nav-link:hover {
+      color: #3273dc;
+      background: rgba(50, 115, 220, 0.06);
+    }
+    .section-nav-link.active {
+      color: #3273dc;
+      background: rgba(50, 115, 220, 0.1);
+      border-color: rgba(50, 115, 220, 0.25);
+    }
+    @media screen and (max-width: 768px) {
+      .section-nav-inner {
+        gap: 0.1rem;
+        padding: 0.45rem 0.5rem;
+        overflow-x: auto;
+      }
+      .section-nav-link {
+        font-size: 0.78rem;
+        padding: 0.35rem 0.65rem;
+      }
+    }
+
+    section[id] { scroll-margin-top: 7rem; }
+
+    @media screen and (min-width: 769px) {
+      .lb-wrap td { font-size: 0.95rem; }
+      .lb-wrap th { font-size: 0.9rem; }
+      .challenge-radar-container { max-width: 680px; }
+    }
+  </style>
+</head>
+<body>
+
+<nav class="navbar" role="navigation" aria-label="main navigation">
+  <div class="navbar-brand">
+    <a role="button" class="navbar-burger" aria-label="menu" aria-expanded="false" data-target="navMenu">
+      <span aria-hidden="true"></span>
+      <span aria-hidden="true"></span>
+      <span aria-hidden="true"></span>
+    </a>
+  </div>
+  <div id="navMenu" class="navbar-menu">
+    <div class="navbar-start" style="flex-grow: 1; justify-content: center;">
+      <a class="navbar-item" href="index.html">
+        <span class="icon"><i class="fas fa-home"></i></span>
+        <span style="margin-left: 0.5rem;">Home</span>
+      </a>
+      <a class="navbar-item" href="leaderboard.html">
+        <span class="icon"><i class="fas fa-trophy"></i></span>
+        <span style="margin-left: 0.5rem;">Leaderboard</span>
+      </a>
+      <a class="navbar-item is-active" href="challenge.html">
+        <span class="icon"><i class="fas fa-rocket"></i></span>
+        <span style="margin-left: 0.5rem;">CVPR 2026 Challenge</span>
+      </a>
+    </div>
+  </div>
+</nav>
+
+<!-- Sticky section nav -->
+<div class="section-nav" id="sectionNav">
+  <div class="section-nav-inner">
+    <a class="section-nav-link" href="#section-overview" data-target="section-overview">Challenge Overview</a>
+    <a class="section-nav-link" href="#section-what-you-do" data-target="section-what-you-do">What You Do</a>
+    <a class="section-nav-link" href="#section-timeline" data-target="section-timeline">Timeline</a>
+    <a class="section-nav-link" href="#challenge-leaderboard" data-target="challenge-leaderboard">Leaderboard</a>
+    <a class="section-nav-link" href="#section-faq" data-target="section-faq">FAQ</a>
+    <a class="section-nav-link" href="#section-acknowledgement" data-target="section-acknowledgement">Acknowledgement</a>
+  </div>
+</div>
+
+<!-- Hero -->
+<section class="hero">
+  <div class="hero-body" style="padding: 2.5rem 1.5rem 1.5rem;">
+    <div class="container has-text-centered" style="max-width: 1100px; margin: 0 auto;">
+      <h1 class="title hero-title" style="margin-top: 0.3rem;">
+        RoboMME Challenge @ CVPR 2026
+      </h1>
+      <div class="buttons is-centered" style="margin-top: 1.25rem;">
+        <a href="https://github.com/RoboMME/robomme_benchmark/challenge_interface/readme.md" class="button is-link is-rounded">
+          <span class="icon"><i class="fas fa-upload"></i></span>
+          <span>Submission Instructions</span>
+        </a>
+        <span class="link-block">
+          <a href="https://github.com/RoboMME/robomme_benchmark/blob/main/doc/WechatIMG365.jpg" class="button is-link is-rounded" target="_blank">
+            <span class="icon"><i class="fab fa-weixin"></i></span>
+            <span>WeChat</span>
+          </a>
+        </span>
+        <span class="link-block">
+          <a href="https://discord.com/invite/xbmSqMd4" class="button is-link is-rounded" target="_blank">
+            <span class="icon"><i class="fab fa-discord"></i></span>
+            <span>Discord</span>
+          </a>
+        </span>
+        <span class="link-block">
+          <a href="https://groups.google.com/g/robomme-cvpr-challenge-2026" class="button is-link is-rounded" target="_blank">
+            <span class="icon"><i class="fas fa-users"></i></span>
+            <span>Google Group</span>
+          </a>
+        </span>
+        <span class="link-block">
+        <a href="https://docs.google.com/forms/d/e/1FAIpQLSdMg_oEDU4kNsPM_dkuSsY6M7lTmtXQSyGzFO0MqwNmvvPGng/viewform?usp=dialog" target="_blank" class="button is-light is-rounded">
+          <span class="icon"><i class="fas fa-external-link-alt"></i></span>
+          <span>Evaluate your policy</span>
+        </a>
+      </span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Challenge Overview -->
+<section id="section-overview" class="section">
+  <div class="container">
+    <h2 class="title is-3">Challenge Overview 🚀</h2>
+    <div class="content" style="font-size: 1.25rem;">
+      <p>
+        The <strong>RoboMME Challenge</strong> evaluates how well <strong>memory-augmented robotic generalist policies</strong>
+        can handle truly long-horizon, history-dependent manipulation tasks. It is hosted as part of the
+        <a href="https://foundation-models-meet-embodied-agents.github.io/cvpr2026/" target="_blank">
+          Foundation Models Meet Embodied Agents (FMEA) Workshop at CVPR 2026
+        </a>.
+      </p>
+      <p>
+        Teams will be ranked on the
+        <a href="#challenge-leaderboard">RoboMME Challenge leaderboard</a>, and
+        top entries will be highlighted live during the workshop session. <br>🏅
+        The 1st, 2nd, and 3rd place winners will receive prizes of <strong>$500</strong>, <strong>$300</strong>,
+        and <strong>$200</strong>, respectively.
+      </p>
+    </div>
+  </div>
+</section>
+
+<!-- What You Do -->
+<section id="section-what-you-do" class="section" style="background-color:#f5f5f5;">
+  <div class="container">
+    <h2 class="title is-3">What You Do 🧪</h2>
+    <div class="content" style="font-size:1.25rem;">
+      <ol>
+        <li>
+          🔁 <strong>Train</strong> your models on the released
+          <a href="https://huggingface.co/Yinpei/robomme_data_h5" target="_blank">RoboMME training data</a>.
+        </li>
+        <li>
+          📊 <strong>Evaluate</strong> your models using the
+          <a href="https://github.com/RoboMME/robomme_benchmark/blob/main/scripts/evaluation.py" target="_blank">
+            RoboMME benchmark tools
+          </a>
+          on the open-source validation and test
+          <a href="https://github.com/RoboMME/robomme_benchmark/tree/main/src/robomme/env_metadata" target="_blank">
+            episodes
+          </a>.
+        </li>
+        <li>
+          🚀 <strong>Submit</strong> your policy and prepare your policy server. More details are available <a href="https://github.com/RoboMME/robomme_benchmark/challenge_interface/readme.md" target="_blank">here</a>.
+        </li>
+      </ol>
+    </div>
+  </div>
+</section>
+
+<!-- Timeline -->
+<section id="section-timeline" class="section">
+  <div class="container">
+    <h2 class="title is-3">Timeline ⏰</h2>
+    <div class="content" style="font-size:1.25rem;">
+      <ul>
+        <li><strong>March–May 15</strong> – Develop your policy and test your policy server.</li>
+        <li><strong>May 15</strong> – Deadline to submit your participant information.</li>
+        <li>
+          <strong>Before May 22 (Phase 1 Validation)</strong> — We verify the stability and correctness of your
+          Docker image, remote server, or code repo.
+        </li>
+        <li><strong>May 23</strong> – Deadline to finalize your models and deployment.</li>
+        <li>
+          <strong>May 23–June 2 (Phase 2 Full Evaluation)</strong> – We evaluate on held-out episodes for teams that passed Phase 1.
+        </li>
+        <li><strong>June 3</strong> – Winner announcement at the FMEA Workshop at CVPR 2026.</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- Submission -->
+<!-- Evaluation -->
+<!-- <section class="section" style="background-color:#f5f5f5;">
+  <div class="container">
+    <h2 class="title is-3">Evaluation 🎯</h2>
+    <div class="content" style="font-size:1.25rem;">
+      <p><strong>Phase 1 — Validation.</strong> 🔍
+        We verify that each submitted Docker image or remote policy server is accessible, stable, and
+        functioning correctly. 
+      </p>
+      <p style="margin-top:0.75rem;"><strong>Phase 2 — Evaluation.</strong> 🧮
+        We select the top 5–10 teams (depending on participation) and run full evaluation on held-out
+        episodes. Final rankings are determined by this full evaluation.
+      </p>
+    </div>
+  </div>
+</section> -->
+
+<!-- Challenge Leaderboard -->
+<section id="challenge-leaderboard" class="section">
+  <div class="container">
+    <h2 class="title is-3">Challenge Leaderboard 🏆</h2>
+    <div class="content" style="font-size:1.25rem;">
+      <div class="box" style="padding:1.25rem;">
+        <h3 class="title is-4" style="margin-bottom:0.75rem;">Phase 1 — Validation 🔍</h3>
+        <p style="margin-top:0; color:#666;">
+          This phase aims to validate the stability and correctness of the policy server. The evaluation script is available <a href="https://github.com/RoboMME/robomme_benchmark/challenge_interface/scripts/phase1_eval.py" target="_blank">here</a>.
+        </p>
+
+        <div class="challenge-lb" id="challenge-lb-phase1">
+          <div style="display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; margin-bottom:0.75rem;">
+            <div class="lb-toolbar" style="display:inline-flex; align-items:center; flex-wrap:wrap;"></div>
+            <div class="view-toggle-btn">
+              <i class="view-toggle-icon fas fa-chart-area" aria-hidden="true"></i>
+              <span class="view-toggle-label">Radar View</span>
+            </div>
+          </div>
+
+          <div id="challenge-lb-phase1-radar-container" class="challenge-radar-container" style="display:none;">
+            <canvas class="radar-chart"></canvas>
+            <p style="font-size:0.85rem; color:#999; margin-top:0.75rem; text-align:center;">
+              Only models with the <b>best score</b> in at least one category or in the <b>top 5</b> overall are shown. <br>
+              Click a model name in the legend to show or hide its line.
+            </p>
+          </div>
+
+          <div class="lb-wrap">
+            <table class="lb-table">
+              <colgroup class="lb-cols"></colgroup>
+              <thead class="lb-head"></thead>
+              <tbody class="lb-body"></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <div class="box" style="padding:1.25rem; margin-top:1rem;">
+        <h3 class="title is-4" style="margin-bottom:0.75rem;">Phase 2 — Evaluation 🧮</h3>
+        <p style="margin-top:0; color:#666;">
+          We will run the full evaluation on held-out episodes. Final rankings will be determined by this full evaluation.
+        </p>
+
+        <div class="challenge-lb" id="challenge-lb-phase2">
+          <div style="display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; margin-bottom:0.75rem;">
+            <div class="lb-toolbar" style="display:inline-flex; align-items:center; flex-wrap:wrap;"></div>
+            <div class="view-toggle-btn">
+              <i class="view-toggle-icon fas fa-chart-area" aria-hidden="true"></i>
+              <span class="view-toggle-label">Radar View</span>
+            </div>
+          </div>
+
+          <div id="challenge-lb-phase2-radar-container" class="challenge-radar-container" style="display:none;">
+            <canvas class="radar-chart"></canvas>
+            <p style="font-size:0.85rem; color:#999; margin-top:0.75rem; text-align:center;">
+              Radar and categorization will be enabled here once Phase 2 results are available.
+            </p>
+          </div>
+
+          <div class="lb-wrap">
+            <table class="lb-table">
+              <colgroup class="lb-cols"></colgroup>
+              <thead class="lb-head"></thead>
+              <tbody class="lb-body"></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+
+<!-- FAQ -->
+<section id="section-faq" class="section" style="background-color:#f5f5f5;">
+  <div class="container">
+    <h2 class="title is-3">FAQ 📚</h2>
+    <div class="content">
+      <div class="box">
+        <p class="has-text-weight-semibold">Q: What's the difference between the RoboMME Challenge leaderboard and the regular RoboMME leaderboard?</p>
+        <p>A: The <a href="leaderboard.html" target="_blank">regular leaderboard</a> is evaluated by participants themselves, who run the evaluation and <a href="https://github.com/RoboMME/robomme_benchmark/tree/main?tab=readme-ov-file#-submit-your-models" target="_blank">open a pull request</a> to update their results. Submissions can be made at any time. The <a href="#challenge-leaderboard">RoboMME Challenge leaderboard</a> is evaluated by the organizers using held-out test episodes (a total of 800 episodes), and the results are updated and maintained on this page. Submissions are only accepted during the challenge period.</p>
+      </div>
+      <div class="box">
+        <p class="has-text-weight-semibold">Q: Can I use external data, other VLA backbones, LLM APIs, etc.?</p>
+        <p>A: Yes. Any methods or resources are allowed, but you may not use the RoboMME repository itself to generate additional training data, as this would be unfair. You are welcome to use training data beyond RoboMME, as long as all external resources are clearly described in your method description.</p>
+      </div>
+      <div class="box">
+        <p class="has-text-weight-semibold">Q: Can I use human-in-the-loop methods during testing?</p>
+        <p>A: No. Participants must not attempt to manually intervene policy rollouts, as this would unfairly influence the evaluation results.</p>
+      </div>
+      <div class="box">
+        <p class="has-text-weight-semibold">Q: Can I write rules or design prompts to improve policy performance?</p>
+        <p>A: The goal of RoboMME is to evaluate robotic generalist policies, so we do not encourage participants to write hard-coded task-specific rules or prompts solely to boost performance on particular tasks.</p>
+      </div>
+      <div class="box">
+        <p class="has-text-weight-semibold">Q: Is there a team size limit?</p>
+        <p>A: There is no strict limit, but each team should submit under a single team name and submit only one model.</p>
+      </div>
+      <div class="box">
+        <p class="has-text-weight-semibold">Q: Will top teams need to provide extra details?</p>
+        <p>A: Yes. Top teams will be asked to share a brief method description and reproducibility details.</p>
+      </div>
+      <div class="box">
+        <p class="has-text-weight-semibold">Q: Can I present my work at the workshop?</p>
+        <p>A: Workshop presentations follow the <a href="https://foundation-models-meet-embodied-agents.github.io/cvpr2026/#call" target="_blank">official procedure</a>. The challenge is independent of the workshop paper track, so if you want to present at the workshop, you must submit your paper separately.</p>
+      </div>
+      <div class="box">
+        <p class="has-text-weight-semibold">Q: Where can I find baselines and the starter kit?</p>
+        <p>
+          Baselines, environment setup, and evaluation scripts are available in the official
+          <a href="https://github.com/RoboMME/robomme_benchmark" target="_blank">RoboMME repository</a> and the
+          <a href="https://github.com/RoboMME/robomme_policy_learning" target="_blank">RoboMME policy learning repository</a>. You can start by downloading MME-VLA checkpoints from <a href="https://huggingface.co/Yinpei/mme_vla_suite" target="_blank">Hugging Face</a> and evaluate them locally using the <a href="https://github.com/RoboMME/robomme_policy_learning/tree/main?tab=readme-ov-file#evaluation" target="_blank">code in the repository</a>.
+        </p>
+      </div>
+
+      <div class="box">
+        <p class="has-text-weight-semibold">Q: What if my internet connection is unstable for remote evaluation?</p>
+        <p>
+          A: We will work with you together to help you complete setup before Phase 2 starts, so we recommend submitting early to
+          leave enough time to debug connection issues. If your own server does not allow public IP, you can
+          either rent a cloud server (e.g., Lambda Labs) that allows public IP or choose Docker submission instead.
+        </p>
+      </div>
+
+      <div class="box">
+        <p class="has-text-weight-semibold">Q: How can I contact the organizers if I have issues?</p>
+        <p>
+          A: For any RoboMME Challenge-related questions, please email <a href="mailto:robomme2026@gmail.com">robomme2026@gmail.com</a>.
+          You can also join our mailing list, <a href="mailto:robomme-cvpr-challenge-2026@googlegroups.com">robomme-cvpr-challenge-2026@googlegroups.com</a>, to receive the latest updates.
+          For real-time discussion, please join the WeChat and Discord channels linked above.
+        </p>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+
+<!-- Acknowledgement -->
+<section id="section-acknowledgement" class="section">  <div class="container">
+    <h2 class="title is-3">Acknowledgement 🙏</h2>
+    <div class="content" style="font-size:1.25rem;">
+      <p>
+        We sincerely thank the Foundation Models Meet Embodied Agents workshop at CVPR 2026 for hosting this
+        challenge, and we are grateful to our sponsors for their support.
+      </p>
+      <p class="has-text-weight-semibold" style="margin-bottom:0.5rem;">Sponsor</p>
+      <div style="margin-top:0.75rem; text-align:left;">
+        <a href="https://www.figure.ai/" target="_blank" rel="noopener noreferrer" aria-label="Figure AI website">
+          <img src="image/figure-ai-logo.png" alt="Figure AI logo" style="max-height:96px; width:auto;">
+        </a>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<footer class="footer">
+  <div class="content has-text-centered">
+    <p>
+      <a href="index.html">RoboMME</a> ·
+      <a href="leaderboard.html">Regular Leaderboard</a> ·
+      <a href="#challenge-leaderboard">Challenge Leaderboard</a> ·
+      <a href="https://foundation-models-meet-embodied-agents.github.io/cvpr2026/" target="_blank">FMEA Workshop at CVPR 2026</a>
+    </p>
+  </div>
+</footer>
+
+<script>
+(function() {
+  var taskOrder = [
+    "BinFill", "PickXtimes", "SwingXtimes", "StopCube",
+    "VideoUnmask", "ButtonUnmask", "VideoUnmaskSwap", "ButtonUnmaskSwap",
+    "PickHighlight", "VideoRepick", "VideoPlaceButton", "VideoPlaceOrder",
+    "MoveCube", "InsertPeg", "PatternLock", "RouteStick"
+  ];
+
+  var suiteLabels = {
+    "Counting":   "Counting<br>(Temporal Memory)",
+    "Permanence": "Permanence<br>(Spatial Memory)",
+    "Reference":  "Reference<br>(Object Memory)",
+    "Imitation":  "Imitation<br>(Procedural Memory)"
+  };
+
+  var charLabels = {
+    "Motion-Centric":      "Motion<br>Centric",
+    "Time-Sensitive":      "Time<br>Sensitive",
+    "Short-Horizon Video": "Short Video<br> Reasoning",
+    "Long-Horizon Video":  "Long Video<br> Reasoning",
+    "Dynamic Scene-Change":"Dynamic<br> Scene Change",
+    "Event-Salient":       "Event<br> Salient"
+  };
+
+  var taskLabels = {
+    "BinFill": "Bin<br>Fill",
+    "PickXtimes": "Pick<br>Xtimes",
+    "SwingXtimes": "Swing<br>Xtimes",
+    "StopCube": "Stop<br>Cube",
+    "VideoUnmask": "Video<br>Umsk",
+    "ButtonUnmask": "Button<br>Umsk",
+    "VideoUnmaskSwap": "Video<br>UmskS",
+    "ButtonUnmaskSwap": "Button<br>UmskS",
+    "PickHighlight": "Pick<br>HighL",
+    "VideoRepick": "Video<br>Repick",
+    "VideoPlaceButton": "Video<br>PlcBtn",
+    "VideoPlaceOrder": "Video<br>PlcOrd",
+    "MoveCube": "Move<br>Cube",
+    "InsertPeg": "Insert<br>Peg",
+    "PatternLock": "Pattern<br>Lock",
+    "RouteStick": "Route<br>Stick"
+  };
+
+  var radarColors = [
+    { bg: 'rgba(50, 115, 220, 0.18)', border: 'rgb(50, 115, 220)' },
+    { bg: 'rgba(255, 56, 96, 0.18)',   border: 'rgb(255, 56, 96)' },
+    { bg: 'rgba(0, 184, 148, 0.18)',   border: 'rgb(0, 184, 148)' },
+    { bg: 'rgba(253, 167, 0, 0.18)',   border: 'rgb(253, 167, 0)' },
+    { bg: 'rgba(142, 68, 173, 0.18)',  border: 'rgb(142, 68, 173)' },
+    { bg: 'rgba(52, 73, 94, 0.18)',    border: 'rgb(52, 73, 94)' },
+    { bg: 'rgba(230, 126, 34, 0.18)',  border: 'rgb(230, 126, 34)' },
+    { bg: 'rgba(26, 188, 156, 0.18)',  border: 'rgb(26, 188, 156)' },
+    { bg: 'rgba(241, 196, 15, 0.18)',  border: 'rgb(241, 196, 15)' },
+    { bg: 'rgba(155, 89, 182, 0.18)',  border: 'rgb(155, 89, 182)' }
+  ];
+
+  function cleanLabel(html) {
+    var parts = html.split(/<br\s*\/?>/gi).map(function(s) {
+      return s.replace(/<[^>]+>/g, '').trim();
+    }).filter(function(s) { return s.length > 0; });
+    return parts.length > 1 ? parts : parts[0] || '';
+  }
+
+  function pct(v) { return (Math.round(v * 10000) / 100).toFixed(2); }
+
+  function medal(i) {
+    if (i === 0) return '<span class="rank-medal">🥇</span>';
+    if (i === 1) return '<span class="rank-medal">🥈</span>';
+    if (i === 2) return '<span class="rank-medal">🥉</span>';
+    return i + 1;
+  }
+
+  function avgTasks(model, tasks) {
+    if (!tasks.length) return 0;
+    var s = 0;
+    tasks.forEach(function(t) { s += (model.tasks[t] || 0); });
+    return s / tasks.length;
+  }
+
+  function createLeaderboardWidget(root, D, opts) {
+    opts = opts || {};
+    var includeBaselinesInRadar = !!opts.includeBaselinesInRadar;
+
+    var mode = 'suite';
+    var sortCol = 'Avg';
+    var sortAsc = false;
+    var viewMode = 'table';
+
+    var radarChart = null;
+    var pendingRadarData = null;
+
+    var radarContainer = root.querySelector('.challenge-radar-container');
+    var radarCanvas = root.querySelector('canvas.radar-chart');
+    var viewToggleBtn = root.querySelector('.view-toggle-btn');
+    var viewIcon = root.querySelector('.view-toggle-icon');
+    var viewLabel = root.querySelector('.view-toggle-label');
+
+    var toolbarEl = root.querySelector('.lb-toolbar');
+    var tableEl = root.querySelector('.lb-wrap table');
+    var colsEl = root.querySelector('.lb-cols');
+    var headEl = root.querySelector('.lb-head');
+    var bodyEl = root.querySelector('.lb-body');
+    var lbWrap = root.querySelector('.lb-wrap');
+
+    var allTasks = (D.models && D.models.length > 0 && D.models[0].tasks) ? Object.keys(D.models[0].tasks) : taskOrder;
+
+    function getColumns() {
+      var cols = [];
+      if (mode === 'suite') {
+        Object.keys(D.task_suites).forEach(function(k) {
+          cols.push({ key: k, label: suiteLabels[k] || k, tasks: D.task_suites[k] });
+        });
+      } else if (mode === 'char') {
+        Object.keys(D.task_characteristics).forEach(function(k) {
+          cols.push({ key: k, label: charLabels[k] || k, tasks: D.task_characteristics[k] });
+        });
+      } else {
+        taskOrder.forEach(function(t) {
+          cols.push({ key: t, label: taskLabels[t] || t, tasks: [t] });
+        });
+      }
+      return cols;
+    }
+
+    function buildRows(cols) {
+      return (D.models || []).map(function(m, idx) {
+        var row = {
+          id: idx,
+          name: m.name,
+          org: m.organization,
+          memory: m.memory || '—',
+          tasks: m.tasks || {},
+          baseline: !!m.baseline,
+          link: m.link || null
+        };
+        row.Avg = avgTasks(row, allTasks);
+        cols.forEach(function(c) { row[c.key] = avgTasks(row, c.tasks); });
+        return row;
+      });
+    }
+
+    function sortRows(rows) {
+      rows.sort(function(a, b) {
+        var va = a[sortCol] || 0, vb = b[sortCol] || 0;
+        return sortAsc ? va - vb : vb - va;
+      });
+    }
+
+    function renderToolbar() {
+      var html = '<span style="font-weight:600;font-size:1rem;color:#555;margin-right:0.75rem;">Group by</span>';
+      [['suite', 'Task Suite'], ['char', 'Task Characteristics'], ['task', 'Each Task']].forEach(function(m) {
+        html += '<button class="mode-btn' + (mode === m[0] ? ' is-active' : '') + '" data-mode="' + m[0] + '">' + m[1] + '</button>';
+      });
+      toolbarEl.innerHTML = html;
+
+      root.querySelectorAll('.mode-btn').forEach(function(btn) {
+        btn.addEventListener('click', function() {
+          mode = this.getAttribute('data-mode');
+          sortCol = 'Avg';
+          sortAsc = false;
+          render();
+        });
+      });
+    }
+
+    function renderHead(cols) {
+      var arrow = function(key) {
+        var active = sortCol === key;
+        var dir = active ? (sortAsc ? '▲' : '▼') : '▼';
+        return '<span class="sort-arrow">' + dir + '</span>';
+      };
+
+      var labelWithArrow = function(label, key) {
+        return label + arrow(key);
+      };
+
+      var colW = mode === 'task' ? 'width:5rem;' : '';
+      var cg = '<col style="width:3rem;">';
+      cg += '<col style="width:12rem;">';
+      cg += '<col style="width:5rem;">';
+      cols.forEach(function() { cg += '<col style="' + colW + '">'; });
+      colsEl.innerHTML = cg;
+
+      tableEl.style.minWidth = mode === 'task' ? (3 + 12 + 5 + cols.length * 5) + 'rem' : '';
+
+      var html = '<tr>';
+      html += '<th class="no-sort">Rank</th>';
+      html += '<th class="no-sort">Model</th>';
+      html += '<th data-sort="Avg"' + (sortCol === 'Avg' ? ' class="sorted"' : '') + ' style="white-space:nowrap;background:#3273dc;">Overall ' + arrow('Avg') + '</th>';
+      cols.forEach(function(c) {
+        html += '<th data-sort="' + c.key + '"' + (sortCol === c.key ? ' class="sorted"' : '') + '>' + labelWithArrow(c.label, c.key) + '</th>';
+      });
+      html += '</tr>';
+      headEl.innerHTML = html;
+
+      headEl.querySelectorAll('th[data-sort]').forEach(function(th) {
+        th.addEventListener('click', function() {
+          var key = this.getAttribute('data-sort');
+          if (sortCol === key) sortAsc = !sortAsc;
+          else { sortCol = key; sortAsc = false; }
+          render();
+        });
+      });
+    }
+
+    function nameHtml(r) {
+      // Keep it simple; we don't embed per-model links on this page.
+      var html = '<strong>' + r.name + '</strong>';
+      if (r.baseline) {
+        html += '<span class="baseline-indicator">[B]</span>';
+      }
+      return html;
+    }
+
+    function renderRow(r, rankLabel, rowClass, cols) {
+      var html = '';
+      html += '<tr' + (rowClass ? ' class="' + rowClass + '"' : '') + '>';
+      html += '<td class="rank">' + rankLabel + '</td>';
+      html += '<td>' + nameHtml(r) + '</td>';
+      html += '<td>' + pct(r.Avg) + '</td>';
+      cols.forEach(function(c) { html += '<td>' + pct(r[c.key]) + '</td>'; });
+      html += '</tr>';
+      return html;
+    }
+
+    function updateRadar(cols, rowsForRadar) {
+      var bestInCol = {};
+      cols.forEach(function(c) {
+        var maxVal = -1;
+        rowsForRadar.forEach(function(r) { if (r[c.key] > maxVal) maxVal = r[c.key]; });
+        bestInCol[c.key] = maxVal;
+      });
+
+      var byAvg = rowsForRadar.slice().sort(function(a, b) { return b.Avg - a.Avg; });
+      var top5Ids = {};
+      for (var t = 0; t < Math.min(5, byAvg.length); t++) { top5Ids[byAvg[t].id] = true; }
+
+      var rankMap = {};
+      byAvg.forEach(function(r, i) { rankMap[r.id] = i; });
+
+      var medals = ['🥇', '🥈', '🥉'];
+
+      var topModels = rowsForRadar.filter(function(r) {
+        if (top5Ids[r.id]) return true;
+        for (var i = 0; i < cols.length; i++) {
+          if (r[cols[i].key] === bestInCol[cols[i].key] && bestInCol[cols[i].key] > 0) return true;
+        }
+        return false;
+      });
+
+      topModels.sort(function(a, b) { return rankMap[a.id] - rankMap[b.id]; });
+
+      var labels = cols.map(function(c) { return cleanLabel(c.label); });
+      var datasets = topModels.map(function(m, i) {
+        var color = radarColors[i % radarColors.length];
+        var ri = rankMap[m.id] || 0;
+        var prefix = ri < 3 ? medals[ri] + ' ' : '#' + (ri + 1) + ' ';
+        return {
+          label: prefix + m.name,
+          data: cols.map(function(c) { return +(m[c.key] * 100).toFixed(2); }),
+          fill: true,
+          backgroundColor: color.bg,
+          borderColor: color.border,
+          pointBackgroundColor: color.border,
+          pointBorderColor: '#fff',
+          pointHoverBackgroundColor: '#fff',
+          pointHoverBorderColor: color.border,
+          borderWidth: 2
+        };
+      });
+
+      pendingRadarData = { labels: labels, datasets: datasets };
+      if (viewMode === 'radar') applyRadarData();
+    }
+
+    function applyRadarData() {
+      if (!pendingRadarData) return;
+      if (radarChart) {
+        radarChart.data.labels = pendingRadarData.labels;
+        radarChart.data.datasets = pendingRadarData.datasets;
+        radarChart.update();
+      } else {
+        var ctx = radarCanvas.getContext('2d');
+        radarChart = new Chart(ctx, {
+          type: 'radar',
+          data: pendingRadarData,
+          options: {
+            responsive: true,
+            maintainAspectRatio: true,
+            scales: {
+              r: {
+                beginAtZero: true,
+                max: 100,
+                ticks: { stepSize: 20, font: { size: 13 }, backdropColor: 'transparent' },
+                pointLabels: { font: { size: 14, weight: '600' } },
+                grid: { color: 'rgba(0,0,0,0.06)' },
+                angleLines: { color: 'rgba(0,0,0,0.08)' }
+              }
+            },
+            plugins: {
+              legend: {
+                position: 'bottom',
+                labels: { padding: 20, usePointStyle: true, pointStyle: 'circle', font: { size: 14 } }
+              },
+              tooltip: {
+                titleFont: { size: 14 },
+                bodyFont: { size: 13 },
+                callbacks: {
+                  label: function(context) {
+                    return context.dataset.label + ': ' + context.parsed.r.toFixed(2) + '%';
+                  }
+                }
+              }
+            },
+            elements: { line: { borderWidth: 2 }, point: { radius: 4, hoverRadius: 6 } }
+          }
+        });
+      }
+    }
+
+    function render() {
+      var cols = getColumns();
+      var rows = buildRows(cols);
+
+      var baselines = rows.filter(function(r) { return r.baseline; });
+      var ranked = rows.filter(function(r) { return !r.baseline; });
+      sortRows(ranked);
+
+      var rowsForRadar = includeBaselinesInRadar ? rows : ranked;
+
+      // Enable/disable radar if we have at least one model.
+      if (!rowsForRadar.length) {
+        radarContainer.style.display = 'none';
+        viewToggleBtn.style.display = 'none';
+        viewMode = 'table';
+        lbWrap.style.display = '';
+      } else {
+        viewToggleBtn.style.display = '';
+      }
+
+      // Best per column among ranked models only (same behavior as leaderboard.html)
+      var best = {};
+      cols.forEach(function(c) { best[c.key] = 0; });
+      best.Avg = 0;
+      ranked.forEach(function(r) {
+        cols.forEach(function(c) { if (r[c.key] > best[c.key]) best[c.key] = r[c.key]; });
+        if (r.Avg > best.Avg) best.Avg = r.Avg;
+      });
+
+      renderToolbar();
+      renderHead(cols);
+
+      var html = '';
+
+      // Baselines at top
+      baselines.forEach(function(r) {
+        html += renderRow(r, '—', 'baseline-row', cols);
+      });
+
+      // Separator
+      if (baselines.length && ranked.length) {
+        html += '<tr class="baseline-separator"><td colspan="' + (cols.length + 3) + '"></td></tr>';
+      }
+
+      // Ranked models
+      ranked.forEach(function(r, i) {
+        html += renderRow(r, medal(i), '', cols);
+      });
+
+      if (!baselines.length && !ranked.length) {
+        html = '<tr><td colspan="' + (cols.length + 3) + '" style="text-align:center; color:#666; padding:1.25rem;">No results yet.</td></tr>';
+      }
+
+      bodyEl.innerHTML = html;
+
+      updateRadar(cols, rowsForRadar);
+    }
+
+    // View toggle
+    viewToggleBtn.addEventListener('click', function() {
+      if (viewToggleBtn.style.display === 'none') return;
+
+      var radarEl = radarContainer;
+      var tableElWrap = lbWrap;
+      var icon = viewIcon;
+      var label = viewLabel;
+
+      if (viewMode === 'table') {
+        viewMode = 'radar';
+        tableElWrap.style.display = 'none';
+        radarEl.style.display = 'block';
+        icon.className = 'view-toggle-icon fas fa-table';
+        label.textContent = 'Table View';
+        applyRadarData();
+        if (radarChart) setTimeout(function() { radarChart.resize(); }, 10);
+      } else {
+        viewMode = 'table';
+        radarEl.style.display = 'none';
+        tableElWrap.style.display = '';
+        icon.className = 'view-toggle-icon fas fa-chart-area';
+        label.textContent = 'Radar View';
+      }
+    });
+
+    render();
+  }
+
+  var PHASE_COMMON = {
+    task_suites: {
+      "Counting":    ["BinFill", "PickXtimes", "SwingXtimes", "StopCube"],
+      "Permanence":  ["VideoUnmask", "VideoUnmaskSwap", "ButtonUnmask", "ButtonUnmaskSwap"],
+      "Reference":   ["PickHighlight", "VideoRepick", "VideoPlaceButton", "VideoPlaceOrder"],
+      "Imitation":   ["MoveCube", "InsertPeg", "PatternLock", "RouteStick"]
+    },
+    task_characteristics: {
+      "Event-Salient":                ["PickXtimes", "BinFill", "MoveCube"],
+      "Dynamic Scene-Change":         ["ButtonUnmask", "ButtonUnmaskSwap", "PickHighlight"],
+      "Short-Horizon Video":          ["VideoUnmask", "VideoRepick", "VideoUnmaskSwap"],
+      "Long-Horizon Video":           ["VideoPlaceButton", "VideoPlaceOrder"],
+      "Time-Sensitive":               ["StopCube"],
+      "Motion-Centric":               ["PatternLock", "RouteStick", "SwingXtimes", "InsertPeg"]
+    }
+  };
+
+  var CHALLENGE_PHASE1 = {
+    task_suites: PHASE_COMMON.task_suites,
+    task_characteristics: PHASE_COMMON.task_characteristics,
+    models: [
+      {
+        name: "FrameSamp+Modul",
+        organization: "RoboMME",
+        memory: "Perceptual",
+        baseline: true,
+        tasks: {
+          "BinFill": 0.6,
+          "PickXtimes": 0.7,
+          "SwingXtimes": 1.0,
+          "StopCube": 0.3,
+          "VideoUnmask": 0.4,
+          "ButtonUnmask": 0.3,
+          "VideoUnmaskSwap": 0.0,
+          "ButtonUnmaskSwap": 0.1,
+          "PickHighlight": 0.3,
+          "VideoRepick": 0.4,
+          "VideoPlaceButton": 0.5,
+          "VideoPlaceOrder": 0.6,
+          "MoveCube": 1.0,
+          "InsertPeg": 0.2,
+          "PatternLock": 0.7,
+          "RouteStick": 0.8
+        }
+      }
+    ]
+  };
+
+  var CHALLENGE_PHASE2 = {
+    task_suites: PHASE_COMMON.task_suites,
+    task_characteristics: PHASE_COMMON.task_characteristics,
+    models: []
+  };
+
+  document.addEventListener('DOMContentLoaded', function() {
+    var phase1El = document.getElementById('challenge-lb-phase1');
+    if (phase1El) createLeaderboardWidget(phase1El, CHALLENGE_PHASE1, { includeBaselinesInRadar: true });
+
+    var phase2El = document.getElementById('challenge-lb-phase2');
+    if (phase2El) createLeaderboardWidget(phase2El, CHALLENGE_PHASE2, { includeBaselinesInRadar: false });
+  });
+})();
+// Sticky section nav (scrollspy), modeled after index.html
+(function() {
+  var nav = document.getElementById('sectionNav');
+  if (!nav) return;
+
+  var links = nav.querySelectorAll('.section-nav-link');
+  var triggerEl = document.getElementById('section-overview');
+  var sectionIds = [
+    'section-overview',
+    'section-what-you-do',
+    'section-timeline',
+    'challenge-leaderboard',
+    'section-faq',
+    'section-acknowledgement'
+  ];
+  var sections = sectionIds.map(function(id) { return document.getElementById(id); });
+  var navHeight = 48;
+
+  if (!links.length) return;
+
+  links.forEach(function(link) {
+    link.addEventListener('click', function(e) {
+      e.preventDefault();
+      var target = document.getElementById(this.getAttribute('data-target'));
+      if (target) {
+        var top = target.getBoundingClientRect().top + window.pageYOffset - navHeight;
+        window.scrollTo({ top: top, behavior: 'smooth' });
+      }
+    });
+  });
+
+  var ticking = false;
+  window.addEventListener('scroll', function() {
+    if (ticking) return;
+
+    window.requestAnimationFrame(function() {
+      if (triggerEl) {
+        var triggerTop = triggerEl.getBoundingClientRect().top;
+        if (triggerTop <= navHeight) nav.classList.add('visible');
+        else nav.classList.remove('visible');
+      }
+
+      var current = '';
+      for (var i = sections.length - 1; i >= 0; i--) {
+        if (sections[i] && sections[i].getBoundingClientRect().top <= navHeight + 60) {
+          current = sectionIds[i];
+          break;
+        }
+      }
+
+      links.forEach(function(link) {
+        if (link.getAttribute('data-target') === current) link.classList.add('active');
+        else link.classList.remove('active');
+      });
+
+      ticking = false;
+    });
+
+    ticking = true;
+  });
+
+  // Initial state
+  if (triggerEl && triggerEl.getBoundingClientRect().top <= navHeight) nav.classList.add('visible');
+})();
+document.addEventListener('DOMContentLoaded', function () {
+  var burgers = Array.prototype.slice.call(document.querySelectorAll('.navbar-burger'), 0);
+  burgers.forEach(function (el) {
+    el.addEventListener('click', function () {
+      var target = el.dataset.target;
+      var $target = document.getElementById(target);
+      el.classList.toggle('is-active');
+      $target.classList.toggle('is-active');
+    });
+  });
+});
+</script>
+
+</body>
+</html>
+

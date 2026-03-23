@@ -59,6 +59,8 @@
       position: relative; vertical-align: middle;
       line-height: 1.25; height: 3rem;
     }
+    /* Bulma may set table header text color; force it to white */
+    .lb-wrap thead th { color: #fff !important; text-align: center !important; }
     .lb-wrap th:hover { background: #4a4a4a; }
     .lb-wrap th[data-sort="Avg"] { background: #3273dc !important; }
     .lb-wrap th[data-sort="Avg"]:hover { background: #2360c4 !important; }
@@ -149,7 +151,7 @@
         <span class="icon"><i class="fas fa-home"></i></span>
         <span style="margin-left: 0.5rem; font-size: 1.2rem;">Home</span>
       </a>
-      <a class="navbar-item" href="challenge_v1.html">
+      <a class="navbar-item" href="challenge.html">
         <span class="icon"><i class="fas fa-rocket"></i></span>
         <span style="margin-left: 0.5rem; font-size: 1.2rem;">CVPR 2026 Challenge</span>
       </a>
