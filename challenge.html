@@ -402,7 +402,7 @@
       <div class="box" style="padding:1.25rem; margin-top:1rem;">
         <h3 class="title is-4" style="margin-bottom:0.75rem;">Phase 2 — Evaluation 🧮</h3>
         <p style="margin-top:0; color:#666;">
-          We will run the full evaluation on held-out episodes. Final rankings will be determined by this full evaluation.
+          Full evaluation results on held-out episodes. Final rankings are determined by this full evaluation.
         </p>
 
         <div class="challenge-lb" id="challenge-lb-phase2">
@@ -417,7 +417,8 @@
           <div id="challenge-lb-phase2-radar-container" class="challenge-radar-container" style="display:none;">
             <canvas class="radar-chart"></canvas>
             <p style="font-size:0.85rem; color:#999; margin-top:0.75rem; text-align:center;">
-              Radar and categorization will be enabled here once Phase 2 results are available.
+              Only models with the <b>best score</b> in at least one category or in the <b>top 5</b> overall are shown. <br>
+              Click a model name in the legend to show or hide its line.
             </p>
           </div>
 
@@ -990,7 +991,32 @@
   var CHALLENGE_PHASE2 = {
     task_suites: PHASE_COMMON.task_suites,
     task_characteristics: PHASE_COMMON.task_characteristics,
-    models: []
+    models: [
+      {
+        name: "FrameSamp+Modul",
+        organization: "RoboMME",
+        memory: "Perceptual",
+        baseline: true,
+        tasks: {
+          "BinFill": 0.28,
+          "PickXtimes": 0.92,
+          "SwingXtimes": 0.90,
+          "StopCube": 0.42,
+          "VideoUnmask": 0.20,
+          "ButtonUnmask": 0.14,
+          "VideoUnmaskSwap": 0.20,
+          "ButtonUnmaskSwap": 0.16,
+          "PickHighlight": 0.14,
+          "VideoRepick": 0.26,
+          "VideoPlaceButton": 0.66,
+          "VideoPlaceOrder": 0.24,
+          "MoveCube": 0.78,
+          "InsertPeg": 0.02,
+          "PatternLock": 0.42,
+          "RouteStick": 0.36
+        }
+      }
+    ]
   };
 
   document.addEventListener('DOMContentLoaded', function() {
@@ -998,7 +1024,7 @@
     if (phase1El) createLeaderboardWidget(phase1El, CHALLENGE_PHASE1, { includeBaselinesInRadar: true });
 
     var phase2El = document.getElementById('challenge-lb-phase2');
-    if (phase2El) createLeaderboardWidget(phase2El, CHALLENGE_PHASE2, { includeBaselinesInRadar: false });
+    if (phase2El) createLeaderboardWidget(phase2El, CHALLENGE_PHASE2, { includeBaselinesInRadar: true });
   });
 })();
 // Sticky section nav (scrollspy), modeled after index.html
@@ -1080,4 +1106,3 @@ document.addEventListener('DOMContentLoaded', function () {
 
 </body>
 </html>
-
