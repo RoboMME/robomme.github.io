@@ -210,7 +210,7 @@
       <div id="radar-container" style="display:none;">
         <canvas id="radar-chart"></canvas>
         <p style="font-size:0.85rem; color:#999; margin-top:0.75rem; text-align:center;">
-          Only models with the <b>best score</b> in at least one category or in the <b>top 5</b> overall are shown. <br>
+          Shows the <b>top 5</b> models overall and models with the <b>best score</b> in any category, excluding human and oracle references. <br>
           Click a model name in the legend to show or hide its line.
         </p>
       </div>
@@ -689,24 +689,23 @@ var RESULTS = {
   }
 
   function updateRadar(cols, rows) {
+    var ranked = rows.filter(function(r) { return !r.baseline; });
     var bestInCol = {};
     cols.forEach(function(c) {
       var maxVal = -1;
-      rows.forEach(function(r) { if (r[c.key] > maxVal) maxVal = r[c.key]; });
+      ranked.forEach(function(r) { if (r[c.key] > maxVal) maxVal = r[c.key]; });
       bestInCol[c.key] = maxVal;
     });
 
-    var byAvg = rows.slice().sort(function(a, b) { return b.Avg - a.Avg; });
+    var byAvg = ranked.slice().sort(function(a, b) { return b.Avg - a.Avg; });
     var top5Ids = {};
     for (var t = 0; t < Math.min(5, byAvg.length); t++) { top5Ids[byAvg[t].id] = true; }
 
     var rankMap = {};
     byAvg.forEach(function(r, i) { rankMap[r.id] = i; });
-    var modelRankMap = {};
-    byAvg.filter(function(r) { return !r.baseline; }).forEach(function(r, i) { modelRankMap[r.id] = i; });
     var medals = ['🥇', '🥈', '🥉'];
 
-    var topModels = rows.filter(function(r) {
+    var topModels = ranked.filter(function(r) {
       if (top5Ids[r.id]) return true;
       for (var i = 0; i < cols.length; i++) {
         if (r[cols[i].key] === bestInCol[cols[i].key] && bestInCol[cols[i].key] > 0) return true;
@@ -718,8 +717,8 @@ var RESULTS = {
     var labels = cols.map(function(c) { return cleanLabel(c.label); });
     var datasets = topModels.map(function(m, i) {
       var color = radarColors[i % radarColors.length];
-      var ri = modelRankMap[m.id];
-      var prefix = m.baseline ? '' : (ri < 3 ? medals[ri] + ' ' : '#' + (ri + 1) + ' ');
+      var ri = rankMap[m.id];
+      var prefix = ri < 3 ? medals[ri] + ' ' : '#' + (ri + 1) + ' ';
       return {
         label: prefix + m.name + (m.proprietary ? ' †' : ''),
         data: cols.map(function(c) { return +(m[c.key] * 100).toFixed(2); }),
