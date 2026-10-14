@@ -82,6 +82,10 @@
     .mem-badge.symbolic    { background: #e3f2fd; color: #1565c0; }
     .mem-badge.recurrent   { background: #fce4ec; color: #c62828; }
 
+    .proprietary-marker { margin-left: 0.2rem; font-size: 0.7em; color: #65458a; }
+    .leaderboard-note { margin-top: 0.75rem; font-size: 0.85rem; color: #666; }
+    .lb-wrap td.model-size { font-size: 0.8rem; }
+
     /* Data rows */
     .lb-wrap td { padding: 0.65rem 0.75rem; border-bottom: 1px solid #eee; white-space: nowrap; text-align: center; vertical-align: middle; overflow: hidden; text-overflow: ellipsis; }
     .lb-wrap td:nth-child(1), .lb-wrap td:nth-child(2) { text-align: left; }
@@ -93,7 +97,6 @@
     .lb-wrap tbody tr.baseline-row:hover { background: #f4f4f4; }
     .lb-wrap tbody tr.baseline-row td { color: #999; }
     .lb-wrap tbody tr.baseline-row td strong { color: #888; }
-    .lb-wrap tbody tr.baseline-separator td { padding: 0; height: 2px; background: #ddd; border: none; }
     .rank { font-weight: 700; color: #3273dc; }
     .best-score { font-weight: 700; color: #3273dc; }
     .rank-medal { font-size: 1rem; }
@@ -179,7 +182,7 @@
         <div class="column is-narrow"><div class="stat-card"><div class="stat-value" id="stat-models">—</div><div class="stat-label">Models Evaluated</div></div></div>
       </div>
 
-      <p class="has-text-centered" style="margin-top:0.75rem;font-size:0.95rem;color:#999;">(Data updated on 09/29/2026)</p>
+      <p class="has-text-centered" style="margin-top:0.75rem;font-size:0.95rem;color:#999;">(Data updated on 10/14/2026)</p>
       <!-- <div class="has-text-centered" style="margin-top:1.5rem;">
         <a href="#" class="button is-link is-rounded is-light" style="margin:0.25rem;"><span class="icon"><i class="fas fa-file-pdf"></i></span><span>Paper</span></a>
         <a href="https://github.com/RoboMME/robomme_benchmark" class="button is-link is-rounded is-light" target="_blank" style="margin:0.25rem;"><span class="icon"><i class="fab fa-github"></i></span><span>Benchmark Code</span></a>
@@ -212,6 +215,8 @@
         </p>
       </div>
 
+      <p class="leaderboard-note"><strong>† Proprietary model:</strong> These methods use frontier models, whose weights are not public.</p>
+      <p class="leaderboard-note">Model sizes are approximate parameter counts. B = billion parameters; M = million parameters. SAM2Act and DP-Unet estimates assume FP32 weights.</p>
       <div class="lb-wrap">
         <table id="lb-table">
           <colgroup id="lb-cols"></colgroup>
@@ -219,7 +224,6 @@
           <tbody id="lb-body"></tbody>
         </table>
       </div>
-
       <div class="columns" style="margin-top:3rem;">
         <div class="column section-block">
           <h2 class="title is-5">📋 About</h2>
@@ -266,9 +270,15 @@ var RESULTS = {
     "Time-Sensitive":               ["StopCube"],
     "Motion-Centric":               ["PatternLock", "RouteStick", "SwingXtimes", "InsertPeg"]
   },
+  // Display sizes use approximate model-family labels (4B, 8B, 12B).
+  // Reported configurations are retained below for provenance.
+  // RoboMME: 3.2B policy; +4B for QwenVL/MemER; +0.08B for Modul;
+  // +0.19B for Expert; recurrent/feature modules add <0.01B (rounded here).
+  // PonderPounce: 9B Ponder + 3.6B Pounce = approximately 12.6B.
   "models": [
     {
       "name": "Human Performance",
+      "total_size": "N/A",
       "organization": "\u2014",
       "memory": "\u2014",
       "baseline": true,
@@ -281,6 +291,8 @@ var RESULTS = {
     },
     {
       "name": "SimpleSG+Oracle",
+      "total_size": "4B",
+      "size_source": "https://arxiv.org/html/2603.04639",
       "organization": "RoboMME",
       "memory": "Symbolic",
       "baseline": true,
@@ -293,6 +305,8 @@ var RESULTS = {
     },
     {
       "name": "GroundSG+Oracle",
+      "total_size": "4B",
+      "size_source": "https://arxiv.org/html/2603.04639",
       "organization": "RoboMME",
       "memory": "Symbolic",
       "baseline": true,
@@ -305,6 +319,7 @@ var RESULTS = {
     },
     {
       "name": "SimpleSG+Gemini",
+      "total_size": "N/A",
       "organization": "RoboMME",
       "memory": "Symbolic",
       "tasks": {
@@ -316,6 +331,8 @@ var RESULTS = {
     },
     {
       "name": "SimpleSG+QwenVL",
+      "total_size": "8B",
+      "size_source": "https://arxiv.org/html/2603.04639",
       "organization": "RoboMME",
       "memory": "Symbolic",
       "tasks": {
@@ -327,6 +344,7 @@ var RESULTS = {
     },
     {
       "name": "GroundSG+Gemini",
+      "total_size": "N/A",
       "organization": "RoboMME",
       "memory": "Symbolic",
       "tasks": {
@@ -338,6 +356,8 @@ var RESULTS = {
     },
     {
       "name": "GroundSG+QwenVL",
+      "total_size": "8B",
+      "size_source": "https://arxiv.org/html/2603.04639",
       "organization": "RoboMME",
       "memory": "Symbolic",
       "tasks": {
@@ -349,6 +369,8 @@ var RESULTS = {
     },
     {
       "name": "TokenDrop+Context",
+      "total_size": "4B",
+      "size_source": "https://arxiv.org/html/2603.04639",
       "organization": "RoboMME",
       "memory": "Perceptual",
       "tasks": {
@@ -360,6 +382,8 @@ var RESULTS = {
     },
     {
       "name": "TokenDrop+Modul",
+      "total_size": "4B",
+      "size_source": "https://arxiv.org/html/2603.04639",
       "organization": "RoboMME",
       "memory": "Perceptual",
       "tasks": {
@@ -371,6 +395,8 @@ var RESULTS = {
     },
     {
       "name": "TokenDrop+Expert",
+      "total_size": "4B",
+      "size_source": "https://arxiv.org/html/2603.04639",
       "organization": "RoboMME",
       "memory": "Perceptual",
       "tasks": {
@@ -382,6 +408,8 @@ var RESULTS = {
     },
     {
       "name": "FrameSamp+Context",
+      "total_size": "4B",
+      "size_source": "https://arxiv.org/html/2603.04639",
       "organization": "RoboMME",
       "memory": "Perceptual",
       "tasks": {
@@ -393,6 +421,8 @@ var RESULTS = {
     },
     {
       "name": "FrameSamp+Modul",
+      "total_size": "4B",
+      "size_source": "https://arxiv.org/html/2603.04639",
       "organization": "RoboMME",
       "memory": "Perceptual",
       "tasks": {
@@ -404,6 +434,8 @@ var RESULTS = {
     },
     {
       "name": "FrameSamp+Expert",
+      "total_size": "4B",
+      "size_source": "https://arxiv.org/html/2603.04639",
       "organization": "RoboMME",
       "memory": "Perceptual",
       "tasks": {
@@ -415,6 +447,8 @@ var RESULTS = {
     },
     {
       "name": "TTT+Context",
+      "total_size": "4B",
+      "size_source": "https://arxiv.org/html/2603.04639",
       "organization": "RoboMME",
       "memory": "Recurrent",
       "tasks": {
@@ -426,6 +460,8 @@ var RESULTS = {
     },
     {
       "name": "TTT+Modul",
+      "total_size": "4B",
+      "size_source": "https://arxiv.org/html/2603.04639",
       "organization": "RoboMME",
       "memory": "Recurrent",
       "tasks": {
@@ -437,6 +473,8 @@ var RESULTS = {
     },
     {
       "name": "TTT+Expert",
+      "total_size": "4B",
+      "size_source": "https://arxiv.org/html/2603.04639",
       "organization": "RoboMME",
       "memory": "Recurrent",
       "tasks": {
@@ -448,6 +486,8 @@ var RESULTS = {
     },
     {
       "name": "RMT+Context",
+      "total_size": "4B",
+      "size_source": "https://arxiv.org/html/2603.04639",
       "organization": "RoboMME",
       "memory": "Recurrent",
       "tasks": {
@@ -459,6 +499,8 @@ var RESULTS = {
     },
     {
       "name": "RMT+Modul",
+      "total_size": "4B",
+      "size_source": "https://arxiv.org/html/2603.04639",
       "organization": "RoboMME",
       "memory": "Recurrent",
       "tasks": {
@@ -470,6 +512,8 @@ var RESULTS = {
     },
     {
       "name": "RMT+Expert",
+      "total_size": "4B",
+      "size_source": "https://arxiv.org/html/2603.04639",
       "organization": "RoboMME",
       "memory": "Recurrent",
       "tasks": {
@@ -481,6 +525,8 @@ var RESULTS = {
     },
     {
       "name": "\u03c00.5",
+      "total_size": "4B",
+      "size_source": "https://arxiv.org/html/2603.04639",
       "organization": "Physical Intelligence",
       "memory": "\u2014",
       "tasks": {
@@ -492,6 +538,8 @@ var RESULTS = {
     },
     {
       "name": "\u03c00.5 w/ action history",
+      "total_size": "4B",
+      "size_source": "https://arxiv.org/html/2603.04639",
       "organization": "Physical Intelligence",
       "memory": "Symbolic",
       "tasks": {
@@ -503,6 +551,8 @@ var RESULTS = {
     },
     {
       "name": "SAM2Act (Fang et al.)",
+      // Estimated from 600 MB of FP32 weights at 4 bytes per parameter.
+      "total_size": "150M",
       "link": "https://sam2act.github.io/",
       "memory": "Perceptual",
       "tasks": {
@@ -514,6 +564,8 @@ var RESULTS = {
     },
     {
       "name": "MemER (Sridhar et al.)",
+      "total_size": "8B",
+      "size_source": "https://arxiv.org/html/2603.04639",
       "link": "https://jen-pan.github.io/memer/",
       "memory": "Perceptual+Symbolic",
       "tasks": {
@@ -524,7 +576,35 @@ var RESULTS = {
       }
     },
     {
-      "name": "PonderPounce-9B(Suhwan et al.)",
+      "name": "Embodied-Astra (Jedlicki et al.)",
+      "total_size": "N/A",
+      "link": "https://embodied-astra.github.io/",
+      "proprietary": true,
+      // Single run, 50 test episodes per task; evaluated on 2026-10-11.
+      "tasks": {
+        "BinFill": 0.9800, "PickXtimes": 1.0000, "SwingXtimes": 0.9800, "StopCube": 0.5400,
+        "VideoUnmask": 0.9400, "ButtonUnmask": 1.0000, "VideoUnmaskSwap": 0.9600, "ButtonUnmaskSwap": 0.9800,
+        "PickHighlight": 0.9800, "VideoRepick": 1.0000, "VideoPlaceButton": 1.0000, "VideoPlaceOrder": 0.9800,
+        "MoveCube": 0.5400, "InsertPeg": 0.9200, "PatternLock": 1.0000, "RouteStick": 0.9400
+      }
+    },
+    {
+      "name": "3-tier Astra (Chen et al.)",
+      "total_size": "N/A",
+      "link": "https://bingaochen.github.io/Astra-on-RoboMME/",
+      "proprietary": true,
+      // Recorded 800-episode evaluation: https://github.com/bingaochen/Astra-on-RoboMME/blob/main/docs/results/test-per-task.csv
+      "tasks": {
+        "BinFill": 0.8200, "PickXtimes": 0.9600, "SwingXtimes": 0.8200, "StopCube": 0.1800,
+        "VideoUnmask": 0.9200, "ButtonUnmask": 1.0000, "VideoUnmaskSwap": 1.0000, "ButtonUnmaskSwap": 0.8400,
+        "PickHighlight": 0.8400, "VideoRepick": 0.8600, "VideoPlaceButton": 1.0000, "VideoPlaceOrder": 0.9800,
+        "MoveCube": 0.8000, "InsertPeg": 0.1800, "PatternLock": 0.8800, "RouteStick": 0.5800
+      }
+    },
+    {
+      "name": "PonderPounce (Suhwan et al.)",
+      "total_size": "12B",
+      "size_source": "https://arxiv.org/html/2608.24115",
       "link": "https://worv-ai.github.io/ponderpounce/",
       "tasks": {
         "BinFill": 0.5067, "PickXtimes": 0.9333, "SwingXtimes": 0.7200, "StopCube": 0.8267,
@@ -534,7 +614,36 @@ var RESULTS = {
       }
     },
     {
+      "name": "SimpleMemVLA (Yin et al.)",
+      "total_size": "4B",
+      "size_source": "https://arxiv.org/html/2609.05533",
+      // Displayed using the Qwen3.5-4B backbone size.
+      "link": "https://arxiv.org/pdf/2609.05533",
+      // Full per-task results from Table 10; overall success is 88.25%.
+      "tasks": {
+        "BinFill": 0.7800, "PickXtimes": 1.0000, "SwingXtimes": 0.9600, "StopCube": 0.9200,
+        "VideoUnmask": 1.0000, "ButtonUnmask": 1.0000, "VideoUnmaskSwap": 0.9000, "ButtonUnmaskSwap": 0.9400,
+        "PickHighlight": 0.9000, "VideoRepick": 0.6400, "VideoPlaceButton": 0.8600, "VideoPlaceOrder": 0.9000,
+        "MoveCube": 0.9400, "InsertPeg": 0.4600, "PatternLock": 0.9400, "RouteStick": 0.9800
+      }
+    },
+    {
+      "name": "T²Mem (Liu et al.)",
+      "total_size": "4B",
+      "size_source": "https://arxiv.org/pdf/2609.36720",
+      "link": "https://arxiv.org/pdf/2609.36720",
+      // Table 1: 50 test episodes per task over three seeds. Appendix A adds 67.90M parameters to the pi0.5 backbone.
+      "tasks": {
+        "BinFill": 0.6067, "PickXtimes": 0.9133, "SwingXtimes": 0.9067, "StopCube": 0.7000,
+        "VideoUnmask": 0.8800, "ButtonUnmask": 0.5933, "VideoUnmaskSwap": 0.2933, "ButtonUnmaskSwap": 0.2000,
+        "PickHighlight": 0.5067, "VideoRepick": 0.3867, "VideoPlaceButton": 0.3533, "VideoPlaceOrder": 0.3000,
+        "MoveCube": 0.8067, "InsertPeg": 0.3600, "PatternLock": 0.5000, "RouteStick": 0.7867
+      }
+    },
+    {
       "name": "DP-Unet (Chi et al.)",
+      // Estimated from 300 MB of FP32 weights at 4 bytes per parameter.
+      "total_size": "75M",
       "link": "https://diffusion-policy.cs.columbia.edu/",
       "memory": "\u2014",
       "tasks": {
@@ -579,23 +688,25 @@ var RESULTS = {
     return parts.length > 1 ? parts : parts[0] || '';
   }
 
-  function updateRadar(cols, ranked) {
+  function updateRadar(cols, rows) {
     var bestInCol = {};
     cols.forEach(function(c) {
       var maxVal = -1;
-      ranked.forEach(function(r) { if (r[c.key] > maxVal) maxVal = r[c.key]; });
+      rows.forEach(function(r) { if (r[c.key] > maxVal) maxVal = r[c.key]; });
       bestInCol[c.key] = maxVal;
     });
 
-    var byAvg = ranked.slice().sort(function(a, b) { return b.Avg - a.Avg; });
+    var byAvg = rows.slice().sort(function(a, b) { return b.Avg - a.Avg; });
     var top5Ids = {};
     for (var t = 0; t < Math.min(5, byAvg.length); t++) { top5Ids[byAvg[t].id] = true; }
 
     var rankMap = {};
     byAvg.forEach(function(r, i) { rankMap[r.id] = i; });
+    var modelRankMap = {};
+    byAvg.filter(function(r) { return !r.baseline; }).forEach(function(r, i) { modelRankMap[r.id] = i; });
     var medals = ['🥇', '🥈', '🥉'];
 
-    var topModels = ranked.filter(function(r) {
+    var topModels = rows.filter(function(r) {
       if (top5Ids[r.id]) return true;
       for (var i = 0; i < cols.length; i++) {
         if (r[cols[i].key] === bestInCol[cols[i].key] && bestInCol[cols[i].key] > 0) return true;
@@ -607,10 +718,10 @@ var RESULTS = {
     var labels = cols.map(function(c) { return cleanLabel(c.label); });
     var datasets = topModels.map(function(m, i) {
       var color = radarColors[i % radarColors.length];
-      var ri = rankMap[m.id];
-      var prefix = ri < 3 ? medals[ri] + ' ' : '#' + (ri + 1) + ' ';
+      var ri = modelRankMap[m.id];
+      var prefix = m.baseline ? '' : (ri < 3 ? medals[ri] + ' ' : '#' + (ri + 1) + ' ');
       return {
-        label: prefix + m.name,
+        label: prefix + m.name + (m.proprietary ? ' †' : ''),
         data: cols.map(function(c) { return +(m[c.key] * 100).toFixed(2); }),
         fill: true,
         backgroundColor: color.bg,
@@ -674,7 +785,7 @@ var RESULTS = {
     }
   }
 
-  function pct(v) { return (Math.round(v * 10000) / 100).toFixed(2); }
+  function pct(v) { return (Math.round((v + Number.EPSILON) * 10000) / 100).toFixed(2); }
 
   function medal(i) {
     if (i === 0) return '<span class="rank-medal">🥇</span>';
@@ -752,7 +863,7 @@ var RESULTS = {
 
   function buildRows(cols) {
     return D.models.map(function(m, idx) {
-      var row = { id: idx, name: m.name, org: m.organization, memory: m.memory || '\u2014', tasks: m.tasks, baseline: !!m.baseline, link: m.link || null };
+      var row = { id: idx, name: m.name, org: m.organization, memory: m.memory || '\u2014', tasks: m.tasks, baseline: !!m.baseline, link: m.link || null, proprietary: !!m.proprietary, totalSize: m.total_size || 'Not reported' };
       row.Avg = avgTasks(m, allTasks);
       cols.forEach(function(c) { row[c.key] = avgTasks(m, c.tasks); });
       return row;
@@ -797,16 +908,18 @@ var RESULTS = {
     var colW = mode === 'task' ? 'width:5rem;' : '';
     var cg = '<col style="width:3rem;">';
     cg += '<col style="width:12rem;">';
+    cg += '<col style="width:7rem;">';
     cg += '<col style="width:5rem;">';
     cols.forEach(function() { cg += '<col style="' + colW + '">'; });
     document.getElementById('lb-cols').innerHTML = cg;
 
     var tableEl = document.getElementById('lb-table');
-    tableEl.style.minWidth = mode === 'task' ? (3 + 12 + 5 + cols.length * 5) + 'rem' : '';
+    tableEl.style.minWidth = mode === 'task' ? (3 + 12 + 7 + 5 + cols.length * 5) + 'rem' : (mode === 'char' ? '70rem' : '62rem');
 
     var html = '<tr>';
     html += '<th class="no-sort">Rank</th>';
     html += '<th class="no-sort">Model</th>';
+    html += '<th class="no-sort" title="Approximate number of model parameters">Parameters</th>';
     html += '<th data-sort="Avg"' + (sortCol === 'Avg' ? ' class="sorted"' : '') + ' style="white-space:nowrap;background:#3273dc;">Overall ' + arrow('Avg') + '</th>';
     cols.forEach(function(c) {
       html += '<th data-sort="' + c.key + '"' + (sortCol === c.key ? ' class="sorted"' : '') + '>' + labelWithArrow(c.label, c.key) + '</th>';
@@ -832,15 +945,13 @@ var RESULTS = {
     var cols = getColumns();
     var rows = buildRows(cols);
 
-    var baselines = rows.filter(function(r) { return r.baseline; });
-    var ranked = rows.filter(function(r) { return !r.baseline; });
-    sortRows(ranked);
+    sortRows(rows);
 
-    // Best per column among ranked models only
+    // Compare all rows, including human and oracle references.
     var best = {};
     cols.forEach(function(c) { best[c.key] = 0; });
     best.Avg = 0;
-    ranked.forEach(function(r) {
+    rows.forEach(function(r) {
       cols.forEach(function(c) { if (r[c.key] > best[c.key]) best[c.key] = r[c.key]; });
       if (r.Avg > best.Avg) best.Avg = r.Avg;
     });
@@ -865,9 +976,10 @@ var RESULTS = {
     // <b><span style="font-variant: small-caps; color: #060606;">GroundSG</span>+<span style="font-variant: small-caps; color: #e83636;">Oracle</span></b>
 
     function nameHtml(r) {
-      var content = formatModelName(r.name);
-      if (r.link) return '<a href="' + r.link + '" target="_blank" style="color:inherit;text-decoration:underline dotted;"><strong>' + content + '</strong></a>';
-      return '<strong>' + content + '</strong>';
+      var content = '<strong>' + formatModelName(r.name) + '</strong>';
+      if (r.link) content = '<a href="' + r.link + '" target="_blank" style="color:inherit;text-decoration:underline dotted;">' + content + '</a>';
+      if (r.proprietary) content += '<sup class="proprietary-marker" title="Uses a proprietary model" aria-label="Uses a proprietary model">†</sup>';
+      return content;
     }
 
     function memoryHtml(mem) {
@@ -882,43 +994,25 @@ var RESULTS = {
       html += '<tr' + (rowClass ? ' class="' + rowClass + '"' : '') + '>';
       html += '<td class="rank">' + rankLabel + '</td>';
       html += '<td>' + nameHtml(r) + '</td>';
-      html += '<td>' + pct(r.Avg) + '</td>';
-      cols.forEach(function(c) {
-        html += '<td>' + pct(r[c.key]) + '</td>';
-      });
-      html += '</tr>';
-    }
-
-    // Baselines at top
-    baselines.forEach(function(r) {
-      renderRow(r, '—', 'baseline-row');
-    });
-
-    // Separator
-    if (baselines.length && ranked.length) {
-      html += '<tr class="baseline-separator"><td colspan="' + (cols.length + 3) + '"></td></tr>';
-    }
-
-    // Ranked models
-    ranked.forEach(function(r, i) {
-      html += '<tr>';
-      html += '<td class="rank">' + medal(i) + '</td>';
-      html += '<td>' + nameHtml(r) + '</td>';
-
+      html += '<td class="model-size">' + r.totalSize + '</td>';
       var avgCls = (r.Avg > 0 && r.Avg === best.Avg) ? ' class="best-score"' : '';
       html += '<td' + avgCls + '>' + pct(r.Avg) + '</td>';
-
       cols.forEach(function(c) {
         var v = r[c.key];
         var cls = (v > 0 && v === best[c.key]) ? ' class="best-score"' : '';
         html += '<td' + cls + '>' + pct(v) + '</td>';
       });
-
       html += '</tr>';
+    }
+
+    // References share the score ordering; only submitted methods receive ranks.
+    var modelRank = 0;
+    rows.forEach(function(r) {
+      renderRow(r, r.baseline ? '' : medal(modelRank++), r.baseline ? 'baseline-row' : '');
     });
 
     document.getElementById('lb-body').innerHTML = html;
-    updateRadar(cols, ranked);
+    updateRadar(cols, rows);
   }
 
   document.addEventListener('DOMContentLoaded', function() {
