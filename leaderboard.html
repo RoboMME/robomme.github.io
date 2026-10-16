@@ -29,132 +29,9 @@
       margin-right: auto;
     }
 
-    /* Table */
-    .lb-wrap {
-      background: #fff; border-radius: 12px;
-      box-shadow: 0 2px 12px rgba(0,0,0,0.08);
-      position: relative; isolation: isolate;
-      overflow: auto; max-height: 90vh; max-height: 90dvh;
-      scrollbar-gutter: stable; margin-top: 1.25rem;
-    }
-    .lb-wrap table { width: 100%; border-collapse: separate; border-spacing: 0; table-layout: fixed; }
-    .lb-wrap:focus-visible { outline: 2px solid #3273dc; outline-offset: 3px; }
-
-    /* Toolbar row inside table */
-    .toolbar-row td {
-      background: #f5f5f5; padding: 0.6rem 1rem;
-      border-bottom: 2px solid #ddd;
-    }
-    .mode-btn {
-      padding: 0.5rem 1.15rem; border-radius: 20px; border: 1.5px solid #dbdbdb;
-      background: #fff; cursor: pointer; font-size: 1rem; font-family: inherit;
-      transition: all 0.15s; color: #363636; margin-right: 0.4rem;
-    }
-    .mode-btn:hover { border-color: #3273dc; color: #3273dc; }
-    .mode-btn.is-active { background: #3273dc; color: #fff; border-color: #3273dc; }
-
-    /* Column headers */
-    .lb-wrap th {
-      background: #363636; color: #fff; font-weight: 600;
-      padding: 0.65rem 1rem 0.65rem 0.75rem; text-align: center;
-      white-space: normal; min-width: 5rem;
-      cursor: pointer; user-select: none;
-      position: relative; vertical-align: middle;
-      line-height: 1.25; height: 5.25rem;
-    }
-    /* Bulma may set table header text color; force it to white */
-    .lb-wrap thead th { position: sticky; top: 0; z-index: 3; color: #fff !important; text-align: center !important; }
-    .lb-wrap th:nth-child(1), .lb-wrap td:nth-child(1) { position: sticky; left: 0; }
-    .lb-wrap th:nth-child(2), .lb-wrap td:nth-child(2) { position: sticky; left: 3rem; box-shadow: 3px 0 5px -3px rgba(0,0,0,0.3); }
-    .lb-wrap thead th:nth-child(-n+2) { z-index: 4; }
-    .lb-wrap tbody td:nth-child(-n+2) { z-index: 2; background: var(--method-shade, #fff); }
-    .lb-wrap tbody tr:hover td:nth-child(-n+2) { background: var(--method-hover, #f0f4ff); }
-    .lb-wrap th:hover { background: #4a4a4a; }
-    .lb-wrap th[data-sort="Avg"] { background: #3273dc !important; }
-    .lb-wrap th[data-sort="Avg"]:hover { background: #2360c4 !important; }
-    .lb-wrap th .sort-arrow {
-      font-size: 0.55rem; opacity: 0.4;
-      position: absolute; bottom: 0.3rem; right: 0.3rem;
-    }
-    .lb-wrap th.sorted .sort-arrow { opacity: 1; }
-    .lb-wrap th.no-sort { cursor: default; }
-    .lb-wrap th.no-sort:hover { background: #363636; }
-
-    /* Memory type badges */
-    .mem-badge {
-      display: inline-block; font-size: 0.7rem; font-weight: 600;
-      padding: 0.15rem 0.45rem; border-radius: 999px; line-height: 1.3;
-      white-space: nowrap; margin: 1px 2px;
-    }
-    .mem-badge.perceptual  { background: #e8f5e9; color: #2e7d32; }
-    .mem-badge.symbolic    { background: #e3f2fd; color: #1565c0; }
-    .mem-badge.recurrent   { background: #fce4ec; color: #c62828; }
-
-    .method-legend { display: flex; flex-wrap: wrap; align-items: center; gap: 0.4rem 0.65rem; margin: 0.75rem 0; font-size: 0.85rem; color: #666; }
-    .method-oracle_action_planner { --method-shade: #fff0f0; --method-hover: #ffe4e4; }
-    .method-oracle_subgoal { --method-shade: #eeeeee; --method-hover: #e3e3e3; }
-    .method-proprietary_model { --method-shade: #edf5ff; --method-hover: #deedff; }
-    .method-open_sourced_model { --method-shade: #ffffff; --method-hover: #f0f4ff; }
-    .method-filter { white-space: nowrap; border: 1px solid #eeeeee; border-radius: 999px; padding: 0.3rem 0.65rem; background: #fff; color: #6b7280; font: inherit; cursor: pointer; }
-    .method-filter.is-active { background: var(--method-shade); border-color: #555; color: #363636; }
-    .method-filter:focus-visible { outline: 2px solid #3273dc; outline-offset: 2px; }
-    .model-name { display: flex; align-items: baseline; gap: 0.25rem; }
-    .model-label { min-width: 0; overflow: hidden; text-overflow: ellipsis; }
-    .lb-wrap th.detail-header { min-width: 0; padding: 0.5rem 0.2rem; }
-    .lb-wrap td.model-detail { padding-left: 0.25rem; padding-right: 0.25rem; font-size: 0.8rem; }
-    .lb-wrap td[data-detail="type"] { padding-top: 0.2rem; padding-bottom: 0.2rem; }
-    .model-type-badge { display: inline-block; vertical-align: middle; padding: 0.2rem 0.35rem; border-radius: 4px; font-size: 0.71rem; font-weight: 700; line-height: 1.2; white-space: nowrap; }
-    .model-type-badge.type-closed-vlm { background: #e0f2fe; color: #0369a1; }
-    .model-type-badge.type-closed-vlm-vla { background: #fff1d6; color: #92400e; }
-    .model-type-badge.type-vla { background: #eaeaff; color: #4338ca; }
-    .model-type-badge.type-oracle-vla { background: #e5e7eb; color: #374151; }
-    .model-type-badge.type-vlm-vla { background: #dcfce7; color: #166534; }
-    .model-type-badge.type-wam { background: #d5f5ef; color: #0f766e; }
-    .model-type-badge.type-vla-wam { background: #ffedd5; color: #9a3412; }
-    .model-type-badge.type-vlm-wam { background: #fce7f3; color: #9d174d; }
-    .model-type-badge.type-il { background: #f3e8ff; color: #7e22ce; }
-    .model-type-badge.type-nn { background: #f3e8ff; color: #7e22ce; }
-    .model-type-badge.type-human { background: #f3f4f6; color: #4b5563; }
-    .view-controls { display: flex; align-items: center; flex-wrap: wrap; gap: 0.5rem; }
-    .details-toggle-btn { padding: 0.45rem 0.8rem; border: 1px solid #eee; border-radius: 8px; background: #fff; color: #555; font: inherit; cursor: pointer; }
-    .details-toggle-btn.is-active { border-color: #555; background: #f4f4f4; color: #363636; }
-    .details-toggle-btn:focus-visible { outline: 2px solid #3273dc; outline-offset: 2px; }
-    .compute-note { margin-top: 0.75rem; font-size: 0.85rem; color: #666; }
-    .compute-note summary { cursor: pointer; }
-    .compute-note p { margin-top: 0.5rem; }
-
-    /* Data rows */
-    .lb-wrap td { padding: 0.65rem 0.75rem; border-bottom: 1px solid #eee; white-space: nowrap; text-align: center; vertical-align: middle; overflow: hidden; text-overflow: ellipsis; }
-    .lb-wrap td:nth-child(1), .lb-wrap td:nth-child(2) { text-align: left; }
-    .lb-wrap th:nth-child(1), .lb-wrap th:nth-child(2) { text-align: left; }
-    .lb-wrap th:nth-child(n+3) { text-align: center; }
-    .lb-wrap td:nth-child(n+3) { text-align: center; }
-    .lb-wrap tbody tr { background: var(--method-shade, #fff); }
-    .lb-wrap tbody tr:hover { background: var(--method-hover, #f0f4ff); }
-    .lb-wrap tbody tr.baseline-row td { color: #666; }
-    .lb-wrap tbody tr.baseline-row td strong { color: #555; }
-    .rank { font-weight: 700; color: #3273dc; }
-    .best-score { font-weight: 700; color: #3273dc; }
-    .rank-medal { font-size: 1rem; }
-
-
     .section-block h2 { font-size: 1.5rem; margin-bottom: 0.75rem; padding-bottom: 0.4rem; border-bottom: 2px solid #3273dc; }
     .navbar .navbar-item:hover,
     .navbar .navbar-link:hover { background: #f5f5f5; }
-
-    /* Radar / Table view toggle */
-    .view-toggle-btn {
-      cursor: pointer; display: inline-flex; align-items: center; gap: 0.5rem;
-      padding: 0.45rem 1rem; background: #3273dc; border-radius: 8px;
-      border: 1px solid #2860b8; user-select: none; transition: background 0.15s;
-      color: #fff; font-weight: 600; font-size: 1rem;
-    }
-    .view-toggle-btn:hover { background: #2860b8; }
-    #radar-container {
-      background: #fff; border-radius: 12px;
-      box-shadow: 0 2px 12px rgba(0,0,0,0.08); padding: 1.5rem 1rem;
-      max-width: 780px; margin-left: auto; margin-right: auto;
-    }
 
     /* All desktop/tablet: same scale on laptop and large monitors */
     @media screen and (min-width: 769px) {
@@ -163,18 +40,15 @@
       .stat-value { font-size: 2.2rem; }
       .stat-label { font-size: 1rem; }
       .section-block h2 { font-size: 1.3rem; }
-      .lb-wrap td { font-size: 0.95rem; }
-      .lb-wrap th { font-size: 0.9rem; }
-      #radar-container { max-width: 680px; }
     }
 
     @media screen and (min-width: 769px) and (max-width: 1200px) {
       .container { max-width: 90%; }
       .leaderboard-hero .title.is-1 { font-size: 2.2rem; }
       .stat-value { font-size: 2rem; }
-      #radar-container { max-width: 600px; }
     }
   </style>
+  <link rel="stylesheet" href="leaderboard.css">
 </head>
 <body>
 
@@ -218,7 +92,7 @@
         <div class="column is-narrow"><div class="stat-card"><div class="stat-value" id="stat-models">—</div><div class="stat-label">Models Evaluated</div></div></div>
       </div>
 
-      <p class="has-text-centered" style="margin-top:0.75rem;font-size:0.95rem;color:#999;">(Data updated on 10/14/2026)</p>
+      <p class="has-text-centered" style="margin-top:0.75rem;font-size:0.95rem;color:#999;">(Data updated on 10/16/2026)</p>
       <!-- <div class="has-text-centered" style="margin-top:1.5rem;">
         <a href="#" class="button is-link is-rounded is-light" style="margin:0.25rem;"><span class="icon"><i class="fas fa-file-pdf"></i></span><span>Paper</span></a>
         <a href="https://github.com/RoboMME/robomme_benchmark" class="button is-link is-rounded is-light" target="_blank" style="margin:0.25rem;"><span class="icon"><i class="fab fa-github"></i></span><span>Benchmark Code</span></a>
@@ -234,36 +108,40 @@
 <section class="section" id="radar-view" style="padding-top: 1.5rem;">
   <div class="container">
     <div class="leaderboard-content">
-      <h2 class="title is-4">📊 Regular Leaderboard</h2>
-      <div style="display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; margin-bottom:0.75rem;">
-        <div id="lb-toolbar" style="display:inline-flex; align-items:center; flex-wrap:wrap;"></div>
-        <div class="view-controls">
-          <button type="button" id="details-toggle" class="details-toggle-btn" aria-pressed="false" aria-controls="lb-table model-details-notes">Show details</button>
-          <div id="view-toggle" class="view-toggle-btn">
-            <i id="view-toggle-icon" class="fas fa-chart-area"></i>
-            <span id="view-toggle-label">Radar View</span>
-          </div>
-        </div>
-      </div>
-
-      <div id="method-legend" class="method-legend" role="group" aria-label="Filter methods by tag"></div>
-      <p id="tag-empty-state" role="status" hidden>No methods selected. Enable a tag above to show results.</p>
-
-      <div id="radar-container" style="display:none;">
-        <canvas id="radar-chart"></canvas>
-        <p style="font-size:0.85rem; color:#999; margin-top:0.75rem; text-align:center;">
-          Shows the <b>top 5</b> ranked models overall and ranked models with the <b>best score</b> in any category. Human and oracle references are excluded; proprietary models are ranked only when open-sourced models are hidden. <br>
-          Click a model name in the legend to show or hide its line.
-        </p>
-      </div>
-
-      <div class="lb-wrap" tabindex="0" role="region" aria-label="Leaderboard table; scroll to explore rows and columns">
-        <table id="lb-table">
-          <colgroup id="lb-cols"></colgroup>
-          <thead id="lb-head"></thead>
-          <tbody id="lb-body"></tbody>
-        </table>
-      </div>
+<div class="leaderboard-table" aria-labelledby="results-title">
+  <div class="section-heading">
+    <div>
+      <h2 class="title is-4" id="results-title">📊 Regular Leaderboard</h2>
+      <p class="section-kicker">Success rate (%) · Higher is better</p>
+    </div>
+    <div class="view-controls">
+      <button type="button" id="details-toggle" class="details-toggle-btn" aria-pressed="false" aria-controls="lb-table model-details-notes">Show details</button>
+      <button type="button" id="view-toggle" class="view-toggle-btn" aria-pressed="false" aria-controls="radar-container lb-table">
+        <i id="view-toggle-icon" class="fas fa-chart-area" aria-hidden="true"></i>
+        <span id="view-toggle-label">Radar View</span>
+      </button>
+    </div>
+  </div>
+  <div class="leaderboard-panel">
+    <div class="panel-toolbar">
+      <div id="lb-toolbar" role="group" aria-label="Group results by"></div>
+      <p class="table-hint"><i class="fas fa-arrow-down-short-wide" aria-hidden="true"></i>Click a column to sort</p>
+    </div>
+    <div id="method-legend" class="method-legend" role="group" aria-label="Filter methods by tag"></div>
+    <p id="tag-empty-state" role="status" hidden>No methods selected. Enable a tag above to show results.</p>
+    <div id="radar-container" style="display:none;">
+      <div class="radar-plot"><canvas id="radar-chart" role="img" aria-label="Success rates of top-ranked models across the selected task groups"></canvas></div>
+      <p class="radar-note">Shows the <b>top 5</b> ranked models overall and ranked models with the <b>best score</b> in any category. Human and oracle references are excluded; proprietary models are ranked only when open-sourced models are hidden.<br>Click a model name in the legend to show or hide its line.</p>
+    </div>
+    <div class="lb-wrap" tabindex="0" role="region" aria-label="Leaderboard table; scroll horizontally to explore columns">
+      <table id="lb-table" aria-label="RoboMME model success rates">
+        <colgroup id="lb-cols"></colgroup>
+        <thead id="lb-head"></thead>
+        <tbody id="lb-body"></tbody>
+      </table>
+    </div>
+    <div class="table-footer"><span><strong id="visible-count">—</strong> methods &amp; references shown</span><span>16 tasks · 50 test episodes per task</span></div>
+  </div>
       <details id="model-details-notes" class="compute-note" hidden>
         <summary>Metric notes</summary>
         <p><strong>Params:</strong> approximate parameter count. B = billion; M = million.</p>
@@ -271,6 +149,7 @@
         <p>H100 GPU-hours = GPU count × training hours × conversion factor. Relative to H100 SXM: <strong>A40 ≈ 0.151×</strong>, <strong>A100 ≈ 0.315×</strong>, <strong>H200 SXM = 1×</strong>. Reported H100 GPU-hours are used directly.</p>
         <p><strong>N/R:</strong> not reported. <strong>N/A:</strong> not applicable. <strong>≈:</strong> approximate.</p>
       </details>
+</div>
       <div class="columns" style="margin-top:3rem;">
         <div class="column section-block">
           <h2 class="title is-5">📋 About</h2>
@@ -344,8 +223,9 @@ var RESULTS = {
       "model_type": "Oracle+VLA",
       "training_compute": {"gpu": "A40", "gpus": 4, "hours": [72, 72], "approximate": true, "note": "Symbolic policy training: approximately 3 days on 4 A40 GPUs (RoboMME Appendix B.2.3). No additional subgoal-model fine-tuning for Oracle or prompted Gemini.", "source": "https://arxiv.org/html/2603.04639"},
       "tags": ["oracle_subgoal"],
-      "total_size": "4B",
-      "size_source": "https://arxiv.org/html/2603.04639",
+      "total_size": "3.35B",
+      "size_note": "3,353,433,872 parameters, counted from the released MME-VLA checkpoint global tensor shapes, including the pi0.5 backbone; oracle subgoals add no model parameters.",
+      "size_source": "https://huggingface.co/Yinpei/mme_vla_suite/tree/5db4d53ddb98c7f80cab08792dd53d985d712ab1/symbolic-simple-subgoal",
       "organization": "RoboMME",
       "memory": "Symbolic",
       "baseline": true,
@@ -361,8 +241,9 @@ var RESULTS = {
       "model_type": "Oracle+VLA",
       "training_compute": {"gpu": "A40", "gpus": 4, "hours": [72, 72], "approximate": true, "note": "Symbolic policy training: approximately 3 days on 4 A40 GPUs (RoboMME Appendix B.2.3). No additional subgoal-model fine-tuning for Oracle or prompted Gemini.", "source": "https://arxiv.org/html/2603.04639"},
       "tags": ["oracle_subgoal"],
-      "total_size": "4B",
-      "size_source": "https://arxiv.org/html/2603.04639",
+      "total_size": "3.35B",
+      "size_note": "3,353,433,872 parameters, counted from the released MME-VLA checkpoint global tensor shapes, including the pi0.5 backbone; oracle subgoals add no model parameters.",
+      "size_source": "https://huggingface.co/Yinpei/mme_vla_suite/tree/5db4d53ddb98c7f80cab08792dd53d985d712ab1/symbolic-grounded-subgoal",
       "organization": "RoboMME",
       "memory": "Symbolic",
       "baseline": true,
@@ -398,11 +279,11 @@ var RESULTS = {
           {"gpu": "A100", "gpus": 4, "memory_gb": 40, "hours": [40, 40], "source": "Maintainer estimate, 2026-10-16"}
         ],
         "approximate": true,
-        "display_label": "≈80",
         "note": "RoboMME training total: VLA policy ≈72 hours on 4 A40 GPUs (Appendix B.2.3), plus Qwen3VL subgoal predictor ≈40 hours on 4 A100 40GB GPUs (maintainer estimate)."
       },
       "tags": ["open_sourced_model"],
-      "total_size": "8B",
+      "total_size": "7.79B",
+      "size_note": "Combined total: 3,353,433,872 parameters in the pi0.5 policy plus 4,437,815,808 in Qwen3-VL-4B-Instruct = 7,791,249,680. Shared embeddings are counted once.",
       "size_source": "https://arxiv.org/html/2603.04639",
       "organization": "RoboMME",
       "memory": "Symbolic",
@@ -438,11 +319,11 @@ var RESULTS = {
           {"gpu": "A100", "gpus": 4, "memory_gb": 40, "hours": [40, 40], "source": "Maintainer estimate, 2026-10-16"}
         ],
         "approximate": true,
-        "display_label": "≈80",
         "note": "RoboMME training total: VLA policy ≈72 hours on 4 A40 GPUs (Appendix B.2.3), plus Qwen3VL subgoal predictor ≈40 hours on 4 A100 40GB GPUs (maintainer estimate)."
       },
       "tags": ["open_sourced_model"],
-      "total_size": "8B",
+      "total_size": "7.79B",
+      "size_note": "Combined total: 3,353,433,872 parameters in the pi0.5 policy plus 4,437,815,808 in Qwen3-VL-4B-Instruct = 7,791,249,680. Shared embeddings are counted once.",
       "size_source": "https://arxiv.org/html/2603.04639",
       "organization": "RoboMME",
       "memory": "Symbolic",
@@ -458,8 +339,9 @@ var RESULTS = {
       "model_type": "VLA",
       "training_compute": {"gpu": "A40", "gpus": 4, "hours": [72, 96], "approximate": true, "display_label": "≈50", "note": "Perceptual-memory family estimate: approximately 3–4 days on 4 A40 GPUs per run (RoboMME Appendix B.2.3).", "source": "https://arxiv.org/html/2603.04639"},
       "tags": ["open_sourced_model"],
-      "total_size": "4B",
-      "size_source": "https://arxiv.org/html/2603.04639",
+      "total_size": "3.36B",
+      "size_note": "3,359,793,680 parameters, counted from the released MME-VLA checkpoint global tensor shapes, including the pi0.5 backbone and memory modules.",
+      "size_source": "https://huggingface.co/Yinpei/mme_vla_suite/tree/5db4d53ddb98c7f80cab08792dd53d985d712ab1/perceptual-tokendrop-context",
       "organization": "RoboMME",
       "memory": "Perceptual",
       "tasks": {
@@ -474,8 +356,9 @@ var RESULTS = {
       "model_type": "VLA",
       "training_compute": {"gpu": "A40", "gpus": 4, "hours": [72, 96], "approximate": true, "display_label": "≈50", "note": "Perceptual-memory family estimate: approximately 3–4 days on 4 A40 GPUs per run (RoboMME Appendix B.2.3).", "source": "https://arxiv.org/html/2603.04639"},
       "tags": ["open_sourced_model"],
-      "total_size": "4B",
-      "size_source": "https://arxiv.org/html/2603.04639",
+      "total_size": "3.44B",
+      "size_note": "3,441,899,024 parameters, counted from the released MME-VLA checkpoint global tensor shapes, including the pi0.5 backbone and memory modules.",
+      "size_source": "https://huggingface.co/Yinpei/mme_vla_suite/tree/5db4d53ddb98c7f80cab08792dd53d985d712ab1/perceptual-tokendrop-modul",
       "organization": "RoboMME",
       "memory": "Perceptual",
       "tasks": {
@@ -490,8 +373,9 @@ var RESULTS = {
       "model_type": "VLA",
       "training_compute": {"gpu": "A40", "gpus": 4, "hours": [72, 96], "approximate": true, "display_label": "≈50", "note": "Perceptual-memory family estimate: approximately 3–4 days on 4 A40 GPUs per run (RoboMME Appendix B.2.3).", "source": "https://arxiv.org/html/2603.04639"},
       "tags": ["open_sourced_model"],
-      "total_size": "4B",
-      "size_source": "https://arxiv.org/html/2603.04639",
+      "total_size": "3.56B",
+      "size_note": "3,555,127,824 parameters, counted from the released MME-VLA checkpoint global tensor shapes, including the pi0.5 backbone and memory modules.",
+      "size_source": "https://huggingface.co/Yinpei/mme_vla_suite/tree/5db4d53ddb98c7f80cab08792dd53d985d712ab1/perceptual-tokendrop-expert",
       "organization": "RoboMME",
       "memory": "Perceptual",
       "tasks": {
@@ -506,8 +390,9 @@ var RESULTS = {
       "model_type": "VLA",
       "training_compute": {"gpu": "A40", "gpus": 4, "hours": [72, 96], "approximate": true, "display_label": "≈50", "note": "Perceptual-memory family estimate: approximately 3–4 days on 4 A40 GPUs per run (RoboMME Appendix B.2.3).", "source": "https://arxiv.org/html/2603.04639"},
       "tags": ["open_sourced_model"],
-      "total_size": "4B",
-      "size_source": "https://arxiv.org/html/2603.04639",
+      "total_size": "3.36B",
+      "size_note": "3,359,793,680 parameters, counted from the released MME-VLA checkpoint global tensor shapes, including the pi0.5 backbone and memory modules.",
+      "size_source": "https://huggingface.co/Yinpei/mme_vla_suite/tree/5db4d53ddb98c7f80cab08792dd53d985d712ab1/perceptual-framesamp-context",
       "organization": "RoboMME",
       "memory": "Perceptual",
       "tasks": {
@@ -522,8 +407,9 @@ var RESULTS = {
       "model_type": "VLA",
       "training_compute": {"gpu": "A40", "gpus": 4, "hours": [72, 96], "approximate": true, "display_label": "≈50", "note": "Perceptual-memory family estimate: approximately 3–4 days on 4 A40 GPUs per run (RoboMME Appendix B.2.3).", "source": "https://arxiv.org/html/2603.04639"},
       "tags": ["open_sourced_model"],
-      "total_size": "4B",
-      "size_source": "https://arxiv.org/html/2603.04639",
+      "total_size": "3.44B",
+      "size_note": "3,441,899,024 parameters, counted from the released MME-VLA checkpoint global tensor shapes, including the pi0.5 backbone and memory modules.",
+      "size_source": "https://huggingface.co/Yinpei/mme_vla_suite/tree/5db4d53ddb98c7f80cab08792dd53d985d712ab1/perceptual-framesamp-modul",
       "organization": "RoboMME",
       "memory": "Perceptual",
       "tasks": {
@@ -538,15 +424,16 @@ var RESULTS = {
       "model_type": "VLA",
       "training_compute": {"gpu": "A40", "gpus": 4, "hours": [72, 96], "approximate": true, "display_label": "≈50", "note": "Perceptual-memory family estimate: approximately 3–4 days on 4 A40 GPUs per run (RoboMME Appendix B.2.3).", "source": "https://arxiv.org/html/2603.04639"},
       "tags": ["open_sourced_model"],
-      "total_size": "4B",
-      "size_source": "https://arxiv.org/html/2603.04639",
+      "total_size": "3.56B",
+      "size_note": "3,555,127,824 parameters, counted from the released MME-VLA checkpoint global tensor shapes, including the pi0.5 backbone and memory modules.",
+      "size_source": "https://huggingface.co/Yinpei/mme_vla_suite/tree/5db4d53ddb98c7f80cab08792dd53d985d712ab1/perceptual-framesamp-expert",
       "organization": "RoboMME",
       "memory": "Perceptual",
       "tasks": {
         "BinFill": 0.5733, "PickXtimes": 0.8622, "SwingXtimes": 0.9467, "StopCube": 0.2889,
         "VideoUnmask": 0.3178, "ButtonUnmask": 0.2578, "VideoUnmaskSwap": 0.2289, "ButtonUnmaskSwap": 0.2022,
         "PickHighlight": 0.1911, "VideoRepick": 0.2311, "VideoPlaceButton": 0.3000, "VideoPlaceOrder": 0.2422,
-        "MoveCube": 0.8311, "InsertPeg": 0.1356, "PatternLock": 0.1711, "RouteStick": 0.0200
+        "MoveCube": 0.8311, "InsertPeg": 0.0200, "PatternLock": 0.1356, "RouteStick": 0.1711
       }
     },
     {
@@ -554,8 +441,9 @@ var RESULTS = {
       "model_type": "VLA",
       "training_compute": {"gpu": "A40", "gpus": 4, "hours": [120, 144], "approximate": true, "display_label": "≈80", "note": "TTT family estimate: approximately 5–6 days on 4 A40 GPUs per run (RoboMME Appendix B.2.3).", "source": "https://arxiv.org/html/2603.04639"},
       "tags": ["open_sourced_model"],
-      "total_size": "4B",
-      "size_source": "https://arxiv.org/html/2603.04639",
+      "total_size": "3.36B",
+      "size_note": "3,357,703,186 parameters, counted from the released MME-VLA checkpoint global tensor shapes, including the pi0.5 backbone and memory modules. Excludes the fixed learning-rate constant.",
+      "size_source": "https://huggingface.co/Yinpei/mme_vla_suite/tree/5db4d53ddb98c7f80cab08792dd53d985d712ab1/recurrent-ttt-context",
       "organization": "RoboMME",
       "memory": "Recurrent",
       "tasks": {
@@ -570,12 +458,14 @@ var RESULTS = {
       "model_type": "VLA",
       "training_compute": {"gpu": "A40", "gpus": 4, "hours": [120, 144], "approximate": true, "display_label": "≈80", "note": "TTT family estimate: approximately 5–6 days on 4 A40 GPUs per run (RoboMME Appendix B.2.3).", "source": "https://arxiv.org/html/2603.04639"},
       "tags": ["open_sourced_model"],
-      "total_size": "4B",
-      "size_source": "https://arxiv.org/html/2603.04639",
+      "total_size": "3.44B",
+      "size_note": "3,442,167,826 parameters calculated from the released model code and configuration: 3,353,433,872 in pi0.5, 3,744,002 in memory representation, and 84,989,952 in memory integration. Excludes non-parameter buffers. This variant has no released checkpoint for direct verification.",
+      "size_source": "https://github.com/RoboMME/robomme_policy_learning/blob/ecf086c3be7c2223167d9bb2f6ef1f0a6e24353b/src/mme_vla_suite/models/config/robomme/recurrent-ttt-modul.yaml",
       "organization": "RoboMME",
       "memory": "Recurrent",
       "tasks": {
         "BinFill": 0.3422, "PickXtimes": 0.6511, "SwingXtimes": 0.3667, "StopCube": 0.0211,
+        // Table 3 reports 25.22 for VideoUnmaskSwap; Table 15 differs (25.00).
         "VideoUnmask": 0.2722, "ButtonUnmask": 0.2211, "VideoUnmaskSwap": 0.2522, "ButtonUnmaskSwap": 0.1411,
         "PickHighlight": 0.1456, "VideoRepick": 0.1211, "VideoPlaceButton": 0.3267, "VideoPlaceOrder": 0.2233,
         "MoveCube": 0.3122, "InsertPeg": 0.0111, "PatternLock": 0.0356, "RouteStick": 0.0700
@@ -586,8 +476,9 @@ var RESULTS = {
       "model_type": "VLA",
       "training_compute": {"gpu": "A40", "gpus": 4, "hours": [120, 144], "approximate": true, "display_label": "≈80", "note": "TTT family estimate: approximately 5–6 days on 4 A40 GPUs per run (RoboMME Appendix B.2.3).", "source": "https://arxiv.org/html/2603.04639"},
       "tags": ["open_sourced_model"],
-      "total_size": "4B",
-      "size_source": "https://arxiv.org/html/2603.04639",
+      "total_size": "3.56B",
+      "size_note": "3,555,396,626 parameters, counted from the released MME-VLA checkpoint global tensor shapes, including the pi0.5 backbone and memory modules. Excludes the fixed learning-rate constant.",
+      "size_source": "https://huggingface.co/Yinpei/mme_vla_suite/tree/5db4d53ddb98c7f80cab08792dd53d985d712ab1/recurrent-ttt-expert",
       "organization": "RoboMME",
       "memory": "Recurrent",
       "tasks": {
@@ -602,8 +493,9 @@ var RESULTS = {
       "model_type": "VLA",
       "training_compute": {"gpu": "H100", "gpus": 2, "hours": [48, 72], "approximate": true, "display_label": "≈120", "note": "RMT family estimate: approximately 2–3 days on 2 H100 GPUs per run (RoboMME Appendix B.2.3).", "source": "https://arxiv.org/html/2603.04639"},
       "tags": ["open_sourced_model"],
-      "total_size": "4B",
-      "size_source": "https://arxiv.org/html/2603.04639",
+      "total_size": "3.36B",
+      "size_note": "3,357,372,432 parameters calculated from the released model code and configuration: 3,353,433,872 in pi0.5, 3,938,560 in memory representation, and 0 in memory integration. Excludes non-parameter buffers. This variant has no released checkpoint for direct verification.",
+      "size_source": "https://github.com/RoboMME/robomme_policy_learning/blob/ecf086c3be7c2223167d9bb2f6ef1f0a6e24353b/src/mme_vla_suite/models/config/robomme/recurrent-rmt-context.yaml",
       "organization": "RoboMME",
       "memory": "Recurrent",
       "tasks": {
@@ -618,8 +510,9 @@ var RESULTS = {
       "model_type": "VLA",
       "training_compute": {"gpu": "H100", "gpus": 2, "hours": [48, 72], "approximate": true, "display_label": "≈120", "note": "RMT family estimate: approximately 2–3 days on 2 H100 GPUs per run (RoboMME Appendix B.2.3).", "source": "https://arxiv.org/html/2603.04639"},
       "tags": ["open_sourced_model"],
-      "total_size": "4B",
-      "size_source": "https://arxiv.org/html/2603.04639",
+      "total_size": "3.44B",
+      "size_note": "3,441,837,072 parameters calculated from the released model code and configuration: 3,353,433,872 in pi0.5, 3,413,248 in memory representation, and 84,989,952 in memory integration. Excludes non-parameter buffers. This variant has no released checkpoint for direct verification.",
+      "size_source": "https://github.com/RoboMME/robomme_policy_learning/blob/ecf086c3be7c2223167d9bb2f6ef1f0a6e24353b/src/mme_vla_suite/models/config/robomme/recurrent-rmt-modul.yaml",
       "organization": "RoboMME",
       "memory": "Recurrent",
       "tasks": {
@@ -634,14 +527,15 @@ var RESULTS = {
       "model_type": "VLA",
       "training_compute": {"gpu": "H100", "gpus": 2, "hours": [48, 72], "approximate": true, "display_label": "≈120", "note": "RMT family estimate: approximately 2–3 days on 2 H100 GPUs per run (RoboMME Appendix B.2.3).", "source": "https://arxiv.org/html/2603.04639"},
       "tags": ["open_sourced_model"],
-      "total_size": "4B",
-      "size_source": "https://arxiv.org/html/2603.04639",
+      "total_size": "3.56B",
+      "size_note": "3,555,065,872 parameters calculated from the released model code and configuration: 3,353,433,872 in pi0.5, 3,413,248 in memory representation, and 198,218,752 in memory integration. Excludes non-parameter buffers. This variant has no released checkpoint for direct verification.",
+      "size_source": "https://github.com/RoboMME/robomme_policy_learning/blob/ecf086c3be7c2223167d9bb2f6ef1f0a6e24353b/src/mme_vla_suite/models/config/robomme/recurrent-rmt-expert.yaml",
       "organization": "RoboMME",
       "memory": "Recurrent",
       "tasks": {
         "BinFill": 0.3578, "PickXtimes": 0.6022, "SwingXtimes": 0.3600, "StopCube": 0.0556,
         "VideoUnmask": 0.2800, "ButtonUnmask": 0.1711, "VideoUnmaskSwap": 0.1578, "ButtonUnmaskSwap": 0.0200,
-        "PickHighlight": 0.1178, "VideoRepick": 0.0022, "VideoPlaceButton": 0.2267, "VideoPlaceOrder": 0.2267,
+        "PickHighlight": 0.1178, "VideoRepick": 0.0022, "VideoPlaceButton": 0.2422, "VideoPlaceOrder": 0.2267,
         "MoveCube": 0.2000, "InsertPeg": 0.0189, "PatternLock": 0.0422, "RouteStick": 0.0489
       }
     },
@@ -650,8 +544,9 @@ var RESULTS = {
       "model_type": "VLA",
       "training_compute": {"h100_hours": 24, "approximate": true, "note": "Maintainer-estimated RoboMME training compute: approximately 24 H100 GPU-hours.", "source": "Maintainer estimate, 2026-10-16"},
       "tags": ["open_sourced_model"],
-      "total_size": "4B",
-      "size_source": "https://arxiv.org/html/2603.04639",
+      "total_size": "3.35B",
+      "size_source": "https://huggingface.co/Yinpei/pi05_baseline",
+      "size_note": "3,353,433,872 parameters, counted from the released RoboMME pi0.5 checkpoint global tensor shapes, including the vision encoder and action expert.",
       "organization": "Physical Intelligence",
       "memory": "\u2014",
       "tasks": {
@@ -666,24 +561,26 @@ var RESULTS = {
       "model_type": "VLA",
       "training_compute": {"h100_hours": 24, "approximate": true, "note": "Maintainer-estimated RoboMME training compute: approximately 24 H100 GPU-hours.", "source": "Maintainer estimate, 2026-10-16"},
       "tags": ["open_sourced_model"],
-      "total_size": "4B",
-      "size_source": "https://arxiv.org/html/2603.04639",
+      "total_size": "3.35B",
+      "size_source": "https://huggingface.co/Yinpei/pi05_baseline",
+      "size_note": "Same pi0.5 architecture (3,353,433,872 parameters); past actions are concatenated into the input sequence without an additional parameterized memory module.",
       "organization": "Physical Intelligence",
       "memory": "Symbolic",
       "tasks": {
         "BinFill": 0.2667, "PickXtimes": 0.5833, "SwingXtimes": 0.2667, "StopCube": 0.0467,
         "VideoUnmask": 0.3067, "ButtonUnmask": 0.2367, "VideoUnmaskSwap": 0.2067, "ButtonUnmaskSwap": 0.1600,
-        "PickHighlight": 0.1233, "VideoRepick": 0.0867, "VideoPlaceButton": 0.1867, "VideoPlaceOrder": 0.1867,
+        "PickHighlight": 0.1233, "VideoRepick": 0.0867, "VideoPlaceButton": 0.2400, "VideoPlaceOrder": 0.1867,
         "MoveCube": 0.3400, "InsertPeg": 0.0100, "PatternLock": 0.0400, "RouteStick": 0.0567
       }
     },
     {
       "name": "SAM2Act (Fang et al.)",
       "model_type": "NN",
-      "training_compute": {"h100_hours": 40, "approximate": true, "note": "Maintainer-estimated RoboMME training compute: approximately 40 H100 GPU-hours.", "source": "Maintainer estimate, 2026-10-16"},
+      "training_compute": {"gpu": "A40", "gpus": 4, "hours": [120, 120], "approximate": true, "note": "RoboMME training includes both SAM2Act+ stages: approximately 2.5 days per stage on 4 A40 GPUs, or 120 wall-clock hours total (RoboMME Appendix B.3).", "source": "https://arxiv.org/html/2603.04639"},
       "tags": ["open_sourced_model"],
       // Estimated from 600 MB of FP32 weights at 4 bytes per parameter.
-      "total_size": "150M",
+      "total_size": "≈150M",
+      "size_note": "Estimated from the maintainer-provided 600 MB weight size assuming FP32 (4 bytes per parameter); not a verified tensor count.",
       "link": "https://sam2act.github.io/",
       "memory": "Perceptual",
       "tasks": {
@@ -702,11 +599,11 @@ var RESULTS = {
           {"gpu": "A100", "gpus": 4, "memory_gb": 40, "hours": [48, 48], "source": "Maintainer estimate, 2026-10-16"}
         ],
         "approximate": true,
-        "display_label": "90",
         "note": "RoboMME training total: GroundSG VLA policy ≈72 hours on 4 A40 GPUs (≈43.6 H100 GPU-hours; Appendix B.2.3), plus MemER subgoal predictor ≈48 hours on 4 A100 40GB GPUs (≈60.5 H100 GPU-hours; maintainer estimate)."
       },
       "tags": ["open_sourced_model"],
-      "total_size": "8B",
+      "total_size": "7.79B",
+      "size_note": "Combined total: 3,353,433,872 parameters in the GroundSG pi0.5 policy plus 4,437,815,808 in the Qwen3-VL-4B-Instruct subgoal predictor = 7,791,249,680. Shared embeddings are counted once.",
       "size_source": "https://arxiv.org/html/2603.04639",
       "link": "https://jen-pan.github.io/memer/",
       "memory": "Perceptual+Symbolic",
@@ -754,8 +651,9 @@ var RESULTS = {
       "model_type": "VLM+VLA",
       "training_compute": {"status": "not_reported", "note": "RoboMME training steps are reported, but GPU count and training duration are not.", "source": "https://arxiv.org/html/2608.24115"},
       "tags": ["open_sourced_model"],
-      "total_size": "12B",
+      "total_size": "12.6B",
       "size_source": "https://arxiv.org/html/2608.24115",
+      "size_note": "Approximate total of the 9B Ponder model and 3.6B Pounce action model; excludes small interface additions (Section IV-A).",
       "link": "https://worv-ai.github.io/ponderpounce/",
       "tasks": {
         "BinFill": 0.5067, "PickXtimes": 0.9333, "SwingXtimes": 0.7200, "StopCube": 0.8267,
@@ -769,9 +667,9 @@ var RESULTS = {
       "model_type": "VLA",
       "training_compute": {"gpu": "H100", "gpus": 128, "hours": [20, 20], "approximate": false, "note": "RoboMME training: 128 H100 GPUs × 20 wall-clock hours (SimpleMemVLA Appendix A, Table 8).", "source": "https://arxiv.org/html/2609.05533"},
       "tags": ["open_sourced_model"],
-      "total_size": "4B",
-      "size_source": "https://arxiv.org/html/2609.05533",
-      // Displayed using the Qwen3.5-4B backbone size.
+      "total_size": "5.71B",
+      "size_source": "https://huggingface.co/yinchenghust/simplememvla_robomme",
+      "size_note": "5,708,513,800 unique parameters: 4,539,265,536 in the Qwen3.5 backbone and 1,169,248,264 in the action head. Shared input/output embeddings are counted once; rounded to 5.71B.",
       "link": "https://arxiv.org/pdf/2609.05533",
       // Full per-task results from Table 10; overall success is 88.25%.
       "tasks": {
@@ -786,8 +684,9 @@ var RESULTS = {
       "model_type": "VLA",
       "training_compute": {"gpu": "H200", "gpus": 32, "hours": [48, 48], "approximate": false, "display_label": "1,536", "note": "Reported RoboMME training: 32 H200 GPUs × 48 hours (T²Mem Section 4.1). Conversion assumes H200 SXM.", "source": "https://arxiv.org/html/2609.36720"},
       "tags": ["open_sourced_model"],
-      "total_size": "4B",
+      "total_size": "≈3.42B",
       "size_source": "https://arxiv.org/pdf/2609.36720",
+      "size_note": "Estimated deployment total: 3.353B pi0.5 backbone plus 67.90M added memory/interface parameters reported in Appendix A. Assumes VLM LoRA adapters are merged; code and checkpoint are not yet released for an exact count.",
       "link": "https://arxiv.org/pdf/2609.36720",
       // Table 1: 50 test episodes per task over three seeds. Appendix A adds 67.90M parameters to the pi0.5 backbone.
       "tasks": {
@@ -803,14 +702,16 @@ var RESULTS = {
       "training_compute": {"status": "not_reported", "note": "RoboMME training duration is not separately reported for this configuration.", "source": "https://arxiv.org/html/2603.04639"},
       "tags": ["open_sourced_model"],
       // Estimated from 300 MB of FP32 weights at 4 bytes per parameter.
-      "total_size": "75M",
+      "total_size": "≈75M",
+      "size_note": "Estimated from the maintainer-provided 300 MB weight size assuming FP32 (4 bytes per parameter); not a verified tensor count.",
       "link": "https://diffusion-policy.cs.columbia.edu/",
       "memory": "\u2014",
+      // RoboMME Appendix Table 15: per-task means; their average rounds to 7.11%.
       "tasks": {
-        "BinFill": 0.3067, "PickXtimes": 0.0533, "SwingXtimes": 0.0667, "StopCube": 0.0000,
-        "VideoUnmask": 0.1400, "ButtonUnmask": 0.0400, "VideoUnmaskSwap": 0.0400, "ButtonUnmaskSwap": 0.0000,
-        "PickHighlight": 0.0000, "VideoRepick": 0.0000, "VideoPlaceButton": 0.2200, "VideoPlaceOrder": 0.0433,
-        "MoveCube": 0.0800, "InsertPeg": 0.0000, "PatternLock": 0.0333, "RouteStick": 0.1000
+        "BinFill": 0.3200, "PickXtimes": 0.0267, "SwingXtimes": 0.0667, "StopCube": 0.0000,
+        "VideoUnmask": 0.1600, "ButtonUnmask": 0.0400, "VideoUnmaskSwap": 0.0400, "ButtonUnmaskSwap": 0.0000,
+        "PickHighlight": 0.0000, "VideoRepick": 0.0000, "VideoPlaceButton": 0.2200, "VideoPlaceOrder": 0.0567,
+        "MoveCube": 0.0867, "InsertPeg": 0.0000, "PatternLock": 0.0200, "RouteStick": 0.1000
       }
     }
   ]
@@ -833,7 +734,7 @@ var RESULTS = {
   };
 
   function renderMethodLegend() {
-    document.getElementById('method-legend').innerHTML = '<span>Show:</span>' + Object.keys(methodTags).map(function(key) {
+    document.getElementById('method-legend').innerHTML = '<span class="filter-caption">Show</span>' + Object.keys(methodTags).map(function(key) {
       var tag = methodTags[key];
       return '<button type="button" class="method-filter method-' + key + (selectedTags[key] ? ' is-active' : '') + '" data-tag="' + key + '" aria-label="' + tag.label + '" aria-pressed="' + selectedTags[key] + '" title="' + tag.description + '">' + tag.label + '</button>';
     }).join('');
@@ -872,7 +773,7 @@ var RESULTS = {
     { key: 'type', label: 'Type', width: 5.25, title: 'Architecture of the evaluated system. Hover over a value for its definition.' },
     { key: 'parameters', label: 'Total<br>Params', width: 3.75, title: 'Approximate number of model parameters.' },
     { key: 'training', label: 'Train<br>Hours', width: 3.75, title: 'RoboMME training per run, in H100-equivalent GPU-hours. See notes below for conversion assumptions.' },
-    { key: 'apiCost', label: 'Total<br>Cost', width: 3.5, title: 'Total API spending in USD for the reported RoboMME evaluation. Excludes local GPU compute.' }
+    { key: 'apiCost', label: 'API<br>Cost', width: 3.5, title: 'Total API spending in USD for the reported RoboMME evaluation. Excludes local GPU compute.' }
   ];
 
   function getDetailColumns() {
@@ -883,6 +784,9 @@ var RESULTS = {
   }
 
   function syncDetailsControls() {
+    document.getElementById('view-toggle').setAttribute('aria-pressed', String(viewMode === 'radar'));
+    document.querySelector('.table-hint').hidden = viewMode !== 'table';
+    document.querySelector('.table-footer').hidden = viewMode !== 'table';
     var button = document.getElementById('details-toggle');
     button.hidden = viewMode !== 'table';
     button.classList.toggle('is-active', showDetails);
@@ -950,7 +854,7 @@ var RESULTS = {
       var prefix = ri < 3 ? medals[ri] + ' ' : '#' + (ri + 1) + ' ';
       return {
         label: prefix + m.name,
-        data: cols.map(function(c) { return +(m[c.key] * 100).toFixed(2); }),
+        data: cols.map(function(c) { return +pct(m[c.key]); }),
         fill: true,
         backgroundColor: color.bg,
         borderColor: color.border,
@@ -981,25 +885,34 @@ var RESULTS = {
         data: pendingRadarData,
         options: {
           responsive: true,
-          maintainAspectRatio: true,
+          maintainAspectRatio: false,
           scales: {
             r: {
               beginAtZero: true,
               max: 100,
-              ticks: { stepSize: 20, font: { size: 13 }, backdropColor: 'transparent' },
-              pointLabels: { font: { size: 14, weight: '600' } },
-              grid: { color: 'rgba(0,0,0,0.06)' },
-              angleLines: { color: 'rgba(0,0,0,0.08)' }
+              ticks: { stepSize: 20, font: { size: 10 }, color: '#8a98ad', backdropColor: 'transparent' },
+              pointLabels: {
+                color: '#536680',
+                font: { size: 11, weight: '600', family: 'Noto Sans' },
+                callback: function(label) {
+                  return mode === 'suite' && window.matchMedia('(max-width: 650px)').matches && Array.isArray(label) ? label[0] : label;
+                }
+              },
+              grid: { color: 'rgba(58,86,132,0.10)' },
+              angleLines: { color: 'rgba(58,86,132,0.10)' }
             }
           },
           plugins: {
             legend: {
               position: 'bottom',
-              labels: { padding: 20, usePointStyle: true, pointStyle: 'circle', font: { size: 14 } }
+              labels: { padding: 15, boxWidth: 7, boxHeight: 7, color: '#536680', usePointStyle: true, pointStyle: 'circle', font: { size: 10, family: 'Noto Sans' } }
             },
             tooltip: {
-              titleFont: { size: 14 },
-              bodyFont: { size: 13 },
+              backgroundColor: '#17243c',
+              padding: 12,
+              cornerRadius: 8,
+              titleFont: { size: 12 },
+              bodyFont: { size: 11 },
               callbacks: {
                 label: function(context) {
                   return context.dataset.label + ': ' + context.parsed.r.toFixed(2) + '%';
@@ -1016,9 +929,9 @@ var RESULTS = {
   function pct(v) { return (Math.round((v + Number.EPSILON) * 10000) / 100).toFixed(2); }
 
   function medal(i) {
-    if (i === 0) return '<span class="rank-medal">🥇</span>';
-    if (i === 1) return '<span class="rank-medal">🥈</span>';
-    if (i === 2) return '<span class="rank-medal">🥉</span>';
+    if (i === 0) return '<span class="rank-medal gold" aria-label="Rank 1">🥇</span>';
+    if (i === 1) return '<span class="rank-medal silver" aria-label="Rank 2">🥈</span>';
+    if (i === 2) return '<span class="rank-medal bronze" aria-label="Rank 3">🥉</span>';
     return i + 1;
   }
 
@@ -1065,10 +978,10 @@ var RESULTS = {
   ];
 
   var suiteLabels = {
-    "Counting":   "Counting<br>(Temporal Memory)",
-    "Permanence": "Permanence<br>(Spatial Memory)",
-    "Reference":  "Reference<br>(Object Memory)",
-    "Imitation":  "Imitation<br>(Procedural Memory)"
+    "Counting":   "Counting<br><small>Temporal memory</small>",
+    "Permanence": "Permanence<br><small>Spatial memory</small>",
+    "Reference":  "Reference<br><small>Object memory</small>",
+    "Imitation":  "Imitation<br><small>Procedural memory</small>"
   };
 
   function getColumns() {
@@ -1131,7 +1044,7 @@ var RESULTS = {
       var apiCost = m.api_cost;
       row.details = {
         type: { label: m.model_type ? m.model_type.replace(/\+/g, ' + ') : 'N/R', title: modelTypes[m.model_type] || 'Architecture type is not reported.', badgeClass: m.model_type ? 'type-' + m.model_type.toLowerCase().replace(/[+\s]+/g, '-') : '' },
-        parameters: { label: row.totalSize, title: 'Approximate parameter count; B = billion, M = million.' },
+        parameters: { label: row.totalSize, title: m.size_note || 'Approximate parameter count; B = billion, M = million.' },
         training: trainingCompute(m),
         apiCost: apiCost && typeof apiCost.total_usd === 'number'
           ? { label: (apiCost.approximate ? '≈' : '') + '$' + apiCost.total_usd.toLocaleString('en-US'), title: apiCost.note }
@@ -1151,9 +1064,9 @@ var RESULTS = {
   }
 
   function renderToolbar() {
-    var html = '<span style="font-weight:600;font-size:1rem;color:#555;margin-right:0.75rem;">Group by</span>';
+    var html = '';
     [['suite', 'Task Suite'], ['char', 'Task Characteristics'], ['task', 'Each Task']].forEach(function(m) {
-      html += '<button class="mode-btn' + (mode === m[0] ? ' is-active' : '') + '" data-mode="' + m[0] + '">' + m[1] + '</button>';
+      html += '<button type="button" aria-pressed="' + (mode === m[0]) + '" class="mode-btn' + (mode === m[0] ? ' is-active' : '') + '" data-mode="' + m[0] + '">' + m[1] + '</button>';
     });
     document.getElementById('lb-toolbar').innerHTML = html;
 
@@ -1181,7 +1094,7 @@ var RESULTS = {
 
     var colW = mode === 'task' ? 'width:5rem;' : '';
     var cg = '<col style="width:3rem;">';
-    cg += '<col style="width:12rem;">';
+    cg += '<col style="width:var(--model-width);">';
     var detailsWidth = 0;
     visibleDetails.forEach(function(c) {
       cg += '<col style="width:' + c.width + 'rem;">';
@@ -1192,7 +1105,7 @@ var RESULTS = {
     document.getElementById('lb-cols').innerHTML = cg;
 
     var tableEl = document.getElementById('lb-table');
-    tableEl.style.minWidth = (mode === 'task' ? 3 + 12 + detailsWidth + 5 + cols.length * 5 : (mode === 'char' ? 63 : 55) + detailsWidth) + 'rem';
+    tableEl.style.minWidth = 'calc(' + (mode === 'task' ? 3 + detailsWidth + 5 + cols.length * 5 : (mode === 'char' ? 51 : 43) + detailsWidth) + 'rem + var(--model-width))';
 
     var html = '<tr>';
     html += '<th class="no-sort">Rank</th>';
@@ -1200,7 +1113,7 @@ var RESULTS = {
     visibleDetails.forEach(function(c) {
       html += '<th class="no-sort detail-header" title="' + c.title + '">' + c.label + '</th>';
     });
-    html += '<th data-sort="Avg"' + (sortCol === 'Avg' ? ' class="sorted"' : '') + ' style="white-space:nowrap;background:#3273dc;">Overall ' + arrow('Avg') + '</th>';
+    html += '<th data-sort="Avg"' + (sortCol === 'Avg' ? ' class="sorted"' : '') + ' style="white-space:nowrap;">Overall ' + arrow('Avg') + '</th>';
     cols.forEach(function(c) {
       html += '<th data-sort="' + c.key + '"' + (sortCol === c.key ? ' class="sorted"' : '') + '>' + labelWithArrow(c.label, c.key) + '</th>';
     });
@@ -1208,6 +1121,17 @@ var RESULTS = {
     document.getElementById('lb-head').innerHTML = html;
 
     document.querySelectorAll('#lb-head th[data-sort]').forEach(function(th) {
+      th.tabIndex = 0;
+      th.setAttribute('scope', 'col');
+      th.setAttribute('aria-sort', th.getAttribute('data-sort') === sortCol ? (sortAsc ? 'ascending' : 'descending') : 'none');
+      th.addEventListener('keydown', function(event) {
+        if (event.key === 'Enter' || event.key === ' ') {
+          event.preventDefault();
+          var key = this.getAttribute('data-sort');
+          this.click();
+          document.querySelector('#lb-head th[data-sort="' + key + '"]').focus({ preventScroll: true });
+        }
+      });
       th.addEventListener('click', function() {
         var key = this.getAttribute('data-sort');
         if (sortCol === key) {
@@ -1221,6 +1145,18 @@ var RESULTS = {
     });
   }
 
+  // Horizontal overflow creates a separate sticky container. Follow page scrolling
+  // so the header stays visible while the full-height table remains on screen.
+  function updateStickyHeader() {
+    var wrap = document.querySelector('.lb-wrap');
+    if (!wrap || viewMode !== 'table') return;
+    var head = document.getElementById('lb-head');
+    var table = wrap.querySelector('table');
+    var maxTop = Math.max(0, table.offsetHeight - head.offsetHeight);
+    var top = Math.min(maxTop, Math.max(0, -wrap.getBoundingClientRect().top - wrap.clientTop));
+    wrap.style.setProperty('--lb-header-top', top + 'px');
+  }
+
   function render() {
     syncDetailsControls();
     var visibleDetails = getDetailColumns();
@@ -1229,6 +1165,7 @@ var RESULTS = {
       return r.tags.some(function(key) { return selectedTags[key]; });
     });
     document.getElementById('tag-empty-state').hidden = rows.length > 0;
+    document.getElementById('visible-count').textContent = rows.length;
 
     sortRows(rows);
 
@@ -1262,7 +1199,7 @@ var RESULTS = {
 
     function nameHtml(r) {
       var content = '<strong>' + formatModelName(r.name) + '</strong>';
-      if (r.link) content = '<a class="model-label" title="' + r.name + '" href="' + r.link + '" target="_blank" style="color:inherit;text-decoration:underline dotted;">' + content + '</a>';
+      if (r.link) content = '<a class="model-label" title="' + r.name + '" href="' + r.link + '" target="_blank" rel="noopener">' + content + '</a>';
       else content = '<span class="model-label" title="' + r.name + '">' + content + '</span>';
       return '<span class="model-name">' + content + '</span>';
     }
@@ -1287,7 +1224,7 @@ var RESULTS = {
         html += '<td class="model-detail" data-detail="' + c.key + '" title="' + value.title + '">' + content + '</td>';
       });
       var avgCls = (r.Avg > 0 && r.Avg === best.Avg) ? ' class="best-score"' : '';
-      html += '<td' + avgCls + '>' + pct(r.Avg) + '</td>';
+      html += '<td' + avgCls + '><span class="overall-score" style="--score:' + pct(r.Avg) + '%">' + pct(r.Avg) + '</span></td>';
       cols.forEach(function(c) {
         var v = r[c.key];
         var cls = (v > 0 && v === best[c.key]) ? ' class="best-score"' : '';
@@ -1303,16 +1240,21 @@ var RESULTS = {
     });
 
     document.getElementById('lb-body').innerHTML = html;
+    updateStickyHeader();
     updateRadar(cols, rows);
   }
 
   document.addEventListener('DOMContentLoaded', function() {
+    window.addEventListener('scroll', updateStickyHeader, { passive: true });
+    window.addEventListener('resize', updateStickyHeader);
+    if (document.fonts) document.fonts.ready.then(updateStickyHeader);
     renderMethodLegend();
     document.querySelectorAll('.navbar-burger').forEach(function(el) {
       el.addEventListener('click', function() {
         var t = document.getElementById(el.getAttribute('data-target'));
         el.classList.toggle('is-active');
         if (t) t.classList.toggle('is-active');
+        el.setAttribute('aria-expanded', String(el.classList.contains('is-active')));
       });
     });
     document.getElementById('stat-models').textContent = D.models.filter(function(m) { return !m.baseline || m.name !== 'Human Performance'; }).length;
@@ -1343,6 +1285,7 @@ var RESULTS = {
         label.textContent = 'Radar View';
       }
       syncDetailsControls();
+      updateStickyHeader();
     });
 
     render();
