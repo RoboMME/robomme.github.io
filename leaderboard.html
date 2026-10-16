@@ -33,9 +33,12 @@
     .lb-wrap {
       background: #fff; border-radius: 12px;
       box-shadow: 0 2px 12px rgba(0,0,0,0.08);
-      overflow-x: auto; margin-top: 1.25rem;
+      position: relative; isolation: isolate;
+      overflow: auto; max-height: 90vh; max-height: 90dvh;
+      scrollbar-gutter: stable; margin-top: 1.25rem;
     }
-    .lb-wrap table { width: 100%; border-collapse: collapse; table-layout: fixed; }
+    .lb-wrap table { width: 100%; border-collapse: separate; border-spacing: 0; table-layout: fixed; }
+    .lb-wrap:focus-visible { outline: 2px solid #3273dc; outline-offset: 3px; }
 
     /* Toolbar row inside table */
     .toolbar-row td {
@@ -57,10 +60,15 @@
       white-space: normal; min-width: 5rem;
       cursor: pointer; user-select: none;
       position: relative; vertical-align: middle;
-      line-height: 1.25; height: 3rem;
+      line-height: 1.25; height: 5.25rem;
     }
     /* Bulma may set table header text color; force it to white */
-    .lb-wrap thead th { color: #fff !important; text-align: center !important; }
+    .lb-wrap thead th { position: sticky; top: 0; z-index: 3; color: #fff !important; text-align: center !important; }
+    .lb-wrap th:nth-child(1), .lb-wrap td:nth-child(1) { position: sticky; left: 0; }
+    .lb-wrap th:nth-child(2), .lb-wrap td:nth-child(2) { position: sticky; left: 3rem; box-shadow: 3px 0 5px -3px rgba(0,0,0,0.3); }
+    .lb-wrap thead th:nth-child(-n+2) { z-index: 4; }
+    .lb-wrap tbody td:nth-child(-n+2) { z-index: 2; background: var(--method-shade, #fff); }
+    .lb-wrap tbody tr:hover td:nth-child(-n+2) { background: var(--method-hover, #f0f4ff); }
     .lb-wrap th:hover { background: #4a4a4a; }
     .lb-wrap th[data-sort="Avg"] { background: #3273dc !important; }
     .lb-wrap th[data-sort="Avg"]:hover { background: #2360c4 !important; }
@@ -82,9 +90,38 @@
     .mem-badge.symbolic    { background: #e3f2fd; color: #1565c0; }
     .mem-badge.recurrent   { background: #fce4ec; color: #c62828; }
 
-    .proprietary-marker { margin-left: 0.2rem; font-size: 0.7em; color: #65458a; }
-    .leaderboard-note { margin-top: 0.75rem; font-size: 0.85rem; color: #666; }
-    .lb-wrap td.model-size { font-size: 0.8rem; }
+    .method-legend { display: flex; flex-wrap: wrap; align-items: center; gap: 0.4rem 0.65rem; margin: 0.75rem 0; font-size: 0.85rem; color: #666; }
+    .method-oracle_action_planner { --method-shade: #fff0f0; --method-hover: #ffe4e4; }
+    .method-oracle_subgoal { --method-shade: #eeeeee; --method-hover: #e3e3e3; }
+    .method-proprietary_model { --method-shade: #edf5ff; --method-hover: #deedff; }
+    .method-open_sourced_model { --method-shade: #ffffff; --method-hover: #f0f4ff; }
+    .method-filter { white-space: nowrap; border: 1px solid #eeeeee; border-radius: 999px; padding: 0.3rem 0.65rem; background: #fff; color: #6b7280; font: inherit; cursor: pointer; }
+    .method-filter.is-active { background: var(--method-shade); border-color: #555; color: #363636; }
+    .method-filter:focus-visible { outline: 2px solid #3273dc; outline-offset: 2px; }
+    .model-name { display: flex; align-items: baseline; gap: 0.25rem; }
+    .model-label { min-width: 0; overflow: hidden; text-overflow: ellipsis; }
+    .lb-wrap th.detail-header { min-width: 0; padding: 0.5rem 0.2rem; }
+    .lb-wrap td.model-detail { padding-left: 0.25rem; padding-right: 0.25rem; font-size: 0.8rem; }
+    .lb-wrap td[data-detail="type"] { padding-top: 0.2rem; padding-bottom: 0.2rem; }
+    .model-type-badge { display: inline-block; vertical-align: middle; padding: 0.2rem 0.35rem; border-radius: 4px; font-size: 0.71rem; font-weight: 700; line-height: 1.2; white-space: nowrap; }
+    .model-type-badge.type-closed-vlm { background: #e0f2fe; color: #0369a1; }
+    .model-type-badge.type-closed-vlm-vla { background: #fff1d6; color: #92400e; }
+    .model-type-badge.type-vla { background: #eaeaff; color: #4338ca; }
+    .model-type-badge.type-oracle-vla { background: #e5e7eb; color: #374151; }
+    .model-type-badge.type-vlm-vla { background: #dcfce7; color: #166534; }
+    .model-type-badge.type-wam { background: #d5f5ef; color: #0f766e; }
+    .model-type-badge.type-vla-wam { background: #ffedd5; color: #9a3412; }
+    .model-type-badge.type-vlm-wam { background: #fce7f3; color: #9d174d; }
+    .model-type-badge.type-il { background: #f3e8ff; color: #7e22ce; }
+    .model-type-badge.type-nn { background: #f3e8ff; color: #7e22ce; }
+    .model-type-badge.type-human { background: #f3f4f6; color: #4b5563; }
+    .view-controls { display: flex; align-items: center; flex-wrap: wrap; gap: 0.5rem; }
+    .details-toggle-btn { padding: 0.45rem 0.8rem; border: 1px solid #eee; border-radius: 8px; background: #fff; color: #555; font: inherit; cursor: pointer; }
+    .details-toggle-btn.is-active { border-color: #555; background: #f4f4f4; color: #363636; }
+    .details-toggle-btn:focus-visible { outline: 2px solid #3273dc; outline-offset: 2px; }
+    .compute-note { margin-top: 0.75rem; font-size: 0.85rem; color: #666; }
+    .compute-note summary { cursor: pointer; }
+    .compute-note p { margin-top: 0.5rem; }
 
     /* Data rows */
     .lb-wrap td { padding: 0.65rem 0.75rem; border-bottom: 1px solid #eee; white-space: nowrap; text-align: center; vertical-align: middle; overflow: hidden; text-overflow: ellipsis; }
@@ -92,11 +129,10 @@
     .lb-wrap th:nth-child(1), .lb-wrap th:nth-child(2) { text-align: left; }
     .lb-wrap th:nth-child(n+3) { text-align: center; }
     .lb-wrap td:nth-child(n+3) { text-align: center; }
-    .lb-wrap tbody tr:hover { background: #f0f4ff; }
-    .lb-wrap tbody tr.baseline-row { background: #f9f9f9; }
-    .lb-wrap tbody tr.baseline-row:hover { background: #f4f4f4; }
-    .lb-wrap tbody tr.baseline-row td { color: #999; }
-    .lb-wrap tbody tr.baseline-row td strong { color: #888; }
+    .lb-wrap tbody tr { background: var(--method-shade, #fff); }
+    .lb-wrap tbody tr:hover { background: var(--method-hover, #f0f4ff); }
+    .lb-wrap tbody tr.baseline-row td { color: #666; }
+    .lb-wrap tbody tr.baseline-row td strong { color: #555; }
     .rank { font-weight: 700; color: #3273dc; }
     .best-score { font-weight: 700; color: #3273dc; }
     .rank-medal { font-size: 1rem; }
@@ -201,28 +237,40 @@
       <h2 class="title is-4">📊 Regular Leaderboard</h2>
       <div style="display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; margin-bottom:0.75rem;">
         <div id="lb-toolbar" style="display:inline-flex; align-items:center; flex-wrap:wrap;"></div>
-        <div id="view-toggle" class="view-toggle-btn">
-          <i id="view-toggle-icon" class="fas fa-chart-area"></i>
-          <span id="view-toggle-label">Radar View</span>
+        <div class="view-controls">
+          <button type="button" id="details-toggle" class="details-toggle-btn" aria-pressed="false" aria-controls="lb-table model-details-notes">Show details</button>
+          <div id="view-toggle" class="view-toggle-btn">
+            <i id="view-toggle-icon" class="fas fa-chart-area"></i>
+            <span id="view-toggle-label">Radar View</span>
+          </div>
         </div>
       </div>
+
+      <div id="method-legend" class="method-legend" role="group" aria-label="Filter methods by tag"></div>
+      <p id="tag-empty-state" role="status" hidden>No methods selected. Enable a tag above to show results.</p>
 
       <div id="radar-container" style="display:none;">
         <canvas id="radar-chart"></canvas>
         <p style="font-size:0.85rem; color:#999; margin-top:0.75rem; text-align:center;">
-          Shows the <b>top 5</b> models overall and models with the <b>best score</b> in any category, excluding human and oracle references. <br>
+          Shows the <b>top 5</b> ranked models overall and ranked models with the <b>best score</b> in any category. Human and oracle references are excluded; proprietary models are ranked only when open-sourced models are hidden. <br>
           Click a model name in the legend to show or hide its line.
         </p>
       </div>
 
-      <p class="leaderboard-note"><strong>† Proprietary model:</strong> These methods use frontier models, whose weights are not public.</p>
-      <div class="lb-wrap">
+      <div class="lb-wrap" tabindex="0" role="region" aria-label="Leaderboard table; scroll to explore rows and columns">
         <table id="lb-table">
           <colgroup id="lb-cols"></colgroup>
           <thead id="lb-head"></thead>
           <tbody id="lb-body"></tbody>
         </table>
       </div>
+      <details id="model-details-notes" class="compute-note" hidden>
+        <summary>Metric notes</summary>
+        <p><strong>Params:</strong> approximate parameter count. B = billion; M = million.</p>
+        <p><strong>Train:</strong> RoboMME training compute, converted to equivalent H100 GPU-hours using GPU count, training time, and relative peak BF16 throughput. Values are approximate and exclude foundation-model pretraining and inference. Hover over a value for details.</p>
+        <p>H100 GPU-hours = GPU count × training hours × conversion factor. Relative to H100 SXM: <strong>A40 ≈ 0.151×</strong>, <strong>A100 ≈ 0.315×</strong>, <strong>H200 SXM = 1×</strong>. Reported H100 GPU-hours are used directly.</p>
+        <p><strong>N/R:</strong> not reported. <strong>N/A:</strong> not applicable. <strong>≈:</strong> approximate.</p>
+      </details>
       <div class="columns" style="margin-top:3rem;">
         <div class="column section-block">
           <h2 class="title is-5">📋 About</h2>
@@ -277,6 +325,9 @@ var RESULTS = {
   "models": [
     {
       "name": "Human Performance",
+      "model_type": "Human",
+      "training_compute": {"status": "not_applicable", "note": "Human reference; no model training."},
+      "tags": ["oracle_action_planner"],
       "total_size": "N/A",
       "organization": "\u2014",
       "memory": "\u2014",
@@ -290,6 +341,9 @@ var RESULTS = {
     },
     {
       "name": "SimpleSG+Oracle",
+      "model_type": "Oracle+VLA",
+      "training_compute": {"gpu": "A40", "gpus": 4, "hours": [72, 72], "approximate": true, "note": "Symbolic policy training: approximately 3 days on 4 A40 GPUs (RoboMME Appendix B.2.3). No additional subgoal-model fine-tuning for Oracle or prompted Gemini.", "source": "https://arxiv.org/html/2603.04639"},
+      "tags": ["oracle_subgoal"],
       "total_size": "4B",
       "size_source": "https://arxiv.org/html/2603.04639",
       "organization": "RoboMME",
@@ -304,6 +358,9 @@ var RESULTS = {
     },
     {
       "name": "GroundSG+Oracle",
+      "model_type": "Oracle+VLA",
+      "training_compute": {"gpu": "A40", "gpus": 4, "hours": [72, 72], "approximate": true, "note": "Symbolic policy training: approximately 3 days on 4 A40 GPUs (RoboMME Appendix B.2.3). No additional subgoal-model fine-tuning for Oracle or prompted Gemini.", "source": "https://arxiv.org/html/2603.04639"},
+      "tags": ["oracle_subgoal"],
       "total_size": "4B",
       "size_source": "https://arxiv.org/html/2603.04639",
       "organization": "RoboMME",
@@ -318,6 +375,10 @@ var RESULTS = {
     },
     {
       "name": "SimpleSG+Gemini",
+      "model_type": "Closed VLM+VLA",
+      "api_cost": {"total_usd": 150, "approximate": true, "note": "Maintainer-estimated total API spending for this RoboMME evaluation: approximately US$150."},
+      "training_compute": {"gpu": "A40", "gpus": 4, "hours": [72, 72], "approximate": true, "note": "Symbolic policy training: approximately 3 days on 4 A40 GPUs (RoboMME Appendix B.2.3). No additional subgoal-model fine-tuning for Oracle or prompted Gemini.", "source": "https://arxiv.org/html/2603.04639"},
+      "tags": ["proprietary_model"],
       "total_size": "N/A",
       "organization": "RoboMME",
       "memory": "Symbolic",
@@ -330,6 +391,17 @@ var RESULTS = {
     },
     {
       "name": "SimpleSG+QwenVL",
+      "model_type": "VLM+VLA",
+      "training_compute": {
+        "stages": [
+          {"gpu": "A40", "gpus": 4, "hours": [72, 72], "source": "https://arxiv.org/html/2603.04639"},
+          {"gpu": "A100", "gpus": 4, "memory_gb": 40, "hours": [40, 40], "source": "Maintainer estimate, 2026-10-16"}
+        ],
+        "approximate": true,
+        "display_label": "≈80",
+        "note": "RoboMME training total: VLA policy ≈72 hours on 4 A40 GPUs (Appendix B.2.3), plus Qwen3VL subgoal predictor ≈40 hours on 4 A100 40GB GPUs (maintainer estimate)."
+      },
+      "tags": ["open_sourced_model"],
       "total_size": "8B",
       "size_source": "https://arxiv.org/html/2603.04639",
       "organization": "RoboMME",
@@ -343,6 +415,10 @@ var RESULTS = {
     },
     {
       "name": "GroundSG+Gemini",
+      "model_type": "Closed VLM+VLA",
+      "api_cost": {"total_usd": 150, "approximate": true, "note": "Maintainer-estimated total API spending for this RoboMME evaluation: approximately US$150."},
+      "training_compute": {"gpu": "A40", "gpus": 4, "hours": [72, 72], "approximate": true, "note": "Symbolic policy training: approximately 3 days on 4 A40 GPUs (RoboMME Appendix B.2.3). No additional subgoal-model fine-tuning for Oracle or prompted Gemini.", "source": "https://arxiv.org/html/2603.04639"},
+      "tags": ["proprietary_model"],
       "total_size": "N/A",
       "organization": "RoboMME",
       "memory": "Symbolic",
@@ -355,6 +431,17 @@ var RESULTS = {
     },
     {
       "name": "GroundSG+QwenVL",
+      "model_type": "VLM+VLA",
+      "training_compute": {
+        "stages": [
+          {"gpu": "A40", "gpus": 4, "hours": [72, 72], "source": "https://arxiv.org/html/2603.04639"},
+          {"gpu": "A100", "gpus": 4, "memory_gb": 40, "hours": [40, 40], "source": "Maintainer estimate, 2026-10-16"}
+        ],
+        "approximate": true,
+        "display_label": "≈80",
+        "note": "RoboMME training total: VLA policy ≈72 hours on 4 A40 GPUs (Appendix B.2.3), plus Qwen3VL subgoal predictor ≈40 hours on 4 A100 40GB GPUs (maintainer estimate)."
+      },
+      "tags": ["open_sourced_model"],
       "total_size": "8B",
       "size_source": "https://arxiv.org/html/2603.04639",
       "organization": "RoboMME",
@@ -368,6 +455,9 @@ var RESULTS = {
     },
     {
       "name": "TokenDrop+Context",
+      "model_type": "VLA",
+      "training_compute": {"gpu": "A40", "gpus": 4, "hours": [72, 96], "approximate": true, "display_label": "≈50", "note": "Perceptual-memory family estimate: approximately 3–4 days on 4 A40 GPUs per run (RoboMME Appendix B.2.3).", "source": "https://arxiv.org/html/2603.04639"},
+      "tags": ["open_sourced_model"],
       "total_size": "4B",
       "size_source": "https://arxiv.org/html/2603.04639",
       "organization": "RoboMME",
@@ -381,6 +471,9 @@ var RESULTS = {
     },
     {
       "name": "TokenDrop+Modul",
+      "model_type": "VLA",
+      "training_compute": {"gpu": "A40", "gpus": 4, "hours": [72, 96], "approximate": true, "display_label": "≈50", "note": "Perceptual-memory family estimate: approximately 3–4 days on 4 A40 GPUs per run (RoboMME Appendix B.2.3).", "source": "https://arxiv.org/html/2603.04639"},
+      "tags": ["open_sourced_model"],
       "total_size": "4B",
       "size_source": "https://arxiv.org/html/2603.04639",
       "organization": "RoboMME",
@@ -394,6 +487,9 @@ var RESULTS = {
     },
     {
       "name": "TokenDrop+Expert",
+      "model_type": "VLA",
+      "training_compute": {"gpu": "A40", "gpus": 4, "hours": [72, 96], "approximate": true, "display_label": "≈50", "note": "Perceptual-memory family estimate: approximately 3–4 days on 4 A40 GPUs per run (RoboMME Appendix B.2.3).", "source": "https://arxiv.org/html/2603.04639"},
+      "tags": ["open_sourced_model"],
       "total_size": "4B",
       "size_source": "https://arxiv.org/html/2603.04639",
       "organization": "RoboMME",
@@ -407,6 +503,9 @@ var RESULTS = {
     },
     {
       "name": "FrameSamp+Context",
+      "model_type": "VLA",
+      "training_compute": {"gpu": "A40", "gpus": 4, "hours": [72, 96], "approximate": true, "display_label": "≈50", "note": "Perceptual-memory family estimate: approximately 3–4 days on 4 A40 GPUs per run (RoboMME Appendix B.2.3).", "source": "https://arxiv.org/html/2603.04639"},
+      "tags": ["open_sourced_model"],
       "total_size": "4B",
       "size_source": "https://arxiv.org/html/2603.04639",
       "organization": "RoboMME",
@@ -420,6 +519,9 @@ var RESULTS = {
     },
     {
       "name": "FrameSamp+Modul",
+      "model_type": "VLA",
+      "training_compute": {"gpu": "A40", "gpus": 4, "hours": [72, 96], "approximate": true, "display_label": "≈50", "note": "Perceptual-memory family estimate: approximately 3–4 days on 4 A40 GPUs per run (RoboMME Appendix B.2.3).", "source": "https://arxiv.org/html/2603.04639"},
+      "tags": ["open_sourced_model"],
       "total_size": "4B",
       "size_source": "https://arxiv.org/html/2603.04639",
       "organization": "RoboMME",
@@ -433,6 +535,9 @@ var RESULTS = {
     },
     {
       "name": "FrameSamp+Expert",
+      "model_type": "VLA",
+      "training_compute": {"gpu": "A40", "gpus": 4, "hours": [72, 96], "approximate": true, "display_label": "≈50", "note": "Perceptual-memory family estimate: approximately 3–4 days on 4 A40 GPUs per run (RoboMME Appendix B.2.3).", "source": "https://arxiv.org/html/2603.04639"},
+      "tags": ["open_sourced_model"],
       "total_size": "4B",
       "size_source": "https://arxiv.org/html/2603.04639",
       "organization": "RoboMME",
@@ -446,6 +551,9 @@ var RESULTS = {
     },
     {
       "name": "TTT+Context",
+      "model_type": "VLA",
+      "training_compute": {"gpu": "A40", "gpus": 4, "hours": [120, 144], "approximate": true, "display_label": "≈80", "note": "TTT family estimate: approximately 5–6 days on 4 A40 GPUs per run (RoboMME Appendix B.2.3).", "source": "https://arxiv.org/html/2603.04639"},
+      "tags": ["open_sourced_model"],
       "total_size": "4B",
       "size_source": "https://arxiv.org/html/2603.04639",
       "organization": "RoboMME",
@@ -459,6 +567,9 @@ var RESULTS = {
     },
     {
       "name": "TTT+Modul",
+      "model_type": "VLA",
+      "training_compute": {"gpu": "A40", "gpus": 4, "hours": [120, 144], "approximate": true, "display_label": "≈80", "note": "TTT family estimate: approximately 5–6 days on 4 A40 GPUs per run (RoboMME Appendix B.2.3).", "source": "https://arxiv.org/html/2603.04639"},
+      "tags": ["open_sourced_model"],
       "total_size": "4B",
       "size_source": "https://arxiv.org/html/2603.04639",
       "organization": "RoboMME",
@@ -472,6 +583,9 @@ var RESULTS = {
     },
     {
       "name": "TTT+Expert",
+      "model_type": "VLA",
+      "training_compute": {"gpu": "A40", "gpus": 4, "hours": [120, 144], "approximate": true, "display_label": "≈80", "note": "TTT family estimate: approximately 5–6 days on 4 A40 GPUs per run (RoboMME Appendix B.2.3).", "source": "https://arxiv.org/html/2603.04639"},
+      "tags": ["open_sourced_model"],
       "total_size": "4B",
       "size_source": "https://arxiv.org/html/2603.04639",
       "organization": "RoboMME",
@@ -485,6 +599,9 @@ var RESULTS = {
     },
     {
       "name": "RMT+Context",
+      "model_type": "VLA",
+      "training_compute": {"gpu": "H100", "gpus": 2, "hours": [48, 72], "approximate": true, "display_label": "≈120", "note": "RMT family estimate: approximately 2–3 days on 2 H100 GPUs per run (RoboMME Appendix B.2.3).", "source": "https://arxiv.org/html/2603.04639"},
+      "tags": ["open_sourced_model"],
       "total_size": "4B",
       "size_source": "https://arxiv.org/html/2603.04639",
       "organization": "RoboMME",
@@ -498,6 +615,9 @@ var RESULTS = {
     },
     {
       "name": "RMT+Modul",
+      "model_type": "VLA",
+      "training_compute": {"gpu": "H100", "gpus": 2, "hours": [48, 72], "approximate": true, "display_label": "≈120", "note": "RMT family estimate: approximately 2–3 days on 2 H100 GPUs per run (RoboMME Appendix B.2.3).", "source": "https://arxiv.org/html/2603.04639"},
+      "tags": ["open_sourced_model"],
       "total_size": "4B",
       "size_source": "https://arxiv.org/html/2603.04639",
       "organization": "RoboMME",
@@ -511,6 +631,9 @@ var RESULTS = {
     },
     {
       "name": "RMT+Expert",
+      "model_type": "VLA",
+      "training_compute": {"gpu": "H100", "gpus": 2, "hours": [48, 72], "approximate": true, "display_label": "≈120", "note": "RMT family estimate: approximately 2–3 days on 2 H100 GPUs per run (RoboMME Appendix B.2.3).", "source": "https://arxiv.org/html/2603.04639"},
+      "tags": ["open_sourced_model"],
       "total_size": "4B",
       "size_source": "https://arxiv.org/html/2603.04639",
       "organization": "RoboMME",
@@ -524,6 +647,9 @@ var RESULTS = {
     },
     {
       "name": "\u03c00.5",
+      "model_type": "VLA",
+      "training_compute": {"h100_hours": 24, "approximate": true, "note": "Maintainer-estimated RoboMME training compute: approximately 24 H100 GPU-hours.", "source": "Maintainer estimate, 2026-10-16"},
+      "tags": ["open_sourced_model"],
       "total_size": "4B",
       "size_source": "https://arxiv.org/html/2603.04639",
       "organization": "Physical Intelligence",
@@ -537,6 +663,9 @@ var RESULTS = {
     },
     {
       "name": "\u03c00.5 w/ action history",
+      "model_type": "VLA",
+      "training_compute": {"h100_hours": 24, "approximate": true, "note": "Maintainer-estimated RoboMME training compute: approximately 24 H100 GPU-hours.", "source": "Maintainer estimate, 2026-10-16"},
+      "tags": ["open_sourced_model"],
       "total_size": "4B",
       "size_source": "https://arxiv.org/html/2603.04639",
       "organization": "Physical Intelligence",
@@ -550,6 +679,9 @@ var RESULTS = {
     },
     {
       "name": "SAM2Act (Fang et al.)",
+      "model_type": "NN",
+      "training_compute": {"h100_hours": 40, "approximate": true, "note": "Maintainer-estimated RoboMME training compute: approximately 40 H100 GPU-hours.", "source": "Maintainer estimate, 2026-10-16"},
+      "tags": ["open_sourced_model"],
       // Estimated from 600 MB of FP32 weights at 4 bytes per parameter.
       "total_size": "150M",
       "link": "https://sam2act.github.io/",
@@ -563,6 +695,17 @@ var RESULTS = {
     },
     {
       "name": "MemER (Sridhar et al.)",
+      "model_type": "VLM+VLA",
+      "training_compute": {
+        "stages": [
+          {"gpu": "A40", "gpus": 4, "hours": [72, 72], "source": "https://arxiv.org/html/2603.04639"},
+          {"gpu": "A100", "gpus": 4, "memory_gb": 40, "hours": [48, 48], "source": "Maintainer estimate, 2026-10-16"}
+        ],
+        "approximate": true,
+        "display_label": "90",
+        "note": "RoboMME training total: GroundSG VLA policy ≈72 hours on 4 A40 GPUs (≈43.6 H100 GPU-hours; Appendix B.2.3), plus MemER subgoal predictor ≈48 hours on 4 A100 40GB GPUs (≈60.5 H100 GPU-hours; maintainer estimate)."
+      },
+      "tags": ["open_sourced_model"],
       "total_size": "8B",
       "size_source": "https://arxiv.org/html/2603.04639",
       "link": "https://jen-pan.github.io/memer/",
@@ -576,9 +719,12 @@ var RESULTS = {
     },
     {
       "name": "Embodied-Astra (Jedlicki et al.)",
+      "model_type": "Closed VLM",
+      "api_cost": {"total_usd": 310, "approximate": false, "note": "Maintainer-provided total API spending for this RoboMME evaluation: US$310."},
+      "training_compute": {"status": "not_applicable", "note": "No RoboMME training or fine-tuning. Foundation-model pretraining and API inference are outside this column scope.", "source": "https://github.com/jackbjed/embodied-astra-robomme/blob/main/submission/embodied-gpt-6-astra.md"},
+      "tags": ["proprietary_model"],
       "total_size": "N/A",
       "link": "https://embodied-astra.github.io/",
-      "proprietary": true,
       // Single run, 50 test episodes per task; evaluated on 2026-10-11.
       "tasks": {
         "BinFill": 0.9800, "PickXtimes": 1.0000, "SwingXtimes": 0.9800, "StopCube": 0.5400,
@@ -589,9 +735,12 @@ var RESULTS = {
     },
     {
       "name": "3-tier Astra (Chen et al.)",
+      "model_type": "Closed VLM+VLA",
+      "api_cost": {"status": "not_reported", "note": "Total API spending for this RoboMME evaluation is not reported."},
+      "training_compute": {"status": "not_reported", "note": "Uses the GroundSG VLA policy (≈44 H100 GPU-hours). System 1.5 is a Qwen3-VL-4B LoRA monitor trained for 2,246 steps over 2 epochs on 8 GPUs; the released model card and training configuration do not report its GPU type or elapsed training time, so total training compute remains N/R.", "source": "https://huggingface.co/bingaochen/Astra-on-RoboMME-Monitor#training", "policy_source": "https://github.com/bingaochen/Astra-on-RoboMME/blob/main/examples/champ/weights.json"},
+      "tags": ["proprietary_model"],
       "total_size": "N/A",
       "link": "https://bingaochen.github.io/Astra-on-RoboMME/",
-      "proprietary": true,
       // Recorded 800-episode evaluation: https://github.com/bingaochen/Astra-on-RoboMME/blob/main/docs/results/test-per-task.csv
       "tasks": {
         "BinFill": 0.8200, "PickXtimes": 0.9600, "SwingXtimes": 0.8200, "StopCube": 0.1800,
@@ -602,6 +751,9 @@ var RESULTS = {
     },
     {
       "name": "PonderPounce (Suhwan et al.)",
+      "model_type": "VLM+VLA",
+      "training_compute": {"status": "not_reported", "note": "RoboMME training steps are reported, but GPU count and training duration are not.", "source": "https://arxiv.org/html/2608.24115"},
+      "tags": ["open_sourced_model"],
       "total_size": "12B",
       "size_source": "https://arxiv.org/html/2608.24115",
       "link": "https://worv-ai.github.io/ponderpounce/",
@@ -614,6 +766,9 @@ var RESULTS = {
     },
     {
       "name": "SimpleMemVLA (Yin et al.)",
+      "model_type": "VLA",
+      "training_compute": {"gpu": "H100", "gpus": 128, "hours": [20, 20], "approximate": false, "note": "RoboMME training: 128 H100 GPUs × 20 wall-clock hours (SimpleMemVLA Appendix A, Table 8).", "source": "https://arxiv.org/html/2609.05533"},
+      "tags": ["open_sourced_model"],
       "total_size": "4B",
       "size_source": "https://arxiv.org/html/2609.05533",
       // Displayed using the Qwen3.5-4B backbone size.
@@ -628,6 +783,9 @@ var RESULTS = {
     },
     {
       "name": "T²Mem (Liu et al.)",
+      "model_type": "VLA",
+      "training_compute": {"gpu": "H200", "gpus": 32, "hours": [48, 48], "approximate": false, "display_label": "1,536", "note": "Reported RoboMME training: 32 H200 GPUs × 48 hours (T²Mem Section 4.1). Conversion assumes H200 SXM.", "source": "https://arxiv.org/html/2609.36720"},
+      "tags": ["open_sourced_model"],
       "total_size": "4B",
       "size_source": "https://arxiv.org/pdf/2609.36720",
       "link": "https://arxiv.org/pdf/2609.36720",
@@ -641,6 +799,9 @@ var RESULTS = {
     },
     {
       "name": "DP-Unet (Chi et al.)",
+      "model_type": "NN",
+      "training_compute": {"status": "not_reported", "note": "RoboMME training duration is not separately reported for this configuration.", "source": "https://arxiv.org/html/2603.04639"},
+      "tags": ["open_sourced_model"],
       // Estimated from 300 MB of FP32 weights at 4 bytes per parameter.
       "total_size": "75M",
       "link": "https://diffusion-policy.cs.columbia.edu/",
@@ -658,6 +819,34 @@ var RESULTS = {
 (function() {
   var D = RESULTS;
   var allTasks = Object.keys(D.models[0].tasks);
+  var methodTags = {
+    open_sourced_model: { label: 'Open-sourced model', description: 'Built on public model weights, without a proprietary model dependency; does not imply the full method and trained checkpoints are released.' },
+    proprietary_model: { label: 'Proprietary model', description: 'Uses a proprietary model whose weights are not public. Ranked only when open-sourced models are hidden.' },
+    oracle_subgoal: { label: 'Oracle subgoal', description: 'Uses ground-truth subgoals from the simulator.' },
+    oracle_action_planner: { label: 'Oracle execution', description: 'Oracle execution of selected high-level actions.' }
+  };
+  var selectedTags = {
+    oracle_action_planner: true,
+    oracle_subgoal: true,
+    proprietary_model: false,
+    open_sourced_model: true
+  };
+
+  function renderMethodLegend() {
+    document.getElementById('method-legend').innerHTML = '<span>Show:</span>' + Object.keys(methodTags).map(function(key) {
+      var tag = methodTags[key];
+      return '<button type="button" class="method-filter method-' + key + (selectedTags[key] ? ' is-active' : '') + '" data-tag="' + key + '" aria-label="' + tag.label + '" aria-pressed="' + selectedTags[key] + '" title="' + tag.description + '">' + tag.label + '</button>';
+    }).join('');
+    document.querySelectorAll('.method-filter').forEach(function(button) {
+      button.addEventListener('click', function() {
+        var key = this.getAttribute('data-tag');
+        selectedTags[key] = !selectedTags[key];
+        this.classList.toggle('is-active', selectedTags[key]);
+        this.setAttribute('aria-pressed', String(selectedTags[key]));
+        render();
+      });
+    });
+  }
 
   // View modes: 'suite', 'char', 'task'
   var mode = 'suite';
@@ -665,6 +854,43 @@ var RESULTS = {
   var sortAsc = false;
 
   var viewMode = 'table';
+  var showDetails = false;
+  var modelTypes = {
+    'Closed VLM': 'A vision-language model with weights that are not publicly available directly selects robot actions or waypoints.',
+    'Closed VLM+VLA': 'A vision-language model with weights that are not publicly available generates subgoals for a VLA controller; 3-tier Astra also uses a learned completion monitor.',
+    'VLA': 'A vision-language-action policy maps visual observations and instructions to actions.',
+    'Oracle+VLA': 'A VLA controller executes ground-truth subgoals supplied by an oracle.',
+    'VLM+VLA': 'A separate vision-language model provides subgoals or contextual representations to a VLA controller.',
+    'WAM': 'A world-action model couples prediction of future world states with action generation.',
+    'VLA+WAM': 'A system combines a vision-language-action policy with a world-action model.',
+    'VLM+WAM': 'A system combines a vision-language model with a world-action model.',
+    'IL': 'Imitation learning: a conventional learned action policy, such as SAM2Act or Diffusion Policy.',
+    'NN': 'Neural-network policy, such as SAM2Act or Diffusion Policy.',
+    'Human': 'Human reference performance using oracle execution.'
+  };
+  var detailColumns = [
+    { key: 'type', label: 'Type', width: 5.25, title: 'Architecture of the evaluated system. Hover over a value for its definition.' },
+    { key: 'parameters', label: 'Total<br>Params', width: 3.75, title: 'Approximate number of model parameters.' },
+    { key: 'training', label: 'Train<br>Hours', width: 3.75, title: 'RoboMME training per run, in H100-equivalent GPU-hours. See notes below for conversion assumptions.' },
+    { key: 'apiCost', label: 'Total<br>Cost', width: 3.5, title: 'Total API spending in USD for the reported RoboMME evaluation. Excludes local GPU compute.' }
+  ];
+
+  function getDetailColumns() {
+    if (!showDetails) return [];
+    return detailColumns.filter(function(column) {
+      return column.key !== 'apiCost' || selectedTags.proprietary_model;
+    });
+  }
+
+  function syncDetailsControls() {
+    var button = document.getElementById('details-toggle');
+    button.hidden = viewMode !== 'table';
+    button.classList.toggle('is-active', showDetails);
+    button.setAttribute('aria-pressed', String(showDetails));
+    button.textContent = showDetails ? 'Hide details' : 'Show details';
+    document.getElementById('model-details-notes').hidden = !showDetails || viewMode !== 'table';
+  }
+
   var radarChart = null;
   var pendingRadarData = null;
   var radarColors = [
@@ -687,8 +913,12 @@ var RESULTS = {
     return parts.length > 1 ? parts : parts[0] || '';
   }
 
+  function isRanked(row) {
+    return !row.baseline && !(selectedTags.open_sourced_model && row.tags.indexOf('proprietary_model') !== -1);
+  }
+
   function updateRadar(cols, rows) {
-    var ranked = rows.filter(function(r) { return !r.baseline; });
+    var ranked = rows.filter(isRanked);
     var bestInCol = {};
     cols.forEach(function(c) {
       var maxVal = -1;
@@ -719,7 +949,7 @@ var RESULTS = {
       var ri = rankMap[m.id];
       var prefix = ri < 3 ? medals[ri] + ' ' : '#' + (ri + 1) + ' ';
       return {
-        label: prefix + m.name + (m.proprietary ? ' †' : ''),
+        label: prefix + m.name,
         data: cols.map(function(c) { return +(m[c.key] * 100).toFixed(2); }),
         fill: true,
         backgroundColor: color.bg,
@@ -859,9 +1089,54 @@ var RESULTS = {
     return cols;
   }
 
+  function trainingCompute(model) {
+    var compute = model.training_compute;
+    if (!compute) return { label: 'N/R', title: 'RoboMME training cost is not reported.' };
+    if (compute.status === 'not_applicable') return { label: 'N/A', title: compute.note };
+    if (compute.status === 'no_training') return { label: '0', title: compute.note };
+    if (compute.status === 'not_reported') return { label: 'N/R', title: compute.note };
+    if (typeof compute.h100_hours === 'number') {
+      return { label: (compute.approximate ? '≈' : '') + compute.h100_hours.toLocaleString('en-US'), title: compute.note };
+    }
+
+    // Dense BF16 TFLOPS: NVIDIA lists 1,979 with sparsity for H100/H200 SXM;
+    // dense throughput is half that value. A40/A100 specify 149.7/312 without sparsity.
+    var gpuFactors = { H100: 1, H200: 1, A40: 149.7 / 989.5, A100: 312 / 989.5 };
+    var stages = compute.stages || [compute];
+    var low = 0, high = 0, converted = false;
+    var approximate = compute.approximate;
+    for (var i = 0; i < stages.length; i++) {
+      var stage = stages[i];
+      var factor = gpuFactors[stage.gpu];
+      if (factor === undefined) return { label: 'N/R', title: 'No conversion factor is available for the reported GPU.' };
+      low += stage.gpus * stage.hours[0] * factor;
+      high += stage.gpus * stage.hours[1] * factor;
+      converted = converted || stage.gpu !== 'H100';
+      approximate = approximate || stage.approximate;
+    }
+    low = Math.round(low);
+    high = Math.round(high);
+    var label = low.toLocaleString('en-US');
+    if (high !== low) label += '–' + high.toLocaleString('en-US');
+    if (approximate || converted) label = '≈' + label;
+    return {
+      label: compute.display_label || label,
+      title: compute.note + (compute.display_label ? ' Displayed estimate: ' + compute.display_label + ' H100 GPU-hours; hardware-based conversion: ' + label + '.' : '') + (converted ? ' Estimated H100-equivalent GPU-hours using peak dense BF16 throughput.' : ' Reported H100 GPU-hours.')
+    };
+  }
+
   function buildRows(cols) {
     return D.models.map(function(m, idx) {
-      var row = { id: idx, name: m.name, org: m.organization, memory: m.memory || '\u2014', tasks: m.tasks, baseline: !!m.baseline, link: m.link || null, proprietary: !!m.proprietary, totalSize: m.total_size || 'Not reported' };
+      var row = { id: idx, name: m.name, org: m.organization, memory: m.memory || '\u2014', tasks: m.tasks, baseline: !!m.baseline, link: m.link || null, tags: m.tags || [], totalSize: m.total_size || 'Not reported' };
+      var apiCost = m.api_cost;
+      row.details = {
+        type: { label: m.model_type ? m.model_type.replace(/\+/g, ' + ') : 'N/R', title: modelTypes[m.model_type] || 'Architecture type is not reported.', badgeClass: m.model_type ? 'type-' + m.model_type.toLowerCase().replace(/[+\s]+/g, '-') : '' },
+        parameters: { label: row.totalSize, title: 'Approximate parameter count; B = billion, M = million.' },
+        training: trainingCompute(m),
+        apiCost: apiCost && typeof apiCost.total_usd === 'number'
+          ? { label: (apiCost.approximate ? '≈' : '') + '$' + apiCost.total_usd.toLocaleString('en-US'), title: apiCost.note }
+          : { label: row.tags.indexOf('proprietary_model') !== -1 ? 'N/R' : 'N/A', title: apiCost ? apiCost.note : 'Inference API spending is not applicable to this local model or reference.' }
+      };
       row.Avg = avgTasks(m, allTasks);
       cols.forEach(function(c) { row[c.key] = avgTasks(m, c.tasks); });
       return row;
@@ -893,6 +1168,7 @@ var RESULTS = {
   }
 
   function renderHead(cols) {
+    var visibleDetails = getDetailColumns();
     var arrow = function(key) {
       var active = sortCol === key;
       var dir = active ? (sortAsc ? '▲' : '▼') : '▼';
@@ -906,18 +1182,24 @@ var RESULTS = {
     var colW = mode === 'task' ? 'width:5rem;' : '';
     var cg = '<col style="width:3rem;">';
     cg += '<col style="width:12rem;">';
-    cg += '<col style="width:7rem;">';
+    var detailsWidth = 0;
+    visibleDetails.forEach(function(c) {
+      cg += '<col style="width:' + c.width + 'rem;">';
+      detailsWidth += c.width;
+    });
     cg += '<col style="width:5rem;">';
     cols.forEach(function() { cg += '<col style="' + colW + '">'; });
     document.getElementById('lb-cols').innerHTML = cg;
 
     var tableEl = document.getElementById('lb-table');
-    tableEl.style.minWidth = mode === 'task' ? (3 + 12 + 7 + 5 + cols.length * 5) + 'rem' : (mode === 'char' ? '70rem' : '62rem');
+    tableEl.style.minWidth = (mode === 'task' ? 3 + 12 + detailsWidth + 5 + cols.length * 5 : (mode === 'char' ? 63 : 55) + detailsWidth) + 'rem';
 
     var html = '<tr>';
     html += '<th class="no-sort">Rank</th>';
     html += '<th class="no-sort">Model</th>';
-    html += '<th class="no-sort" title="Approximate number of model parameters">Parameters</th>';
+    visibleDetails.forEach(function(c) {
+      html += '<th class="no-sort detail-header" title="' + c.title + '">' + c.label + '</th>';
+    });
     html += '<th data-sort="Avg"' + (sortCol === 'Avg' ? ' class="sorted"' : '') + ' style="white-space:nowrap;background:#3273dc;">Overall ' + arrow('Avg') + '</th>';
     cols.forEach(function(c) {
       html += '<th data-sort="' + c.key + '"' + (sortCol === c.key ? ' class="sorted"' : '') + '>' + labelWithArrow(c.label, c.key) + '</th>';
@@ -940,8 +1222,13 @@ var RESULTS = {
   }
 
   function render() {
+    syncDetailsControls();
+    var visibleDetails = getDetailColumns();
     var cols = getColumns();
-    var rows = buildRows(cols);
+    var rows = buildRows(cols).filter(function(r) {
+      return r.tags.some(function(key) { return selectedTags[key]; });
+    });
+    document.getElementById('tag-empty-state').hidden = rows.length > 0;
 
     sortRows(rows);
 
@@ -975,9 +1262,9 @@ var RESULTS = {
 
     function nameHtml(r) {
       var content = '<strong>' + formatModelName(r.name) + '</strong>';
-      if (r.link) content = '<a href="' + r.link + '" target="_blank" style="color:inherit;text-decoration:underline dotted;">' + content + '</a>';
-      if (r.proprietary) content += '<sup class="proprietary-marker" title="Uses a proprietary model" aria-label="Uses a proprietary model">†</sup>';
-      return content;
+      if (r.link) content = '<a class="model-label" title="' + r.name + '" href="' + r.link + '" target="_blank" style="color:inherit;text-decoration:underline dotted;">' + content + '</a>';
+      else content = '<span class="model-label" title="' + r.name + '">' + content + '</span>';
+      return '<span class="model-name">' + content + '</span>';
     }
 
     function memoryHtml(mem) {
@@ -989,10 +1276,16 @@ var RESULTS = {
     }
 
     function renderRow(r, rankLabel, rowClass) {
-      html += '<tr' + (rowClass ? ' class="' + rowClass + '"' : '') + '>';
+      var typeClasses = r.tags.map(function(key) { return 'method-' + key; }).join(' ');
+      var typeLabels = r.tags.map(function(key) { return methodTags[key].label; }).join(', ');
+      html += '<tr class="' + typeClasses + (rowClass ? ' ' + rowClass : '') + '" title="' + typeLabels + '">';
       html += '<td class="rank">' + rankLabel + '</td>';
       html += '<td>' + nameHtml(r) + '</td>';
-      html += '<td class="model-size">' + r.totalSize + '</td>';
+      visibleDetails.forEach(function(c) {
+        var value = r.details[c.key];
+        var content = value.badgeClass ? '<span class="model-type-badge ' + value.badgeClass + '">' + value.label.replace(/ \+ /g, '<br>+ ') + '</span>' : value.label;
+        html += '<td class="model-detail" data-detail="' + c.key + '" title="' + value.title + '">' + content + '</td>';
+      });
       var avgCls = (r.Avg > 0 && r.Avg === best.Avg) ? ' class="best-score"' : '';
       html += '<td' + avgCls + '>' + pct(r.Avg) + '</td>';
       cols.forEach(function(c) {
@@ -1003,10 +1296,10 @@ var RESULTS = {
       html += '</tr>';
     }
 
-    // References share the score ordering; only submitted methods receive ranks.
+    // All visible rows share score ordering; medals follow the active ranking pool.
     var modelRank = 0;
     rows.forEach(function(r) {
-      renderRow(r, r.baseline ? '' : medal(modelRank++), r.baseline ? 'baseline-row' : '');
+      renderRow(r, isRanked(r) ? medal(modelRank++) : '', r.baseline ? 'baseline-row' : '');
     });
 
     document.getElementById('lb-body').innerHTML = html;
@@ -1014,6 +1307,7 @@ var RESULTS = {
   }
 
   document.addEventListener('DOMContentLoaded', function() {
+    renderMethodLegend();
     document.querySelectorAll('.navbar-burger').forEach(function(el) {
       el.addEventListener('click', function() {
         var t = document.getElementById(el.getAttribute('data-target'));
@@ -1022,6 +1316,11 @@ var RESULTS = {
       });
     });
     document.getElementById('stat-models').textContent = D.models.filter(function(m) { return !m.baseline || m.name !== 'Human Performance'; }).length;
+
+    document.getElementById('details-toggle').addEventListener('click', function() {
+      showDetails = !showDetails;
+      render();
+    });
 
     document.getElementById('view-toggle').addEventListener('click', function() {
       var radarEl = document.getElementById('radar-container');
@@ -1043,6 +1342,7 @@ var RESULTS = {
         icon.className = 'fas fa-chart-area';
         label.textContent = 'Radar View';
       }
+      syncDetailsControls();
     });
 
     render();
@@ -1057,6 +1357,7 @@ var RESULTS = {
       radarEl.style.display = 'block';
       document.getElementById('view-toggle-icon').className = 'fas fa-table';
       document.getElementById('view-toggle-label').textContent = 'Table View';
+      syncDetailsControls();
       applyRadarData();
       if (radarChart) setTimeout(function() { radarChart.resize(); }, 10);
     }
