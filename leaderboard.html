@@ -125,13 +125,18 @@
   <div class="leaderboard-panel">
     <div class="panel-toolbar">
       <div id="lb-toolbar" role="group" aria-label="Group results by"></div>
-      <p class="table-hint"><i class="fas fa-arrow-down-short-wide" aria-hidden="true"></i>Click a column to sort</p>
+      <div class="ranking-controls">
+        <label class="ranking-toggle" title="When both model categories are shown, check to rank them together; leave unchecked for the open-source ranking. A single visible category ranks automatically.">
+          <input type="checkbox" id="rank-proprietary" aria-controls="lb-table radar-chart">
+          <span>Combined ranking</span>
+        </label>
+      </div>
     </div>
     <div id="method-legend" class="method-legend" role="group" aria-label="Filter methods by tag"></div>
     <p id="tag-empty-state" role="status" hidden>No methods selected. Enable a tag above to show results.</p>
     <div id="radar-container" style="display:none;">
       <div class="radar-plot"><canvas id="radar-chart" role="img" aria-label="Success rates of top-ranked models across the selected task groups"></canvas></div>
-      <p class="radar-note">Shows the <b>top 5</b> ranked models overall and ranked models with the <b>best score</b> in any category. Human and oracle references are excluded; proprietary models are ranked only when open-sourced models are hidden.<br>Click a model name in the legend to show or hide its line.</p>
+      <p class="radar-note">Shows the <b>top 5</b> ranked models overall and ranked models with the <b>best score</b> in any category. Uses the table's ranking rules; human and oracle references are excluded.<br>Click a model name in the legend to show or hide its line.</p>
     </div>
     <div class="lb-wrap" tabindex="0" role="region" aria-label="Leaderboard table; scroll horizontally to explore columns">
       <table id="lb-table" aria-label="RoboMME model success rates">
@@ -722,7 +727,7 @@ var RESULTS = {
   var allTasks = Object.keys(D.models[0].tasks);
   var methodTags = {
     open_sourced_model: { label: 'Open-sourced model', description: 'Built on public model weights, without a proprietary model dependency; does not imply the full method and trained checkpoints are released.' },
-    proprietary_model: { label: 'Proprietary model', description: 'Uses a proprietary model whose weights are not public. Ranked only when open-sourced models are hidden.' },
+    proprietary_model: { label: 'Proprietary model', description: 'Uses a proprietary model whose weights are not public. Combined ranking compares open-source and proprietary models together.' },
     oracle_subgoal: { label: 'Oracle subgoal', description: 'Uses ground-truth subgoals from the simulator.' },
     oracle_action_planner: { label: 'Oracle execution', description: 'Oracle execution of selected high-level actions.' }
   };
@@ -756,6 +761,7 @@ var RESULTS = {
 
   var viewMode = 'table';
   var showDetails = false;
+  var combinedRanking = false;
   var modelTypes = {
     'Closed VLM': 'A vision-language model with weights that are not publicly available directly selects robot actions or waypoints.',
     'Closed VLM+VLA': 'A vision-language model with weights that are not publicly available generates subgoals for a VLA controller; 3-tier Astra also uses a learned completion monitor.',
@@ -785,7 +791,6 @@ var RESULTS = {
 
   function syncDetailsControls() {
     document.getElementById('view-toggle').setAttribute('aria-pressed', String(viewMode === 'radar'));
-    document.querySelector('.table-hint').hidden = viewMode !== 'table';
     document.querySelector('.table-footer').hidden = viewMode !== 'table';
     var button = document.getElementById('details-toggle');
     button.hidden = viewMode !== 'table';
@@ -818,7 +823,7 @@ var RESULTS = {
   }
 
   function isRanked(row) {
-    return !row.baseline && !(selectedTags.open_sourced_model && row.tags.indexOf('proprietary_model') !== -1);
+    return !row.baseline && (combinedRanking || !selectedTags.open_sourced_model || row.tags.indexOf('proprietary_model') === -1);
   }
 
   function updateRadar(cols, rows) {
@@ -1159,6 +1164,7 @@ var RESULTS = {
 
   function render() {
     syncDetailsControls();
+    document.getElementById('rank-proprietary').checked = combinedRanking;
     var visibleDetails = getDetailColumns();
     var cols = getColumns();
     var rows = buildRows(cols).filter(function(r) {
@@ -1261,6 +1267,16 @@ var RESULTS = {
 
     document.getElementById('details-toggle').addEventListener('click', function() {
       showDetails = !showDetails;
+      render();
+    });
+
+    document.getElementById('rank-proprietary').addEventListener('change', function() {
+      combinedRanking = this.checked;
+      // Show newly included models immediately; visibility filters remain independent.
+      if (combinedRanking && !selectedTags.proprietary_model) {
+        selectedTags.proprietary_model = true;
+        renderMethodLegend();
+      }
       render();
     });
 
