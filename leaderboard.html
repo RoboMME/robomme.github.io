@@ -92,7 +92,7 @@
         <div class="column is-narrow"><div class="stat-card"><div class="stat-value" id="stat-models">—</div><div class="stat-label">Models Evaluated</div></div></div>
       </div>
 
-      <p class="has-text-centered" style="margin-top:0.75rem;font-size:0.95rem;color:#999;">(Data updated on 10/16/2026)</p>
+      <p class="has-text-centered" style="margin-top:0.75rem;font-size:0.95rem;color:#999;">(Data updated on 10/21/2026)</p>
       <!-- <div class="has-text-centered" style="margin-top:1.5rem;">
         <a href="#" class="button is-link is-rounded is-light" style="margin:0.25rem;"><span class="icon"><i class="fas fa-file-pdf"></i></span><span>Paper</span></a>
         <a href="https://github.com/RoboMME/robomme_benchmark" class="button is-link is-rounded is-light" target="_blank" style="margin:0.25rem;"><span class="icon"><i class="fab fa-github"></i></span><span>Benchmark Code</span></a>
@@ -133,7 +133,7 @@
       </div>
     </div>
     <div id="method-legend" class="method-legend" role="group" aria-label="Filter methods by tag"></div>
-    <p id="tag-empty-state" role="status" hidden>No methods selected. Enable a tag above to show results.</p>
+    <p id="tag-empty-state" role="status" hidden>No methods selected. Enable a tag above to compare methods with Human Performance.</p>
     <div id="radar-container" style="display:none;">
       <div class="radar-plot"><canvas id="radar-chart" role="img" aria-label="Success rates of top-ranked models across the selected task groups"></canvas></div>
       <p class="radar-note">Shows the <b>top 5</b> ranked models overall and ranked models with the <b>best score</b> in any category. Uses the table's ranking rules; human and oracle references are excluded.<br>Click a model name in the legend to show or hide its line.</p>
@@ -210,6 +210,7 @@ var RESULTS = {
     {
       "name": "Human Performance",
       "model_type": "Human",
+      "always_visible": true,
       "training_compute": {"status": "not_applicable", "note": "Human reference; no model training."},
       "tags": ["oracle_action_planner"],
       "total_size": "N/A",
@@ -652,6 +653,41 @@ var RESULTS = {
       }
     },
     {
+      "name": "MEMI-Astra-Plan (Ryu et al.)",
+      "model_type": "Closed VLM+Oracle",
+      "api_cost": {"total_usd": 99, "note": "Maintainer-provided total API spending for this RoboMME result: US$99."},
+      "training_compute": {"status": "not_applicable", "note": "No model-weight training. Task-specific memory and policy prompts are optimized offline with the Astra API on RoboMME training demonstrations; API prompt optimization is outside H100 GPU-hours.", "source": "https://github.com/RoboMME/robomme_benchmark/blob/1babf64480e28320e0f9db7992554616ceefda0e/doc/submission/memi-astra-plan.md"},
+      "tags": ["oracle_action_planner"],
+      "total_size": "N/A",
+      "size_note": "Uses the proprietary GPT-6 Astra API model; parameter count is not publicly reported.",
+      "link": "https://github.com/memi-robot/memi",
+      "baseline": true,
+      // 795/800 successes, single test run: https://github.com/RoboMME/robomme_benchmark/blob/1babf64480e28320e0f9db7992554616ceefda0e/doc/submission/memi-astra-plan.md
+      "tasks": {
+        "BinFill": 0.9800, "PickXtimes": 1.0000, "SwingXtimes": 1.0000, "StopCube": 1.0000,
+        "VideoUnmask": 1.0000, "ButtonUnmask": 0.9800, "VideoUnmaskSwap": 0.9800, "ButtonUnmaskSwap": 1.0000,
+        "PickHighlight": 1.0000, "VideoRepick": 1.0000, "VideoPlaceButton": 1.0000, "VideoPlaceOrder": 1.0000,
+        "MoveCube": 1.0000, "InsertPeg": 0.9600, "PatternLock": 1.0000, "RouteStick": 1.0000
+      }
+    },
+    {
+      "name": "MEMI-Astra-Act (Ryu et al.)",
+      "model_type": "Closed VLM",
+      "api_cost": {"total_usd": 706, "note": "Maintainer-provided total API spending for this RoboMME result: US$706."},
+      "training_compute": {"status": "not_applicable", "note": "No model-weight training. Task-specific memory and policy prompts are optimized offline with the Astra API on RoboMME training demonstrations; API prompt optimization is outside H100 GPU-hours.", "source": "https://github.com/RoboMME/robomme_benchmark/blob/1babf64480e28320e0f9db7992554616ceefda0e/doc/submission/memi-astra-act.md"},
+      "tags": ["proprietary_model"],
+      "total_size": "N/A",
+      "size_note": "Uses the proprietary GPT-6 Astra API model; parameter count is not publicly reported.",
+      "link": "https://github.com/memi-robot/memi",
+      // 776/800 successes, single test run: https://github.com/RoboMME/robomme_benchmark/blob/1babf64480e28320e0f9db7992554616ceefda0e/doc/submission/memi-astra-act.md
+      "tasks": {
+        "BinFill": 0.9800, "PickXtimes": 1.0000, "SwingXtimes": 1.0000, "StopCube": 0.9600,
+        "VideoUnmask": 1.0000, "ButtonUnmask": 1.0000, "VideoUnmaskSwap": 0.9600, "ButtonUnmaskSwap": 0.9200,
+        "PickHighlight": 1.0000, "VideoRepick": 0.9200, "VideoPlaceButton": 1.0000, "VideoPlaceOrder": 1.0000,
+        "MoveCube": 0.9600, "InsertPeg": 0.8400, "PatternLock": 1.0000, "RouteStick": 0.9800
+      }
+    },
+    {
       "name": "PonderPounce (Suhwan et al.)",
       "model_type": "VLM+VLA",
       "training_compute": {"status": "not_reported", "note": "RoboMME training steps are reported, but GPU count and training duration are not.", "source": "https://arxiv.org/html/2608.24115"},
@@ -729,10 +765,10 @@ var RESULTS = {
     open_sourced_model: { label: 'Open-sourced model', description: 'Built on public model weights, without a proprietary model dependency; does not imply the full method and trained checkpoints are released.' },
     proprietary_model: { label: 'Proprietary model', description: 'Uses a proprietary model whose weights are not public. Combined ranking compares open-source and proprietary models together.' },
     oracle_subgoal: { label: 'Oracle subgoal', description: 'Uses ground-truth subgoals from the simulator.' },
-    oracle_action_planner: { label: 'Oracle execution', description: 'Oracle execution of selected high-level actions.' }
+    oracle_action_planner: { label: 'Oracle execution', description: 'Oracle execution of selected high-level actions. Human Performance is always shown as a reference.' }
   };
   var selectedTags = {
-    oracle_action_planner: true,
+    oracle_action_planner: false,
     oracle_subgoal: true,
     proprietary_model: false,
     open_sourced_model: true
@@ -764,6 +800,7 @@ var RESULTS = {
   var combinedRanking = false;
   var modelTypes = {
     'Closed VLM': 'A vision-language model with weights that are not publicly available directly selects robot actions or waypoints.',
+    'Closed VLM+Oracle': 'A model with private weights chooses high-level subgoals from benchmark options, and the benchmark oracle executes them. MEMI-Astra-Plan uses text scene descriptions derived from simulator segmentation.',
     'Closed VLM+VLA': 'A vision-language model with weights that are not publicly available generates subgoals for a VLA controller; 3-tier Astra also uses a learned completion monitor.',
     'VLA': 'A vision-language-action policy maps visual observations and instructions to actions.',
     'Oracle+VLA': 'A VLA controller executes ground-truth subgoals supplied by an oracle.',
@@ -779,7 +816,7 @@ var RESULTS = {
     { key: 'type', label: 'Type', width: 5.25, title: 'Architecture of the evaluated system. Hover over a value for its definition.' },
     { key: 'parameters', label: 'Total<br>Params', width: 3.75, title: 'Approximate number of model parameters.' },
     { key: 'training', label: 'Train<br>Hours', width: 3.75, title: 'RoboMME training per run, in H100-equivalent GPU-hours. See notes below for conversion assumptions.' },
-    { key: 'apiCost', label: 'API<br>Cost', width: 3.5, title: 'Total API spending in USD for the reported RoboMME evaluation. Excludes local GPU compute.' }
+    { key: 'apiCost', label: 'API<br>Cost', width: 3.5, title: 'Reported API spending in USD for the RoboMME result. Hover over a value for its scope. Excludes local GPU compute.' }
   ];
 
   function getDetailColumns() {
@@ -1045,7 +1082,7 @@ var RESULTS = {
 
   function buildRows(cols) {
     return D.models.map(function(m, idx) {
-      var row = { id: idx, name: m.name, org: m.organization, memory: m.memory || '\u2014', tasks: m.tasks, baseline: !!m.baseline, link: m.link || null, tags: m.tags || [], totalSize: m.total_size || 'Not reported' };
+      var row = { id: idx, name: m.name, org: m.organization, memory: m.memory || '\u2014', tasks: m.tasks, baseline: !!m.baseline, alwaysVisible: !!m.always_visible, link: m.link || null, tags: m.tags || [], totalSize: m.total_size || 'Not reported' };
       var apiCost = m.api_cost;
       row.details = {
         type: { label: m.model_type ? m.model_type.replace(/\+/g, ' + ') : 'N/R', title: modelTypes[m.model_type] || 'Architecture type is not reported.', badgeClass: m.model_type ? 'type-' + m.model_type.toLowerCase().replace(/[+\s]+/g, '-') : '' },
@@ -1168,9 +1205,9 @@ var RESULTS = {
     var visibleDetails = getDetailColumns();
     var cols = getColumns();
     var rows = buildRows(cols).filter(function(r) {
-      return r.tags.some(function(key) { return selectedTags[key]; });
+      return r.alwaysVisible || r.tags.some(function(key) { return selectedTags[key]; });
     });
-    document.getElementById('tag-empty-state').hidden = rows.length > 0;
+    document.getElementById('tag-empty-state').hidden = rows.some(function(r) { return !r.alwaysVisible; });
     document.getElementById('visible-count').textContent = rows.length;
 
     sortRows(rows);

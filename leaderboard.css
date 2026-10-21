@@ -81,6 +81,7 @@
 .leaderboard-table .model-type-badge { display: inline-block; vertical-align: middle; padding: 0.2rem 0.25rem; border-radius: 4px; font-size: 0.75rem; font-weight: 700; line-height: 1.2; white-space: nowrap; }
 .leaderboard-table .type-closed-vlm { background: #e0f2fe; color: #0369a1; }
 .leaderboard-table .type-closed-vlm-vla { background: #fff1d6; color: #92400e; }
+.leaderboard-table .type-closed-vlm-oracle { background: #faf3e2; color: #76612d; }
 .leaderboard-table .type-vla { background: #eaeaff; color: #4338ca; }
 .leaderboard-table .type-oracle-vla { background: #e5e7eb; color: #374151; }
 .leaderboard-table .type-vlm-vla { background: #dcfce7; color: #166534; }
