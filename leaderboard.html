@@ -832,6 +832,7 @@ var RESULTS = {
   function getDetailColumns() {
     if (!showDetails) return [];
     return detailColumns.filter(function(column) {
+      if (column.key === 'type') return true;
       if (column.key !== 'parameters' && column.key !== 'apiCost') return false;
       return combinedRanking || column.key === (activeTrack === 'agentic' ? 'apiCost' : 'parameters');
     });
