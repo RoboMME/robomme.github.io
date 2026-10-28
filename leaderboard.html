@@ -111,11 +111,11 @@
 <div class="leaderboard-table" aria-labelledby="results-title">
   <div class="section-heading">
     <div>
-      <h2 class="title is-4" id="results-title">📊 Regular Leaderboard</h2>
+      <h2 class="title is-4" id="results-title">📊 Standard Leaderboard</h2>
       <p class="section-kicker">Success rate (%) · Higher is better</p>
     </div>
     <div class="view-controls">
-      <button type="button" id="details-toggle" class="details-toggle-btn" aria-pressed="false" aria-controls="lb-table model-details-notes">Show details</button>
+      <button type="button" id="details-toggle" class="details-toggle-btn is-active" aria-pressed="true" aria-controls="lb-table model-details-notes">Hide details</button>
       <button type="button" id="view-toggle" class="view-toggle-btn" aria-pressed="false" aria-controls="radar-container lb-table">
         <i id="view-toggle-icon" class="fas fa-chart-area" aria-hidden="true"></i>
         <span id="view-toggle-label">Radar View</span>
@@ -126,14 +126,25 @@
     <div class="panel-toolbar">
       <div id="lb-toolbar" role="group" aria-label="Group results by"></div>
       <div class="ranking-controls">
-        <label class="ranking-toggle" title="When both model categories are shown, check to rank them together; leave unchecked for the open-source ranking. A single visible category ranks automatically.">
-          <input type="checkbox" id="rank-proprietary" aria-controls="lb-table radar-chart">
+        <div id="method-legend" class="method-legend" role="group" aria-label="Show oracle references"></div>
+        <label class="ranking-toggle" title="Rank Standard and Agentic methods together. Human and oracle references remain unranked. Selecting a track returns to its separate ranking.">
+          <input type="checkbox" id="combined-ranking" aria-controls="lb-table radar-chart">
           <span>Combined ranking</span>
         </label>
       </div>
     </div>
-    <div id="method-legend" class="method-legend" role="group" aria-label="Filter methods by tag"></div>
-    <p id="tag-empty-state" role="status" hidden>No methods selected. Enable a tag above to compare methods with Human Performance.</p>
+    <div class="track-selection" role="group" aria-labelledby="track-caption">
+      <span class="filter-caption" id="track-caption">Track</span>
+      <label class="track-option track-standard" title="Open-source models without proprietary agents.">
+        <input type="radio" name="leaderboard-track" value="standard" checked aria-controls="lb-table radar-chart" aria-describedby="track-note">
+        <span>Standard</span>
+      </label>
+      <label class="track-option track-agentic" title="Agents using proprietary frontier models.">
+        <input type="radio" name="leaderboard-track" value="agentic" aria-controls="lb-table radar-chart" aria-describedby="track-note">
+        <span>Agentic</span>
+      </label>
+    </div>
+    <p class="track-note" id="track-note">Standard uses open-source models; Agentic uses proprietary frontier models.</p>
     <div id="radar-container" style="display:none;">
       <div class="radar-plot"><canvas id="radar-chart" role="img" aria-label="Success rates of top-ranked models across the selected task groups"></canvas></div>
       <p class="radar-note">Shows the <b>top 5</b> ranked models overall and ranked models with the <b>best score</b> in any category. Uses the table's ranking rules; human and oracle references are excluded.<br>Click a model name in the legend to show or hide its line.</p>
@@ -147,12 +158,11 @@
     </div>
     <div class="table-footer"><span><strong id="visible-count">—</strong> methods &amp; references shown</span><span>16 tasks · 50 test episodes per task</span></div>
   </div>
-      <details id="model-details-notes" class="compute-note" hidden>
+      <details id="model-details-notes" class="compute-note">
         <summary>Metric notes</summary>
-        <p><strong>Params:</strong> approximate parameter count. B = billion; M = million.</p>
-        <p><strong>Train:</strong> RoboMME training compute, converted to equivalent H100 GPU-hours using GPU count, training time, and relative peak BF16 throughput. Values are approximate and exclude foundation-model pretraining and inference. Hover over a value for details.</p>
-        <p>H100 GPU-hours = GPU count × training hours × conversion factor. Relative to H100 SXM: <strong>A40 ≈ 0.151×</strong>, <strong>A100 ≈ 0.315×</strong>, <strong>H200 SXM = 1×</strong>. Reported H100 GPU-hours are used directly.</p>
-        <p><strong>N/R:</strong> not reported. <strong>N/A:</strong> not applicable. <strong>≈:</strong> approximate.</p>
+        <p data-metric-note="parameters"><strong>Params:</strong> approximate parameter count. B = billion; M = million.</p>
+        <p data-metric-note="apiCost" hidden><strong>API Cost:</strong> reported API spending in USD for the RoboMME result, excluding local GPU compute. Hover over a value for its scope.</p>
+        <p><strong>N/R:</strong> not reported. <strong>N/A:</strong> not applicable.</p>
       </details>
 </div>
       <div class="columns" style="margin-top:3rem;">
@@ -262,7 +272,7 @@ var RESULTS = {
     },
     {
       "name": "SimpleSG+Gemini",
-      "model_type": "Closed VLM+VLA",
+      "model_type": "Agent+VLA",
       "api_cost": {"total_usd": 150, "approximate": true, "note": "Maintainer-estimated total API spending for this RoboMME evaluation: approximately US$150."},
       "training_compute": {"gpu": "A40", "gpus": 4, "hours": [72, 72], "approximate": true, "note": "Symbolic policy training: approximately 3 days on 4 A40 GPUs (RoboMME Appendix B.2.3). No additional subgoal-model fine-tuning for Oracle or prompted Gemini.", "source": "https://arxiv.org/html/2603.04639"},
       "tags": ["proprietary_model"],
@@ -302,7 +312,7 @@ var RESULTS = {
     },
     {
       "name": "GroundSG+Gemini",
-      "model_type": "Closed VLM+VLA",
+      "model_type": "Agent+VLA",
       "api_cost": {"total_usd": 150, "approximate": true, "note": "Maintainer-estimated total API spending for this RoboMME evaluation: approximately US$150."},
       "training_compute": {"gpu": "A40", "gpus": 4, "hours": [72, 72], "approximate": true, "note": "Symbolic policy training: approximately 3 days on 4 A40 GPUs (RoboMME Appendix B.2.3). No additional subgoal-model fine-tuning for Oracle or prompted Gemini.", "source": "https://arxiv.org/html/2603.04639"},
       "tags": ["proprietary_model"],
@@ -622,7 +632,7 @@ var RESULTS = {
     },
     {
       "name": "Embodied-Astra (Jedlicki et al.)",
-      "model_type": "Closed VLM",
+      "model_type": "Agent",
       "api_cost": {"total_usd": 310, "approximate": false, "note": "Maintainer-provided total API spending for this RoboMME evaluation: US$310."},
       "training_compute": {"status": "not_applicable", "note": "No RoboMME training or fine-tuning. Foundation-model pretraining and API inference are outside this column scope.", "source": "https://github.com/jackbjed/embodied-astra-robomme/blob/main/submission/embodied-gpt-6-astra.md"},
       "tags": ["proprietary_model"],
@@ -638,7 +648,7 @@ var RESULTS = {
     },
     {
       "name": "3-tier Astra (Chen et al.)",
-      "model_type": "Closed VLM+VLA",
+      "model_type": "Agent+VLA",
       "api_cost": {"total_usd": 400, "note": "Maintainer-provided total API spending for this RoboMME evaluation: US$400."},
       "training_compute": {"status": "not_reported", "note": "Uses the GroundSG VLA policy (≈44 H100 GPU-hours). System 1.5 is a Qwen3-VL-4B LoRA monitor trained for 2,246 steps over 2 epochs on 8 GPUs; the released model card and training configuration do not report its GPU type or elapsed training time, so total training compute remains N/R.", "source": "https://huggingface.co/bingaochen/Astra-on-RoboMME-Monitor#training", "policy_source": "https://github.com/bingaochen/Astra-on-RoboMME/blob/main/examples/champ/weights.json"},
       "tags": ["proprietary_model"],
@@ -654,7 +664,7 @@ var RESULTS = {
     },
     {
       "name": "MEMI-Astra-Plan (Ryu et al.)",
-      "model_type": "Closed VLM+Oracle",
+      "model_type": "Agent+Oracle",
       "api_cost": {"total_usd": 99, "note": "Maintainer-provided total API spending for this RoboMME result: US$99."},
       "training_compute": {"status": "not_applicable", "note": "No model-weight training. Task-specific memory and policy prompts are optimized offline with the Astra API on RoboMME training demonstrations; API prompt optimization is outside H100 GPU-hours.", "source": "https://github.com/RoboMME/robomme_benchmark/blob/1babf64480e28320e0f9db7992554616ceefda0e/doc/submission/memi-astra-plan.md"},
       "tags": ["oracle_action_planner"],
@@ -672,7 +682,7 @@ var RESULTS = {
     },
     {
       "name": "MEMI-Astra-Act (Ryu et al.)",
-      "model_type": "Closed VLM",
+      "model_type": "Agent",
       "api_cost": {"total_usd": 706, "note": "Maintainer-provided total API spending for this RoboMME result: US$706."},
       "training_compute": {"status": "not_applicable", "note": "No model-weight training. Task-specific memory and policy prompts are optimized offline with the Astra API on RoboMME training demonstrations; API prompt optimization is outside H100 GPU-hours.", "source": "https://github.com/RoboMME/robomme_benchmark/blob/1babf64480e28320e0f9db7992554616ceefda0e/doc/submission/memi-astra-act.md"},
       "tags": ["proprietary_model"],
@@ -769,13 +779,13 @@ var RESULTS = {
   };
   var selectedTags = {
     oracle_action_planner: false,
-    oracle_subgoal: true,
-    proprietary_model: true,
-    open_sourced_model: true
+    oracle_subgoal: true
   };
+  var activeTrack = 'standard';
+  var trackNames = { standard: 'Standard', agentic: 'Agentic' };
 
   function renderMethodLegend() {
-    document.getElementById('method-legend').innerHTML = '<span class="filter-caption">Show</span>' + Object.keys(methodTags).map(function(key) {
+    document.getElementById('method-legend').innerHTML = ['oracle_subgoal', 'oracle_action_planner'].map(function(key) {
       var tag = methodTags[key];
       return '<button type="button" class="method-filter method-' + key + (selectedTags[key] ? ' is-active' : '') + '" data-tag="' + key + '" aria-label="' + tag.label + '" aria-pressed="' + selectedTags[key] + '" title="' + tag.description + '">' + tag.label + '</button>';
     }).join('');
@@ -796,12 +806,12 @@ var RESULTS = {
   var sortAsc = false;
 
   var viewMode = 'table';
-  var showDetails = false;
+  var showDetails = true;
   var combinedRanking = false;
   var modelTypes = {
-    'Closed VLM': 'A vision-language model with weights that are not publicly available directly selects robot actions or waypoints.',
-    'Closed VLM+Oracle': 'A model with private weights chooses high-level subgoals from benchmark options, and the benchmark oracle executes them. MEMI-Astra-Plan uses text scene descriptions derived from simulator segmentation.',
-    'Closed VLM+VLA': 'A vision-language model with weights that are not publicly available generates subgoals for a VLA controller; 3-tier Astra also uses a learned completion monitor.',
+    'Agent': 'A vision-language model with weights that are not publicly available directly selects robot actions or waypoints.',
+    'Agent+Oracle': 'A model with private weights chooses high-level subgoals from benchmark options, and the benchmark oracle executes them. MEMI-Astra-Plan uses text scene descriptions derived from simulator segmentation.',
+    'Agent+VLA': 'A vision-language model with weights that are not publicly available generates subgoals for a VLA controller; 3-tier Astra also uses a learned completion monitor.',
     'VLA': 'A vision-language-action policy maps visual observations and instructions to actions.',
     'Oracle+VLA': 'A VLA controller executes ground-truth subgoals supplied by an oracle.',
     'VLM+VLA': 'A separate vision-language model provides subgoals or contextual representations to a VLA controller.',
@@ -814,7 +824,7 @@ var RESULTS = {
   };
   var detailColumns = [
     { key: 'type', label: 'Type', width: 5.25, title: 'Architecture of the evaluated system. Hover over a value for its definition.' },
-    { key: 'parameters', label: 'Total<br>Params', width: 3.75, title: 'Approximate number of model parameters.' },
+    { key: 'parameters', label: 'Total<br>Params', width: 4.5, title: 'Approximate number of model parameters.' },
     { key: 'training', label: 'Train<br>Hours', width: 3.75, title: 'RoboMME training per run, in H100-equivalent GPU-hours. See notes below for conversion assumptions.' },
     { key: 'apiCost', label: 'API<br>Cost', width: 3.5, title: 'Reported API spending in USD for the RoboMME result. Hover over a value for its scope. Excludes local GPU compute.' }
   ];
@@ -822,11 +832,12 @@ var RESULTS = {
   function getDetailColumns() {
     if (!showDetails) return [];
     return detailColumns.filter(function(column) {
-      return column.key !== 'apiCost' || selectedTags.proprietary_model;
+      if (column.key !== 'parameters' && column.key !== 'apiCost') return false;
+      return combinedRanking || column.key === (activeTrack === 'agentic' ? 'apiCost' : 'parameters');
     });
   }
 
-  function syncDetailsControls() {
+  function syncViewControls() {
     document.getElementById('view-toggle').setAttribute('aria-pressed', String(viewMode === 'radar'));
     document.querySelector('.table-footer').hidden = viewMode !== 'table';
     var button = document.getElementById('details-toggle');
@@ -835,6 +846,20 @@ var RESULTS = {
     button.setAttribute('aria-pressed', String(showDetails));
     button.textContent = showDetails ? 'Hide details' : 'Show details';
     document.getElementById('model-details-notes').hidden = !showDetails || viewMode !== 'table';
+    var visibleDetails = getDetailColumns();
+    document.querySelectorAll('[data-metric-note]').forEach(function(note) {
+      note.hidden = !visibleDetails.some(function(column) { return column.key === note.getAttribute('data-metric-note'); });
+    });
+  }
+
+  function syncTrackControls() {
+    document.getElementById('combined-ranking').checked = combinedRanking;
+    document.querySelectorAll('[name="leaderboard-track"]').forEach(function(input) {
+      input.checked = input.value === activeTrack;
+    });
+    var title = combinedRanking ? 'Combined' : trackNames[activeTrack];
+    document.getElementById('results-title').textContent = '📊 ' + title + ' Leaderboard';
+    document.getElementById('lb-table').setAttribute('aria-label', 'RoboMME ' + title + ' leaderboard');
   }
 
   var radarChart = null;
@@ -859,8 +884,14 @@ var RESULTS = {
     return parts.length > 1 ? parts : parts[0] || '';
   }
 
+  function isOtherTrack(row) {
+    if (row.baseline || combinedRanking) return false;
+    var isAgentic = row.tags.indexOf('proprietary_model') !== -1;
+    return isAgentic !== (activeTrack === 'agentic');
+  }
+
   function isRanked(row) {
-    return !row.baseline && (combinedRanking || !selectedTags.open_sourced_model || row.tags.indexOf('proprietary_model') === -1);
+    return !row.baseline && !isOtherTrack(row);
   }
 
   function updateRadar(cols, rows) {
@@ -1200,23 +1231,25 @@ var RESULTS = {
   }
 
   function render() {
-    syncDetailsControls();
-    document.getElementById('rank-proprietary').checked = combinedRanking;
+    syncViewControls();
+    syncTrackControls();
     var visibleDetails = getDetailColumns();
     var cols = getColumns();
     var rows = buildRows(cols).filter(function(r) {
-      return r.alwaysVisible || r.tags.some(function(key) { return selectedTags[key]; });
+      if (r.alwaysVisible) return true;
+      if (r.baseline) return r.tags.some(function(key) { return selectedTags[key]; });
+      return activeTrack !== 'agentic' || combinedRanking || r.tags.indexOf('proprietary_model') !== -1;
     });
-    document.getElementById('tag-empty-state').hidden = rows.some(function(r) { return !r.alwaysVisible; });
     document.getElementById('visible-count').textContent = rows.length;
 
     sortRows(rows);
 
-    // Compare all rows, including human and oracle references.
+    // Compare the active track and visible references; the other track stays muted.
     var best = {};
     cols.forEach(function(c) { best[c.key] = 0; });
     best.Avg = 0;
     rows.forEach(function(r) {
+      if (isOtherTrack(r)) return;
       cols.forEach(function(c) { if (r[c.key] > best[c.key]) best[c.key] = r[c.key]; });
       if (r.Avg > best.Avg) best.Avg = r.Avg;
     });
@@ -1258,19 +1291,25 @@ var RESULTS = {
     function renderRow(r, rankLabel, rowClass) {
       var typeClasses = r.tags.map(function(key) { return 'method-' + key; }).join(' ');
       var typeLabels = r.tags.map(function(key) { return methodTags[key].label; }).join(', ');
+      var otherTrack = isOtherTrack(r);
+      if (otherTrack) {
+        rowClass = (rowClass ? rowClass + ' ' : '') + 'other-track-row';
+        typeLabels += '. Shown for reference in the ' + trackNames[activeTrack] + ' track.';
+      }
       html += '<tr class="' + typeClasses + (rowClass ? ' ' + rowClass : '') + '" title="' + typeLabels + '">';
       html += '<td class="rank">' + rankLabel + '</td>';
       html += '<td>' + nameHtml(r) + '</td>';
       visibleDetails.forEach(function(c) {
         var value = r.details[c.key];
-        var content = value.badgeClass ? '<span class="model-type-badge ' + value.badgeClass + '">' + value.label.replace(/ \+ /g, '<br>+ ') + '</span>' : value.label;
+        var label = value.label.replace(/≈/g, '');
+        var content = value.badgeClass ? '<span class="model-type-badge ' + value.badgeClass + '">' + label.replace(/ \+ /g, '<br>+ ') + '</span>' : label;
         html += '<td class="model-detail" data-detail="' + c.key + '" title="' + value.title + '">' + content + '</td>';
       });
-      var avgCls = (r.Avg > 0 && r.Avg === best.Avg) ? ' class="best-score"' : '';
+      var avgCls = (!otherTrack && r.Avg > 0 && r.Avg === best.Avg) ? ' class="best-score"' : '';
       html += '<td' + avgCls + '><span class="overall-score" style="--score:' + pct(r.Avg) + '%">' + pct(r.Avg) + '</span></td>';
       cols.forEach(function(c) {
         var v = r[c.key];
-        var cls = (v > 0 && v === best[c.key]) ? ' class="best-score"' : '';
+        var cls = (!otherTrack && v > 0 && v === best[c.key]) ? ' class="best-score"' : '';
         html += '<td' + cls + '>' + pct(v) + '</td>';
       });
       html += '</tr>';
@@ -1307,13 +1346,16 @@ var RESULTS = {
       render();
     });
 
-    document.getElementById('rank-proprietary').addEventListener('change', function() {
+    document.querySelectorAll('[name="leaderboard-track"]').forEach(function(input) {
+      input.addEventListener('click', function() {
+        activeTrack = this.value;
+        combinedRanking = false;
+        render();
+      });
+    });
+
+    document.getElementById('combined-ranking').addEventListener('change', function() {
       combinedRanking = this.checked;
-      // Show newly included models immediately; visibility filters remain independent.
-      if (combinedRanking && !selectedTags.proprietary_model) {
-        selectedTags.proprietary_model = true;
-        renderMethodLegend();
-      }
       render();
     });
 
@@ -1337,7 +1379,7 @@ var RESULTS = {
         icon.className = 'fas fa-chart-area';
         label.textContent = 'Radar View';
       }
-      syncDetailsControls();
+      syncViewControls();
       updateStickyHeader();
     });
 
@@ -1353,7 +1395,7 @@ var RESULTS = {
       radarEl.style.display = 'block';
       document.getElementById('view-toggle-icon').className = 'fas fa-table';
       document.getElementById('view-toggle-label').textContent = 'Table View';
-      syncDetailsControls();
+      syncViewControls();
       applyRadarData();
       if (radarChart) setTimeout(function() { radarChart.resize(); }, 10);
     }
