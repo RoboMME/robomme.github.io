@@ -47,7 +47,7 @@
 .leaderboard-table .track-note { margin-bottom: 16px; font-size: 12px; line-height: 1.6; color: #69768b; }
 .leaderboard-table .method-oracle_action_planner { --method-shade: #faf3e2; --method-hover: #f3e8cc; --method-dot: #b79b55; --method-border: #a38a4d; --method-ink: #76612d; }
 .leaderboard-table .method-oracle_subgoal { --method-shade: #f0edf6; --method-hover: #e5deef; --method-dot: #9582b0; --method-border: #8b76a7; --method-ink: #66517d; }
-.leaderboard-table .method-proprietary_model { --method-shade: #eaf4ef; --method-hover: #dcece4; --method-dot: #6d9c86; --method-border: #65917a; --method-ink: #366550; }
+.leaderboard-table .method-proprietary_model { --method-shade: #fff; --method-hover: #f0f4ff; --method-dot: #6d9c86; --method-border: #65917a; --method-ink: #366550; }
 .leaderboard-table .method-open_sourced_model { --method-shade: #fff; --method-hover: #f0f4ff; --method-dot: #596a83; }
 .leaderboard-table .method-filter { display: inline-flex; align-items: center; gap: 6px; min-height: 36px; white-space: nowrap; border: 1px solid #e9edf3; border-radius: 5px; padding: 6px 9px; background: #fff; color: #8994a5; font: inherit; font-weight: 500; cursor: pointer; transition: border-color 150ms, background 150ms; }
 .leaderboard-table .method-filter::before { content: ''; width: 6px; height: 6px; background: var(--method-dot); border-radius: 2px; opacity: 0.35; }
