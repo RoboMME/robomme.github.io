@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" fill="none" role="img" aria-labelledby="title">
+  <title id="title">Antique gold laurel trophy</title>
+  <path d="M22 53C12 50 7 40 9 29M42 53c10-3 15-13 13-24" stroke="#ca8a04" stroke-width="2.5" stroke-linecap="round"/>
+  <g fill="#eab308">
+    <path d="M10 39C3 38 1 31 3 28c6 1 8 5 7 11ZM15 49C8 50 4 44 5 40c6-1 9 3 10 9Z"/>
+    <path d="M54 39c7-1 9-8 7-11-6 1-8 5-7 11ZM49 49c7 1 11-5 10-9-6-1-9 3-10 9Z"/>
+  </g>
+  <path d="M20 14h-6v7c0 6 4 10 10 10M44 14h6v7c0 6-4 10-10 10" stroke="#c99a3b" stroke-width="3" stroke-linejoin="round"/>
+  <path d="M20 10h24v14c0 9-4 14-12 17-8-3-12-8-12-17V10Z" fill="#b8860b"/>
+  <path d="M20 10h24" stroke="#d4a52e" stroke-width="5" stroke-linecap="round"/>
+  <path d="m32 17 2.5 5.3 5.8.8-4.2 4.1 1 5.8-5.1-2.7-5.1 2.7 1-5.8-4.2-4.1 5.8-.8L32 17Z" fill="#fef3c7"/>
+  <path d="M29 39h6v11h-6z" fill="#916b0a"/>
+  <path d="M25 48h14l4 9H21l4-9Z" fill="#b8860b"/>
+  <rect x="18" y="55" width="28" height="6" rx="2.5" fill="#78560b"/>
+</svg>

@@ -1,0 +1,1433 @@
+{
+  "benchmark": "RoboMME-Plus",
+  "suites": [
+    {
+      "id": "counting",
+      "name": "Counting",
+      "memory": "Temporal memory",
+      "description": "Accumulate past events and act at the right moment."
+    },
+    {
+      "id": "permanence",
+      "name": "Permanence",
+      "memory": "Spatial memory",
+      "description": "Track hidden objects through motion and occlusion."
+    },
+    {
+      "id": "reference",
+      "name": "Reference",
+      "memory": "Object memory",
+      "description": "Identify the right object or location from its history."
+    },
+    {
+      "id": "imitation",
+      "name": "Imitation",
+      "memory": "Procedural memory",
+      "description": "Transfer demonstrated behavior to changed execution conditions."
+    }
+  ],
+  "tasks": [
+    {
+      "id": "BinFill",
+      "name": "BinFill",
+      "suite": "counting",
+      "description": "Collect the requested color counts, then stop. Conveyor arrivals and ongoing distractors add counting challenges for hard cases.",
+      "tag": "Distractors & counting",
+      "samples": [
+        {
+          "label": "Sample 1",
+          "video": "video/plus/BinFill/sample-1.mp4?v=275540c0bd3a",
+          "poster": "video/plus/BinFill/sample-1.jpg?v=b6972ffe4fba",
+          "subgoals": "video/plus/BinFill/sample-1.subgoals.json?v=d5d6177a7ca7",
+          "caption": "Successful training rollout",
+          "goal": "put three red cubes and three blue cubes into the bin, then press the button to stop",
+          "seed": 1380945633,
+          "training_episode": 0,
+          "duration_seconds": 54.0,
+          "demonstration_seconds": 0.0,
+          "difficulty": "easy"
+        },
+        {
+          "label": "Sample 2",
+          "video": "video/plus/BinFill/sample-2.mp4?v=72da76714306",
+          "poster": "video/plus/BinFill/sample-2.jpg?v=7d874bcf4e3e",
+          "subgoals": "video/plus/BinFill/sample-2.subgoals.json?v=25271dc1fea2",
+          "caption": "Successful training rollout",
+          "goal": "put three green cubes and two blue cubes into the bin, then press the button to stop",
+          "seed": 1332058911,
+          "training_episode": 1,
+          "duration_seconds": 42.25,
+          "demonstration_seconds": 0.0,
+          "difficulty": "medium"
+        },
+        {
+          "label": "Sample 3",
+          "video": "video/plus/BinFill/sample-3.mp4?v=dc754d73f9af",
+          "poster": "video/plus/BinFill/sample-3.jpg?v=dfce4fd09051",
+          "subgoals": "video/plus/BinFill/sample-3.subgoals.json?v=70c82b0a295c",
+          "caption": "Successful training rollout",
+          "goal": "put one red cube, one green cube and two blue cubes into the bin, then press the button to stop",
+          "seed": 1097242262,
+          "training_episode": 2,
+          "duration_seconds": 32.7,
+          "demonstration_seconds": 0.0,
+          "difficulty": "hard"
+        }
+      ],
+      "comparisons": {
+        "easy": {
+          "robomme": "Collect 1–3 cubes across 1 color; stationary objects.",
+          "plus": "Collect 6–8 cubes across 1–3 colors; stationary objects."
+        },
+        "medium": {
+          "robomme": "Collect 2–4 cubes across 1–2 colors; stationary objects.",
+          "plus": "Collect 3–6 cubes across 2–3 colors; moving objects."
+        },
+        "hard": {
+          "robomme": "Collect 3–5 cubes across 1–3 colors; stationary objects.",
+          "plus": "Collect 3–6 cubes across 3 colors; faster moving objects."
+        }
+      },
+      "robomme_example": {
+        "video": "video/BinFill.mp4",
+        "goal": "Put two green cubes into the bin and press the button to stop."
+      }
+    },
+    {
+      "id": "PickXtimes",
+      "name": "PickXtimes",
+      "suite": "counting",
+      "description": "Repeat the requested pick-and-place count, then stop. Each cycle needs a lift and release; moving targets add a challenge for hard cases.",
+      "tag": "Moving targets",
+      "samples": [
+        {
+          "label": "Sample 1",
+          "video": "video/plus/PickXtimes/sample-1.mp4?v=14cff90e6e32",
+          "poster": "video/plus/PickXtimes/sample-1.jpg?v=e0a94c7cec51",
+          "subgoals": "video/plus/PickXtimes/sample-1.subgoals.json?v=05d82d7d724a",
+          "caption": "Successful training rollout",
+          "goal": "pick up the green cube and place it on the target, repeating this pick-and-place action eight times, then press the button to stop.",
+          "seed": 2083218884,
+          "training_episode": 0,
+          "duration_seconds": 82.95,
+          "demonstration_seconds": 0.0,
+          "difficulty": "easy"
+        },
+        {
+          "label": "Sample 2",
+          "video": "video/plus/PickXtimes/sample-2.mp4?v=57565e50607b",
+          "poster": "video/plus/PickXtimes/sample-2.jpg?v=5de5d9c1bbf4",
+          "subgoals": "video/plus/PickXtimes/sample-2.subgoals.json?v=0df0b9ac2d04",
+          "caption": "Successful training rollout",
+          "goal": "pick up the green cube and place it on the target, repeating this pick-and-place action six times, then press the button to stop.",
+          "seed": 1702144992,
+          "training_episode": 1,
+          "duration_seconds": 58.85,
+          "demonstration_seconds": 0.0,
+          "difficulty": "medium"
+        },
+        {
+          "label": "Sample 3",
+          "video": "video/plus/PickXtimes/sample-3.mp4?v=040951cb831b",
+          "poster": "video/plus/PickXtimes/sample-3.jpg?v=710ce5b79dbb",
+          "subgoals": "video/plus/PickXtimes/sample-3.subgoals.json?v=f3464cded88b",
+          "caption": "Successful training rollout",
+          "goal": "pick up the green cube and place it on the target, repeating this pick-and-place action eight times, then press the button to stop.",
+          "seed": 1646712862,
+          "training_episode": 2,
+          "duration_seconds": 91.9,
+          "demonstration_seconds": 0.0,
+          "difficulty": "hard"
+        }
+      ],
+      "comparisons": {
+        "easy": {
+          "robomme": "1–3 pick-and-place cycles; fixed target.",
+          "plus": "6–8 pick-and-place cycles; fixed target."
+        },
+        "medium": {
+          "robomme": "1–3 pick-and-place cycles; fixed target.",
+          "plus": "5–6 pick-and-place cycles; moving target."
+        },
+        "hard": {
+          "robomme": "4–5 pick-and-place cycles; fixed target.",
+          "plus": "7–8 pick-and-place cycles; faster moving target."
+        }
+      },
+      "robomme_example": {
+        "video": "video/PickXtimes.mp4",
+        "goal": "Pick up the blue cube and place it on the target, repeating this pick-and-place action three times, then press the button to stop."
+      }
+    },
+    {
+      "id": "SwingXtimes",
+      "name": "SwingXtimes",
+      "suite": "counting",
+      "description": "Repeat the requested swing count, starting on the instructed side. Targets dodge the approaching cube for hard cases.",
+      "tag": "Dynamic manipulation",
+      "samples": [
+        {
+          "label": "Sample 1",
+          "video": "video/plus/SwingXtimes/sample-1.mp4?v=8efb3a0ad92b",
+          "poster": "video/plus/SwingXtimes/sample-1.jpg?v=a998229a9491",
+          "subgoals": "video/plus/SwingXtimes/sample-1.subgoals.json?v=7a7ea0fecf16",
+          "caption": "Successful training rollout",
+          "goal": "pick up the red cube, move it to the right-side target and then to the left-side target, repeating this right-to-left swing motion six times, then put down the cube and press the button to stop",
+          "seed": 1133203492,
+          "training_episode": 0,
+          "duration_seconds": 32.1,
+          "demonstration_seconds": 0.0,
+          "difficulty": "easy"
+        },
+        {
+          "label": "Sample 2",
+          "video": "video/plus/SwingXtimes/sample-2.mp4?v=9ad431508a8c",
+          "poster": "video/plus/SwingXtimes/sample-2.jpg?v=43655b25c787",
+          "subgoals": "video/plus/SwingXtimes/sample-2.subgoals.json?v=fa9764b1ff47",
+          "caption": "Successful training rollout",
+          "goal": "pick up the red cube, move it to the left-side target and then to the right-side target, repeating this left-to-right swing motion four times, then put down the cube and press the button to stop",
+          "seed": 1822653288,
+          "training_episode": 1,
+          "duration_seconds": 42.6,
+          "demonstration_seconds": 0.0,
+          "difficulty": "medium"
+        },
+        {
+          "label": "Sample 3",
+          "video": "video/plus/SwingXtimes/sample-3.mp4?v=f4e4425aa127",
+          "poster": "video/plus/SwingXtimes/sample-3.jpg?v=cafd4e2903f0",
+          "subgoals": "video/plus/SwingXtimes/sample-3.subgoals.json?v=52bd9b53c26e",
+          "caption": "Successful training rollout",
+          "goal": "pick up the green cube, move it to the left-side target and then to the right-side target, repeating this left-to-right swing motion five times, then put down the cube and press the button to stop",
+          "seed": 1369628921,
+          "training_episode": 2,
+          "duration_seconds": 51.85,
+          "demonstration_seconds": 0.0,
+          "difficulty": "hard"
+        }
+      ],
+      "comparisons": {
+        "easy": {
+          "robomme": "1–2 swing cycles; no target dodges; always right-first.",
+          "plus": "4–7 swing cycles; no target dodges; left- or right-first (seeded)."
+        },
+        "medium": {
+          "robomme": "1–3 swing cycles; no target dodges; always right-first.",
+          "plus": "3–4 swing cycles; 0–2 target dodges per visit; left- or right-first (seeded)."
+        },
+        "hard": {
+          "robomme": "3 swing cycles; no target dodges; always right-first.",
+          "plus": "4–6 swing cycles; 0–4 target dodges per visit; left- or right-first (seeded)."
+        }
+      },
+      "robomme_example": {
+        "video": "video/SwingXtimes.mp4",
+        "goal": "Pick up the red cube, move it to the right-side target and then to the left-side target, repeating this right-to-left swing motion three times, then put down the cube and press the button to stop.",
+        "caption": "Spatial directions (e.g., left/right) follow the robot base coordinate frame."
+      }
+    },
+    {
+      "id": "StopCube",
+      "name": "StopCube",
+      "suite": "counting",
+      "description": "Press the button on the requested target pass. Paths vary; hard cases mix high and ultra-high speeds within one episode.",
+      "tag": "Timing & precision",
+      "samples": [
+        {
+          "label": "Sample 1",
+          "video": "video/plus/StopCube/sample-1.mp4?v=b394c4247ad0",
+          "poster": "video/plus/StopCube/sample-1.jpg?v=4e3e6a8afcaf",
+          "subgoals": "video/plus/StopCube/sample-1.subgoals.json?v=0efcf8f2900a",
+          "caption": "Successful training rollout",
+          "goal": "press the button to stop the cube just as it reaches the target for the fifth time",
+          "seed": 1085639442,
+          "training_episode": 0,
+          "duration_seconds": 12.6,
+          "demonstration_seconds": 0.0,
+          "difficulty": "easy"
+        },
+        {
+          "label": "Sample 2",
+          "video": "video/plus/StopCube/sample-2.mp4?v=a3bfb22d6fda",
+          "poster": "video/plus/StopCube/sample-2.jpg?v=faf852ef257f",
+          "subgoals": "video/plus/StopCube/sample-2.subgoals.json?v=f4a70e2e0d5e",
+          "caption": "Successful training rollout",
+          "goal": "press the button to stop the cube just as it reaches the target for the fifth time",
+          "seed": 1705263663,
+          "training_episode": 1,
+          "duration_seconds": 4.15,
+          "demonstration_seconds": 0.0,
+          "difficulty": "medium"
+        },
+        {
+          "label": "Sample 3",
+          "video": "video/plus/StopCube/sample-3.mp4?v=058c6e631a28",
+          "poster": "video/plus/StopCube/sample-3.jpg?v=1be89b059b98",
+          "subgoals": "video/plus/StopCube/sample-3.subgoals.json?v=e6db77460acf",
+          "caption": "Successful training rollout",
+          "goal": "press the button to stop the cube just as it reaches the target for the ninth time",
+          "seed": 1637987667,
+          "training_episode": 2,
+          "duration_seconds": 11.95,
+          "demonstration_seconds": 0.0,
+          "difficulty": "hard"
+        }
+      ],
+      "comparisons": {
+        "easy": {
+          "robomme": "Stop on pass 2–5; straight-line motion; ultra-slow speed.",
+          "plus": "Stop on pass 3–8; 4 trajectory types; medium speed."
+        },
+        "medium": {
+          "robomme": "Stop on pass 2–5; straight-line motion; slow speed.",
+          "plus": "Stop on pass 5–10; 4 trajectory types; high or ultra-high speed."
+        },
+        "hard": {
+          "robomme": "Stop on pass 2–5; straight-line motion; medium speed.",
+          "plus": "Stop on pass 5–10; 5 trajectory types; high or ultra-high speed; speed can vary."
+        }
+      },
+      "robomme_example": {
+        "video": "video/StopCube.mp4",
+        "goal": "Press the button to stop the cube exactly at the target on its third visit."
+      }
+    },
+    {
+      "id": "VideoUnmask",
+      "name": "VideoUnmask",
+      "suite": "permanence",
+      "description": "Watch the reveal, then uncover the requested colors in order. Repeated colors and occlusion add challenges for hard cases.",
+      "tag": "Occlusion",
+      "samples": [
+        {
+          "label": "Sample 1",
+          "video": "video/plus/VideoUnmask/sample-1.mp4?v=21880e48f051",
+          "poster": "video/plus/VideoUnmask/sample-1.jpg?v=a1785fb68885",
+          "subgoals": "video/plus/VideoUnmask/sample-1.subgoals.json?v=2dfc85ce4407",
+          "caption": "Successful training rollout",
+          "goal": "Watch the video carefully, then pick up the container hiding the blue cube, followed by the one hiding the red cube, and finally the one hiding the green cube.",
+          "seed": 1656454887,
+          "training_episode": 0,
+          "duration_seconds": 30.55,
+          "demonstration_seconds": 7.2,
+          "difficulty": "easy"
+        },
+        {
+          "label": "Sample 2",
+          "video": "video/plus/VideoUnmask/sample-2.mp4?v=a7ad2465ae5a",
+          "poster": "video/plus/VideoUnmask/sample-2.jpg?v=89b62ecc1648",
+          "subgoals": "video/plus/VideoUnmask/sample-2.subgoals.json?v=d47bf94a438d",
+          "caption": "Successful training rollout",
+          "goal": "Watch the video carefully, then pick up the container hiding the green cube, followed by all containers hiding blue cubes, and finally all containers hiding red cubes.",
+          "seed": 1751945273,
+          "training_episode": 1,
+          "duration_seconds": 51.65,
+          "demonstration_seconds": 11.6,
+          "difficulty": "medium"
+        },
+        {
+          "label": "Sample 3",
+          "video": "video/plus/VideoUnmask/sample-3.mp4?v=5af3a8f19ceb",
+          "poster": "video/plus/VideoUnmask/sample-3.jpg?v=f26373cb8bde",
+          "subgoals": "video/plus/VideoUnmask/sample-3.subgoals.json?v=4079afba06a8",
+          "caption": "Successful training rollout",
+          "goal": "Watch the video carefully, then pick up all containers hiding green cubes, followed by all containers hiding blue cubes, and finally the one hiding the red cube.",
+          "seed": 1497627596,
+          "training_episode": 2,
+          "duration_seconds": 50.6,
+          "demonstration_seconds": 11.6,
+          "difficulty": "hard"
+        }
+      ],
+      "comparisons": {
+        "easy": {
+          "robomme": "3 containers; 1 goal; concurrent masking.",
+          "plus": "5–10 containers; 3–5 goals; staged masking."
+        },
+        "medium": {
+          "robomme": "5 containers; 1 goal; concurrent masking.",
+          "plus": "11–15 containers; 3–5 goals; staged masking; board occlusion."
+        },
+        "hard": {
+          "robomme": "15 containers; 2 goals; concurrent masking.",
+          "plus": "16–28 containers; 3–5 goals; staged masking; board occlusion."
+        }
+      },
+      "robomme_example": {
+        "video": "video/VideoUnmask.mp4",
+        "goal": "Watch the video carefully, then pick up the container hiding the green cube.",
+        "caption": "Red-bordered frames denote the video-based initial observation prior to execution."
+      }
+    },
+    {
+      "id": "ButtonUnmask",
+      "name": "ButtonUnmask",
+      "suite": "permanence",
+      "description": "Press the button to reveal the cubes, then uncover the requested colors in order. Brief reveals and occlusion test memory.",
+      "tag": "Tracking & occlusion",
+      "samples": [
+        {
+          "label": "Sample 1",
+          "video": "video/plus/ButtonUnmask/sample-1.mp4?v=aabec0617416",
+          "poster": "video/plus/ButtonUnmask/sample-1.jpg?v=3b689964a640",
+          "subgoals": "video/plus/ButtonUnmask/sample-1.subgoals.json?v=523b31028db4",
+          "caption": "Successful training rollout",
+          "goal": "First press the button, then pick up the container hiding the blue cube, followed by the one hiding the green cube, and finally the one hiding the red cube.",
+          "seed": 1567058032,
+          "training_episode": 0,
+          "duration_seconds": 29.0,
+          "demonstration_seconds": 0.0,
+          "difficulty": "easy"
+        },
+        {
+          "label": "Sample 2",
+          "video": "video/plus/ButtonUnmask/sample-2.mp4?v=b27efdcd0a46",
+          "poster": "video/plus/ButtonUnmask/sample-2.jpg?v=e54efa439ce7",
+          "subgoals": "video/plus/ButtonUnmask/sample-2.subgoals.json?v=4165e96985d0",
+          "caption": "Successful training rollout",
+          "goal": "First press the button, then pick up the container hiding the red cube, followed by the one hiding the blue cube, and finally all containers hiding green cubes.",
+          "seed": 2043653783,
+          "training_episode": 1,
+          "duration_seconds": 49.05,
+          "demonstration_seconds": 0.0,
+          "difficulty": "medium"
+        },
+        {
+          "label": "Sample 3",
+          "video": "video/plus/ButtonUnmask/sample-3.mp4?v=563c8372a802",
+          "poster": "video/plus/ButtonUnmask/sample-3.jpg?v=3120991a8ec7",
+          "subgoals": "video/plus/ButtonUnmask/sample-3.subgoals.json?v=02be48e014f6",
+          "caption": "Successful training rollout",
+          "goal": "First press the button, then pick up the container hiding the blue cube, followed by the one hiding the green cube, and finally the one hiding the red cube.",
+          "seed": 1878721550,
+          "training_episode": 2,
+          "duration_seconds": 27.8,
+          "demonstration_seconds": 0.0,
+          "difficulty": "hard"
+        }
+      ],
+      "comparisons": {
+        "easy": {
+          "robomme": "3 containers; 1 goal; concurrent masking.",
+          "plus": "6–8 containers; 3–5 goals; staged masking."
+        },
+        "medium": {
+          "robomme": "5 containers; 1 goal; concurrent masking.",
+          "plus": "8–12 containers; 3–5 goals; staged masking; board occlusion."
+        },
+        "hard": {
+          "robomme": "15 containers; 2 goals; concurrent masking.",
+          "plus": "16–18 containers; 3–5 goals; staged masking; board occlusion."
+        }
+      },
+      "robomme_example": {
+        "video": "video/ButtonUnmask.mp4",
+        "goal": "First press the button, then pick up the container hiding the green cube, finally pick up another container hiding the red cube."
+      }
+    },
+    {
+      "id": "VideoUnmaskSwap",
+      "name": "VideoUnmaskSwap",
+      "suite": "permanence",
+      "description": "Track hidden cubes through continuous container motion, then uncover them in the requested order. Occlusion adds a challenge for hard cases.",
+      "tag": "Swapping & tracking",
+      "samples": [
+        {
+          "label": "Sample 1",
+          "video": "video/plus/VideoUnmaskSwap/sample-1.mp4?v=80ff61b12d1e",
+          "poster": "video/plus/VideoUnmaskSwap/sample-1.jpg?v=25ff5fd19760",
+          "subgoals": "video/plus/VideoUnmaskSwap/sample-1.subgoals.json?v=26454bbc05ac",
+          "caption": "Successful training rollout",
+          "goal": "Watch the video carefully, then pick up the container hiding the red cube, followed by all containers hiding green cubes, and finally the one hiding the blue cube.",
+          "seed": 1243015950,
+          "training_episode": 0,
+          "duration_seconds": 76.55,
+          "demonstration_seconds": 37.8,
+          "difficulty": "easy"
+        },
+        {
+          "label": "Sample 2",
+          "video": "video/plus/VideoUnmaskSwap/sample-2.mp4?v=a16194809c9b",
+          "poster": "video/plus/VideoUnmaskSwap/sample-2.jpg?v=c7b7a360e934",
+          "subgoals": "video/plus/VideoUnmaskSwap/sample-2.subgoals.json?v=2bee61c12db0",
+          "caption": "Successful training rollout",
+          "goal": "Watch the video carefully, then pick up the container hiding the blue cube, followed by the one hiding the green cube, and finally the one hiding the red cube.",
+          "seed": 1900429819,
+          "training_episode": 1,
+          "duration_seconds": 61.75,
+          "demonstration_seconds": 37.8,
+          "difficulty": "medium"
+        },
+        {
+          "label": "Sample 3",
+          "video": "video/plus/VideoUnmaskSwap/sample-3.mp4?v=6be766ba2425",
+          "poster": "video/plus/VideoUnmaskSwap/sample-3.jpg?v=954eb72869c0",
+          "subgoals": "video/plus/VideoUnmaskSwap/sample-3.subgoals.json?v=16c9e54873f2",
+          "caption": "Successful training rollout",
+          "goal": "Watch the video carefully, then pick up the container hiding the red cube, followed by the one hiding the blue cube, and finally the one hiding the green cube.",
+          "seed": 1618074148,
+          "training_episode": 2,
+          "duration_seconds": 63.5,
+          "demonstration_seconds": 37.8,
+          "difficulty": "hard"
+        }
+      ],
+      "comparisons": {
+        "easy": {
+          "robomme": "3 containers; 1–2 goals; 1–2 swaps.",
+          "plus": "6–8 containers; 3–5 goals; continuous rearrangement."
+        },
+        "medium": {
+          "robomme": "4 containers; 1 goal; 1–2 swaps.",
+          "plus": "8–10 containers; 3–5 goals; continuous rearrangement and board occlusion."
+        },
+        "hard": {
+          "robomme": "4 containers; 2 goals; 2–3 swaps.",
+          "plus": "9–12 containers; 3–5 goals; continuous rearrangement and board occlusion."
+        }
+      },
+      "robomme_example": {
+        "video": "video/VideoUnmaskSwap.mp4",
+        "goal": "Watch the video carefully, then pick up the container hiding the blue cube, finally pick up another container hiding the red cube.",
+        "caption": "Red-bordered frames denote the video-based initial observation prior to execution."
+      }
+    },
+    {
+      "id": "ButtonUnmaskSwap",
+      "name": "ButtonUnmaskSwap",
+      "suite": "permanence",
+      "description": "Press both buttons once, in either order, then uncover the requested colors. Containers move around the buttons, with occlusion for hard cases.",
+      "tag": "Swarming & clutter",
+      "samples": [
+        {
+          "label": "Sample 1",
+          "video": "video/plus/ButtonUnmaskSwap/sample-1.mp4?v=fa4eee324382",
+          "poster": "video/plus/ButtonUnmaskSwap/sample-1.jpg?v=3c2b8b822d1d",
+          "subgoals": "video/plus/ButtonUnmaskSwap/sample-1.subgoals.json?v=6cf030434e6e",
+          "caption": "Successful training rollout",
+          "goal": "First press both buttons once, then pick up the container hiding the blue cube, followed by the one hiding the green cube, and finally the one hiding the red cube.",
+          "seed": 149013089,
+          "training_episode": 0,
+          "duration_seconds": 35.25,
+          "demonstration_seconds": 0.0,
+          "difficulty": "easy"
+        },
+        {
+          "label": "Sample 2",
+          "video": "video/plus/ButtonUnmaskSwap/sample-2.mp4?v=61644dc91999",
+          "poster": "video/plus/ButtonUnmaskSwap/sample-2.jpg?v=f729c8905a55",
+          "subgoals": "video/plus/ButtonUnmaskSwap/sample-2.subgoals.json?v=ad21d4381605",
+          "caption": "Successful training rollout",
+          "goal": "First press both buttons once, then pick up the container hiding the blue cube, followed by the one hiding the red cube, and finally the one hiding the green cube.",
+          "seed": 438646560,
+          "training_episode": 1,
+          "duration_seconds": 36.05,
+          "demonstration_seconds": 0.0,
+          "difficulty": "medium"
+        },
+        {
+          "label": "Sample 3",
+          "video": "video/plus/ButtonUnmaskSwap/sample-3.mp4?v=eb6ce791ae9b",
+          "poster": "video/plus/ButtonUnmaskSwap/sample-3.jpg?v=fc13108cc125",
+          "subgoals": "video/plus/ButtonUnmaskSwap/sample-3.subgoals.json?v=4bcb37e14a7a",
+          "caption": "Successful training rollout",
+          "goal": "First press both buttons once, then pick up the container hiding the green cube, followed by the one hiding the blue cube, and finally the one hiding the red cube.",
+          "seed": 1157842054,
+          "training_episode": 2,
+          "duration_seconds": 58.5,
+          "demonstration_seconds": 0.0,
+          "difficulty": "hard"
+        }
+      ],
+      "comparisons": {
+        "easy": {
+          "robomme": "3 containers; 1–2 goals; 1–2 swaps.",
+          "plus": "6–8 containers; 3 goals; continuous rearrangement."
+        },
+        "medium": {
+          "robomme": "4 containers; 1 goal; 1–2 swaps.",
+          "plus": "9–10 containers; 3–4 goals; continuous rearrangement and board occlusion."
+        },
+        "hard": {
+          "robomme": "4 containers; 2 goals; 2–3 swaps.",
+          "plus": "11–13 containers; 3–4 goals; faster rearrangement and board occlusion."
+        }
+      },
+      "robomme_example": {
+        "video": "video/ButtonUnmaskSwap.mp4",
+        "goal": "First press both buttons on the table, then pick up the container hiding the red cube."
+      }
+    },
+    {
+      "id": "PickHighlight",
+      "name": "PickHighlight",
+      "suite": "reference",
+      "description": "Remember highlighted objects among similar colors. Local clusters rearrange after the highlights; retrieve the objects in any order and finish with the button.",
+      "tag": "Clutter & recall",
+      "samples": [
+        {
+          "label": "Sample 1",
+          "video": "video/plus/PickHighlight/sample-1.mp4?v=87233ad18e15",
+          "poster": "video/plus/PickHighlight/sample-1.jpg?v=7e2694f17ba5",
+          "subgoals": "video/plus/PickHighlight/sample-1.subgoals.json?v=e6675690662a",
+          "caption": "Successful training rollout",
+          "goal": "first press the button, then pick up all highlighted cubes one by one, finally press the button to stop",
+          "seed": 1115689320,
+          "training_episode": 0,
+          "duration_seconds": 63.2,
+          "demonstration_seconds": 0.0,
+          "difficulty": "easy"
+        },
+        {
+          "label": "Sample 2",
+          "video": "video/plus/PickHighlight/sample-2.mp4?v=f4ed84b6e720",
+          "poster": "video/plus/PickHighlight/sample-2.jpg?v=96de1de0336d",
+          "subgoals": "video/plus/PickHighlight/sample-2.subgoals.json?v=b4f5a5ed2ae6",
+          "caption": "Successful training rollout",
+          "goal": "first press the button, then pick up all highlighted cubes one by one, finally press the button to stop",
+          "seed": 1794738199,
+          "training_episode": 1,
+          "duration_seconds": 69.85,
+          "demonstration_seconds": 0.0,
+          "difficulty": "medium"
+        },
+        {
+          "label": "Sample 3",
+          "video": "video/plus/PickHighlight/sample-3.mp4?v=17da185e2cc2",
+          "poster": "video/plus/PickHighlight/sample-3.jpg?v=0c4e1b7081c6",
+          "subgoals": "video/plus/PickHighlight/sample-3.subgoals.json?v=bcdbf644079a",
+          "caption": "Successful training rollout",
+          "goal": "first press the button, then pick up all highlighted cubes one by one, finally press the button to stop",
+          "seed": 1650955332,
+          "training_episode": 2,
+          "duration_seconds": 62.65,
+          "demonstration_seconds": 0.0,
+          "difficulty": "hard"
+        }
+      ],
+      "comparisons": {
+        "easy": {
+          "robomme": "3 objects; 1 goal; 90-frame highlights; stationary objects.",
+          "plus": "9–10 objects; 3–5 goals; 45-frame highlights; 1–2 moving clusters of 2–3 objects."
+        },
+        "medium": {
+          "robomme": "4 objects; 2 goals; 90-frame highlights; stationary objects.",
+          "plus": "11–13 objects; 4–6 goals; 30–45-frame highlights; 1–3 moving clusters of 2–4 objects."
+        },
+        "hard": {
+          "robomme": "6 objects; 3 goals; 90-frame highlights; stationary objects.",
+          "plus": "14–17 objects; 5–9 goals; 16–45-frame highlights; 1–3 moving clusters of 2–5 objects."
+        }
+      },
+      "robomme_example": {
+        "video": "video/PickHighlight.mp4",
+        "goal": "First press the button, then pick up all highlighted cubes, finally press the button again to stop."
+      }
+    },
+    {
+      "id": "VideoRepick",
+      "name": "VideoRepick",
+      "suite": "reference",
+      "description": "Track the demonstrated object through continuous motion and slow rotation. All objects share one of six shapes; occlusion adds a challenge for hard cases.",
+      "tag": "Identity & motion",
+      "samples": [
+        {
+          "label": "Sample 1",
+          "video": "video/plus/VideoRepick/sample-1.mp4?v=42a184419804",
+          "poster": "video/plus/VideoRepick/sample-1.jpg?v=744791230cb8",
+          "subgoals": "video/plus/VideoRepick/sample-1.subgoals.json?v=f8f1a482b89a",
+          "caption": "Successful training rollout",
+          "goal": "watch the video carefully, identify the object that was picked up, then pick up and place down the same object twice, finally press the button to stop",
+          "seed": 1470886341,
+          "training_episode": 0,
+          "duration_seconds": 71.7,
+          "demonstration_seconds": 46.95,
+          "difficulty": "easy"
+        },
+        {
+          "label": "Sample 2",
+          "video": "video/plus/VideoRepick/sample-2.mp4?v=7c3d03d110df",
+          "poster": "video/plus/VideoRepick/sample-2.jpg?v=fc1b4e16c9e9",
+          "subgoals": "video/plus/VideoRepick/sample-2.subgoals.json?v=4626535a0893",
+          "caption": "Successful training rollout",
+          "goal": "watch the video carefully, identify the object that was picked up, then pick up and place down the same object twice, finally press the button to stop",
+          "seed": 1284088509,
+          "training_episode": 1,
+          "duration_seconds": 72.6,
+          "demonstration_seconds": 47.1,
+          "difficulty": "medium"
+        },
+        {
+          "label": "Sample 3",
+          "video": "video/plus/VideoRepick/sample-3.mp4?v=e6ac41f5eb9e",
+          "poster": "video/plus/VideoRepick/sample-3.jpg?v=27c0922f69d7",
+          "subgoals": "video/plus/VideoRepick/sample-3.subgoals.json?v=7cab2f93b6d8",
+          "caption": "Successful training rollout",
+          "goal": "watch the video carefully, identify the object that was picked up, then pick up and place down the same object twice, finally press the button to stop",
+          "seed": 1863484279,
+          "training_episode": 2,
+          "duration_seconds": 69.15,
+          "demonstration_seconds": 47.05,
+          "difficulty": "hard"
+        }
+      ],
+      "comparisons": {
+        "easy": {
+          "robomme": "3 cubes; 1 goal; 1–2 swaps.",
+          "plus": "4–6 objects; 1 goal; varied shapes, continuous movement and rotation."
+        },
+        "medium": {
+          "robomme": "3 cubes; 1 goal; 2–3 swaps.",
+          "plus": "7–10 objects; 1 goal; varied shapes, continuous movement."
+        },
+        "hard": {
+          "robomme": "15 cubes; 1 goal.",
+          "plus": "6–10 objects; 1 goal; varied shapes, continuous movement and board occlusion."
+        }
+      },
+      "robomme_example": {
+        "video": "video/VideoRepick.mp4",
+        "goal": "Watch the video carefully, identify the cube that was picked up, then pick up and place down the same cube twice, finally press the button to stop.",
+        "caption": "Red-bordered frames denote the video-based initial observation prior to execution."
+      }
+    },
+    {
+      "id": "VideoPlaceButton",
+      "name": "VideoPlaceButton",
+      "suite": "reference",
+      "description": "Recall the ring associated with the requested button event and track it through swaps. Two final swaps keep the goal away from its referenced location.",
+      "tag": "Event reference",
+      "samples": [
+        {
+          "label": "Sample 1",
+          "video": "video/plus/VideoPlaceButton/sample-1.mp4?v=b4afac63420d",
+          "poster": "video/plus/VideoPlaceButton/sample-1.jpg?v=79621b0b7c27",
+          "subgoals": "video/plus/VideoPlaceButton/sample-1.subgoals.json?v=84adf5ef4682",
+          "caption": "Successful training rollout",
+          "goal": "watch the video carefully, then place the red cube on the target where it was first placed after the button was pressed",
+          "seed": 1155046303,
+          "training_episode": 0,
+          "duration_seconds": 60.45,
+          "demonstration_seconds": 52.05,
+          "difficulty": "easy"
+        },
+        {
+          "label": "Sample 2",
+          "video": "video/plus/VideoPlaceButton/sample-2.mp4?v=b114c9d9e65a",
+          "poster": "video/plus/VideoPlaceButton/sample-2.jpg?v=baf8f2589cdf",
+          "subgoals": "video/plus/VideoPlaceButton/sample-2.subgoals.json?v=de5659190a7d",
+          "caption": "Successful training rollout",
+          "goal": "watch the video carefully, then place the blue cube on the target where it was first placed after the button was pressed",
+          "seed": 1911834806,
+          "training_episode": 1,
+          "duration_seconds": 57.25,
+          "demonstration_seconds": 47.75,
+          "difficulty": "medium"
+        },
+        {
+          "label": "Sample 3",
+          "video": "video/plus/VideoPlaceButton/sample-3.mp4?v=83c50b08d439",
+          "poster": "video/plus/VideoPlaceButton/sample-3.jpg?v=228600885a51",
+          "subgoals": "video/plus/VideoPlaceButton/sample-3.subgoals.json?v=1ff48cc3e396",
+          "caption": "Successful training rollout",
+          "goal": "watch the video carefully, then place the red cube on the target where it was first placed after the button was pressed",
+          "seed": 1073749011,
+          "training_episode": 2,
+          "duration_seconds": 108.9,
+          "demonstration_seconds": 100.25,
+          "difficulty": "hard"
+        }
+      ],
+      "comparisons": {
+        "easy": {
+          "robomme": "3 targets; 1 manipulated cube; fixed targets.",
+          "plus": "4 targets; 1 manipulated cube; target swaps during the demonstration."
+        },
+        "medium": {
+          "robomme": "4 targets; 1 manipulated cube; fixed targets.",
+          "plus": "6 targets; 1 manipulated cube; target swaps during the demonstration."
+        },
+        "hard": {
+          "robomme": "4 targets; 1 manipulated cube; target swaps at the end of demonstration.",
+          "plus": "7–8 targets; 2 manipulated cubes; target swaps during the demonstration."
+        }
+      },
+      "robomme_example": {
+        "video": "video/VideoPlaceButton.mp4",
+        "goal": "Watch the video carefully, then place the blue cube on the target where it was last placed before the button was pressed.",
+        "caption": "Red-bordered frames denote the video-based initial observation prior to execution."
+      }
+    },
+    {
+      "id": "VideoPlaceOrder",
+      "name": "VideoPlaceOrder",
+      "suite": "reference",
+      "description": "Recall the requested placement in a cube’s history and track its ring through swaps. Distractor cube histories add a challenge for hard cases.",
+      "tag": "Sequence reference",
+      "samples": [
+        {
+          "label": "Sample 1",
+          "video": "video/plus/VideoPlaceOrder/sample-1.mp4?v=371412fd964a",
+          "poster": "video/plus/VideoPlaceOrder/sample-1.jpg?v=5356d0f69ddd",
+          "subgoals": "video/plus/VideoPlaceOrder/sample-1.subgoals.json?v=53b17be0c042",
+          "caption": "Successful training rollout",
+          "goal": "watch the video carefully, then place the red cube on the fourth target it was previously placed on",
+          "seed": 1834444142,
+          "training_episode": 0,
+          "duration_seconds": 75.6,
+          "demonstration_seconds": 65.6,
+          "difficulty": "easy"
+        },
+        {
+          "label": "Sample 2",
+          "video": "video/plus/VideoPlaceOrder/sample-2.mp4?v=90e60808e11e",
+          "poster": "video/plus/VideoPlaceOrder/sample-2.jpg?v=e1c99625301f",
+          "subgoals": "video/plus/VideoPlaceOrder/sample-2.subgoals.json?v=cc22123de28a",
+          "caption": "Successful training rollout",
+          "goal": "watch the video carefully, then place the green cube on the third target it was previously placed on",
+          "seed": 1775545447,
+          "training_episode": 1,
+          "duration_seconds": 78.15,
+          "demonstration_seconds": 70.05,
+          "difficulty": "medium"
+        },
+        {
+          "label": "Sample 3",
+          "video": "video/plus/VideoPlaceOrder/sample-3.mp4?v=8c174c259058",
+          "poster": "video/plus/VideoPlaceOrder/sample-3.jpg?v=6239c317bbe5",
+          "subgoals": "video/plus/VideoPlaceOrder/sample-3.subgoals.json?v=72e5afe8cbd0",
+          "caption": "Successful training rollout",
+          "goal": "watch the video carefully, then place the blue cube on the third target it was previously placed on",
+          "seed": 2124331336,
+          "training_episode": 2,
+          "duration_seconds": 145.45,
+          "demonstration_seconds": 135.1,
+          "difficulty": "hard"
+        }
+      ],
+      "comparisons": {
+        "easy": {
+          "robomme": "4 targets; 2–4 placements; request 1st–4th; fixed targets.",
+          "plus": "4 targets; 4 placements; request 1st–4th; target swaps during the demonstration."
+        },
+        "medium": {
+          "robomme": "4 targets; 2–4 placements; request 1st–4th; fixed targets.",
+          "plus": "6 targets; 5 placements; request 1st–5th; target swaps during the demonstration."
+        },
+        "hard": {
+          "robomme": "4 targets; 2–4 placements; request 1st–4th; target swaps at the end of demonstration.",
+          "plus": "7–8 targets; 5 placements per cube, 2 manipulated cubes; request 1st–5th; target swaps during the demonstration."
+        }
+      },
+      "robomme_example": {
+        "video": "video/VideoPlaceOrder.mp4",
+        "goal": "Watch the video carefully and place the green cube on the third target where it was placed.",
+        "caption": "Red-bordered frames denote the video-based initial observation prior to execution."
+      }
+    },
+    {
+      "id": "MoveCube",
+      "name": "MoveCube",
+      "suite": "imitation",
+      "description": "Reproduce the demonstrated tool-use method among three available choices. Pan loading can use a wall or incline; tool sizes, layouts and cube weights vary.",
+      "tag": "Tool-use transfer",
+      "samples": [
+        {
+          "label": "Hook",
+          "video": "video/plus/MoveCube/hook.mp4?v=679c2fa352f5",
+          "poster": "video/plus/MoveCube/hook.jpg?v=a695dc12449b",
+          "subgoals": "video/plus/MoveCube/hook.subgoals.json?v=004f8037b02a",
+          "caption": "Successful training rollout",
+          "goal": "Watch the video carefully, then move the cube to the target in the same manner shown in the video.",
+          "seed": 2026106945,
+          "training_episode": 0,
+          "duration_seconds": 84.7,
+          "demonstration_seconds": 46.75,
+          "method": "hook"
+        },
+        {
+          "label": "Poke",
+          "video": "video/plus/MoveCube/poke.mp4?v=608796f812fb",
+          "poster": "video/plus/MoveCube/poke.jpg?v=11bf58c164f4",
+          "subgoals": "video/plus/MoveCube/poke.subgoals.json?v=96fcb8a7f41f",
+          "caption": "Successful training rollout",
+          "goal": "Watch the video carefully, then move the cube to the target in the same manner shown in the video.",
+          "seed": 2026201903,
+          "training_episode": 1,
+          "duration_seconds": 105.2,
+          "demonstration_seconds": 50.9,
+          "method": "poke"
+        },
+        {
+          "label": "Pan scoop",
+          "video": "video/plus/MoveCube/scoop.mp4?v=02ef0fb75810",
+          "poster": "video/plus/MoveCube/scoop.jpg?v=3422c31ceba5",
+          "subgoals": "video/plus/MoveCube/scoop.subgoals.json?v=9e6755cb2b74",
+          "caption": "Successful training rollout",
+          "goal": "Watch the video carefully, then move the cube to the target in the same manner shown in the video.",
+          "seed": 2026301906,
+          "training_episode": 2,
+          "duration_seconds": 66.5,
+          "demonstration_seconds": 29.2,
+          "method": "scoop"
+        },
+        {
+          "label": "Rolling ball",
+          "video": "video/plus/MoveCube/ball.mp4?v=c3a786ec5fdb",
+          "poster": "video/plus/MoveCube/ball.jpg?v=b33009c9c776",
+          "subgoals": "video/plus/MoveCube/ball.subgoals.json?v=c43ef8e25719",
+          "caption": "Successful training rollout",
+          "goal": "Watch the video carefully, then move the cube to the target in the same manner shown in the video.",
+          "seed": 2027403934,
+          "training_episode": 3,
+          "duration_seconds": 44.55,
+          "demonstration_seconds": 21.05,
+          "method": "ball"
+        },
+        {
+          "label": "Cue strike",
+          "video": "video/plus/MoveCube/cue.mp4?v=d46b880dd4ed",
+          "poster": "video/plus/MoveCube/cue.jpg?v=e758e1d74568",
+          "subgoals": "video/plus/MoveCube/cue.subgoals.json?v=fbce7d81357a",
+          "caption": "Successful training rollout",
+          "goal": "Watch the video carefully, then move the cube to the target in the same manner shown in the video.",
+          "seed": 2026522092,
+          "training_episode": 4,
+          "duration_seconds": 34.35,
+          "demonstration_seconds": 16.6,
+          "method": "cue"
+        }
+      ],
+      "note": "MoveCube uses tool and geometry variants rather than easy/medium/hard tiers.",
+      "comparison": {
+        "robomme": "3 methods: push, pick&place and hook.",
+        "plus": "5 methods: hook, poke, pan scoop, rolling ball and cue strike."
+      },
+      "robomme_example": {
+        "video": "video/MoveCube.mp4",
+        "goal": "Watch the video carefully, then move the cube to the target in the same manner shown in the video.",
+        "caption": "Red-bordered frames denote the video-based initial observation prior to execution."
+      }
+    },
+    {
+      "id": "InsertPeg",
+      "name": "InsertPeg",
+      "suite": "imitation",
+      "description": "Preserve the demonstrated peg end and insertion side while adapting to a tighter opening and a slightly shifted hole.",
+      "tag": "Precise manipulation",
+      "samples": [
+        {
+          "label": "Sample 1",
+          "video": "video/plus/InsertPeg/sample-1.mp4?v=248ea4394bda",
+          "poster": "video/plus/InsertPeg/sample-1.jpg?v=bee63febed6c",
+          "subgoals": "video/plus/InsertPeg/sample-1.subgoals.json?v=6b87417c15b4",
+          "caption": "Successful training rollout",
+          "goal": "Watch the video carefully, then grasp the same peg at the same end and insert it into the same side of the box as in the video.",
+          "seed": 1365734056,
+          "training_episode": 0,
+          "duration_seconds": 41.6,
+          "demonstration_seconds": 21.1,
+          "difficulty": "easy"
+        },
+        {
+          "label": "Sample 2",
+          "video": "video/plus/InsertPeg/sample-2.mp4?v=09fc88bf6873",
+          "poster": "video/plus/InsertPeg/sample-2.jpg?v=6f96e3eb6edb",
+          "subgoals": "video/plus/InsertPeg/sample-2.subgoals.json?v=b8bf91672b75",
+          "caption": "Successful training rollout",
+          "goal": "Watch the video carefully, then grasp the same peg at the same end and insert it into the same side of the box as in the video.",
+          "seed": 2135389715,
+          "training_episode": 1,
+          "duration_seconds": 38.95,
+          "demonstration_seconds": 20.2,
+          "difficulty": "medium"
+        },
+        {
+          "label": "Sample 3",
+          "video": "video/plus/InsertPeg/sample-3.mp4?v=4d6bcdbee1c6",
+          "poster": "video/plus/InsertPeg/sample-3.jpg?v=3e162e897c2e",
+          "subgoals": "video/plus/InsertPeg/sample-3.subgoals.json?v=e0b588a189b8",
+          "caption": "Successful training rollout",
+          "goal": "Watch the video carefully, then grasp the same peg at the same end and insert it into the same side of the box as in the video.",
+          "seed": 2082027877,
+          "training_episode": 2,
+          "duration_seconds": 45.3,
+          "demonstration_seconds": 23.15,
+          "difficulty": "hard"
+        }
+      ],
+      "robomme_example": {
+        "video": "video/InsertPeg.mp4",
+        "goal": "Watch the video carefully, then grasp the same peg at the same end and insert it into the same side of the box as in the video.",
+        "caption": "Red-bordered frames denote the video-based initial observation prior to execution."
+      },
+      "comparisons": {
+        "easy": {
+          "robomme": "Wider opening; hole stays in the same position.",
+          "plus": "Smaller opening with some clearance; hole shifts slightly between demonstration and execution."
+        },
+        "medium": {
+          "robomme": "Wider opening; hole stays in the same position.",
+          "plus": "Tighter opening with less clearance; hole shifts slightly between demonstration and execution."
+        },
+        "hard": {
+          "robomme": "Wider opening; hole stays in the same position.",
+          "plus": "Very tight opening with minimal clearance; hole shifts slightly between demonstration and execution."
+        }
+      }
+    },
+    {
+      "id": "PatternLock",
+      "name": "PatternLock",
+      "suite": "imitation",
+      "description": "Reproduce the drawn pattern from home. Medium and hard change the grid position, rotation and spacing, and use a shorter stick with a tilted mount.",
+      "tag": "Path & tool transfer",
+      "samples": [
+        {
+          "label": "Sample 1",
+          "video": "video/plus/PatternLock/sample-1.mp4?v=92ff3e051b4c",
+          "poster": "video/plus/PatternLock/sample-1.jpg?v=b62681486a58",
+          "subgoals": "video/plus/PatternLock/sample-1.subgoals.json?v=df185d11fdbb",
+          "caption": "Successful training rollout",
+          "goal": "Watch the video carefully, then use the drawing stick attached to the robot to reproduce the same pattern",
+          "seed": 1223285224,
+          "training_episode": 0,
+          "duration_seconds": 18.25,
+          "demonstration_seconds": 10.5,
+          "difficulty": "easy"
+        },
+        {
+          "label": "Sample 2",
+          "video": "video/plus/PatternLock/sample-2.mp4?v=484f7d48542e",
+          "poster": "video/plus/PatternLock/sample-2.jpg?v=b3f42aacaba5",
+          "subgoals": "video/plus/PatternLock/sample-2.subgoals.json?v=d68ced9dd041",
+          "caption": "Successful training rollout",
+          "goal": "Watch the video carefully, then use the drawing stick attached to the robot to reproduce the same pattern",
+          "seed": 1583389125,
+          "training_episode": 1,
+          "duration_seconds": 41.45,
+          "demonstration_seconds": 24.55,
+          "difficulty": "medium"
+        },
+        {
+          "label": "Sample 3",
+          "video": "video/plus/PatternLock/sample-3.mp4?v=d7c0e66eb826",
+          "poster": "video/plus/PatternLock/sample-3.jpg?v=979dae3768bf",
+          "subgoals": "video/plus/PatternLock/sample-3.subgoals.json?v=d48c8ff2a42f",
+          "caption": "Successful training rollout",
+          "goal": "Watch the video carefully, then use the drawing stick attached to the robot to reproduce the same pattern",
+          "seed": 760060850,
+          "training_episode": 2,
+          "duration_seconds": 72.05,
+          "demonstration_seconds": 41.05,
+          "difficulty": "hard"
+        }
+      ],
+      "comparisons": {
+        "easy": {
+          "robomme": "3×3 grid; 2–4 reached nodes; local moves; execution starts above the first node.",
+          "plus": "5×5 grid; 4–5 reached nodes; local moves; fixed grid; execution starts from home."
+        },
+        "medium": {
+          "robomme": "4×4 grid; 3–5 reached nodes; local moves; execution starts above the first node.",
+          "plus": "5×5 grid; 6–8 reached nodes; global moves; shorter stick with 10–20° mount tilt; grid shifts, rotates and changes spacing; execution starts from home."
+        },
+        "hard": {
+          "robomme": "5×5 grid; 4–8 reached nodes; local moves; execution starts above the first node.",
+          "plus": "5×5 grid; 9–12 reached nodes; global moves; shorter stick with 20–30° mount tilt; grid shifts, rotates and changes spacing; execution starts from home."
+        }
+      },
+      "robomme_example": {
+        "video": "video/DrawPattern.mp4",
+        "goal": "Watch the video carefully, then use the stick attached to the robot to retrace the same pattern shown in the video.",
+        "caption": "Red-bordered frames denote the video-based initial observation prior to execution."
+      }
+    },
+    {
+      "id": "RouteStick",
+      "name": "RouteStick",
+      "suite": "imitation",
+      "description": "Reproduce the demonstrated path around boards, starting from home. Medium and hard shorten the stick and transform the layout; hard can also move boards during execution.",
+      "tag": "Occlusion & routing",
+      "samples": [
+        {
+          "label": "Sample 1",
+          "video": "video/plus/RouteStick/sample-1.mp4?v=33fdd6fe024a",
+          "poster": "video/plus/RouteStick/sample-1.jpg?v=fa81e3baeea8",
+          "subgoals": "video/plus/RouteStick/sample-1.subgoals.json?v=286f82b31197",
+          "caption": "Successful training rollout",
+          "goal": "Watch the video carefully, then use the drawing stick attached to the robot to reproduce the same drawn path.",
+          "seed": 1882199712,
+          "training_episode": 0,
+          "duration_seconds": 58.25,
+          "demonstration_seconds": 30.1,
+          "difficulty": "easy"
+        },
+        {
+          "label": "Sample 2",
+          "video": "video/plus/RouteStick/sample-2.mp4?v=1a2a48aae006",
+          "poster": "video/plus/RouteStick/sample-2.jpg?v=88dc1f619c31",
+          "subgoals": "video/plus/RouteStick/sample-2.subgoals.json?v=085f07b40ee0",
+          "caption": "Successful training rollout",
+          "goal": "Watch the video carefully, then use the drawing stick attached to the robot to reproduce the same drawn path.",
+          "seed": 1178335854,
+          "training_episode": 1,
+          "duration_seconds": 56.35,
+          "demonstration_seconds": 17.15,
+          "difficulty": "medium"
+        },
+        {
+          "label": "Sample 3",
+          "video": "video/plus/RouteStick/sample-3.mp4?v=de1db6d6631c",
+          "poster": "video/plus/RouteStick/sample-3.jpg?v=df02f91fd629",
+          "subgoals": "video/plus/RouteStick/sample-3.subgoals.json?v=b52ae583e284",
+          "caption": "Successful training rollout",
+          "goal": "Watch the video carefully, then use the drawing stick attached to the robot to reproduce the same drawn path.",
+          "seed": 1822726029,
+          "training_episode": 2,
+          "duration_seconds": 74.9,
+          "demonstration_seconds": 21.6,
+          "difficulty": "hard"
+        }
+      ],
+      "comparisons": {
+        "easy": {
+          "robomme": "2–3 segments; execution starts above the first node.",
+          "plus": "8–13 segments; fixed layout; route around boards; execution starts from home."
+        },
+        "medium": {
+          "robomme": "4–5 segments; execution starts above the first node.",
+          "plus": "4–7 segments; shorter drawing stick; layout shifts, rotates and shrinks; route around boards; execution starts from home."
+        },
+        "hard": {
+          "robomme": "4–7 segments; execution starts above the first node.",
+          "plus": "6–8 segments; shorter drawing stick; layout shifts, rotates and shrinks; boards can move during execution; execution starts from home."
+        }
+      },
+      "robomme_example": {
+        "video": "video/RouteStick.mp4",
+        "goal": "Watch the video carefully, then use the stick attached to the robot to navigate around the sticks on the table, following the same path shown in the video.",
+        "caption": "Red-bordered frames denote the video-based initial observation prior to execution."
+      }
+    }
+  ],
+  "methods": [
+    {
+      "id": "framesamp-modul",
+      "name": "FrameSamp+Modul",
+      "type": "VLA · perceptual memory",
+      "results": {
+        "BinFill": 0.0,
+        "PickXtimes": 0.0,
+        "SwingXtimes": 0.0,
+        "StopCube": 0.04,
+        "VideoUnmask": 0.0,
+        "ButtonUnmask": 0.0,
+        "VideoUnmaskSwap": 0.0,
+        "ButtonUnmaskSwap": 0.0,
+        "PickHighlight": 0.0,
+        "VideoRepick": 0.02,
+        "VideoPlaceButton": 0.2,
+        "VideoPlaceOrder": 0.18,
+        "MoveCube": 0.0,
+        "InsertPeg": 0.0,
+        "PatternLock": 0.0,
+        "RouteStick": 0.0
+      },
+      "tags": [
+        "open_sourced_model"
+      ],
+      "model_type": "VLA",
+      "setting": "ZS",
+      "evaluation": {
+        "completed": 800,
+        "counts": {
+          "fail": 640,
+          "timeout": 138,
+          "success": 22
+        },
+        "latest_episode_finished_utc": "2026-10-28T02:37:46.632766+00:00",
+        "summary_sha256": "e8724f664dcab52521b1c756d01d1c2b533d85665fed092abc1e123ce3b06281"
+      },
+      "total_size": "3.44B",
+      "size_note": "3,441,899,024 parameters, counted from the released MME-VLA checkpoint global tensor shapes, including the pi0.5 backbone and memory modules.",
+      "training_compute": {
+        "gpu": "A40",
+        "gpus": 4,
+        "hours": [
+          72,
+          96
+        ],
+        "approximate": true,
+        "display_label": "≈50",
+        "note": "Perceptual-memory family estimate: approximately 3–4 days on 4 A40 GPUs per run (RoboMME Appendix B.2.3).",
+        "source": "https://arxiv.org/html/2603.04639"
+      }
+    },
+    {
+      "id": "simplememvla",
+      "name": "SimpleMemVLA",
+      "type": "VLA · memory-augmented policy",
+      "results": {
+        "BinFill": 0.0,
+        "PickXtimes": 0.0,
+        "SwingXtimes": 0.08,
+        "StopCube": 0.0,
+        "VideoUnmask": 0.0,
+        "ButtonUnmask": 0.0,
+        "VideoUnmaskSwap": 0.0,
+        "ButtonUnmaskSwap": 0.0,
+        "PickHighlight": 0.0,
+        "VideoRepick": 0.02,
+        "VideoPlaceButton": 0.16,
+        "VideoPlaceOrder": 0.06,
+        "MoveCube": 0.0,
+        "InsertPeg": 0.0,
+        "PatternLock": 0.0,
+        "RouteStick": 0.0
+      },
+      "tags": [
+        "open_sourced_model"
+      ],
+      "model_type": "VLA",
+      "setting": "ZS",
+      "evaluation": {
+        "completed": 800,
+        "counts": {
+          "timeout": 104,
+          "fail": 680,
+          "success": 16
+        },
+        "latest_episode_finished_utc": "2026-10-28T03:19:43.790989+00:00",
+        "summary_sha256": "a25b5e95552229a0163380f6d5d0b031ec636a16561e34189331496340665928"
+      },
+      "total_size": "5.71B",
+      "size_note": "5,708,513,800 unique parameters: 4,539,265,536 in the Qwen3.5 backbone and 1,169,248,264 in the action head. Shared input/output embeddings are counted once; rounded to 5.71B.",
+      "training_compute": {
+        "gpu": "H100",
+        "gpus": 128,
+        "hours": [
+          20,
+          20
+        ],
+        "approximate": false,
+        "note": "RoboMME training: 128 H100 GPUs × 20 wall-clock hours (SimpleMemVLA Appendix A, Table 8).",
+        "source": "https://arxiv.org/html/2609.05533"
+      }
+    },
+    {
+      "id": "ponderpounce",
+      "name": "PonderPounce",
+      "type": "VLM + VLA",
+      "results": {
+        "BinFill": 0.02,
+        "PickXtimes": 0.0,
+        "SwingXtimes": 0.08,
+        "StopCube": 0.02,
+        "VideoUnmask": 0.0,
+        "ButtonUnmask": 0.0,
+        "VideoUnmaskSwap": 0.0,
+        "ButtonUnmaskSwap": 0.0,
+        "PickHighlight": 0.0,
+        "VideoRepick": 0.08,
+        "VideoPlaceButton": 0.22,
+        "VideoPlaceOrder": 0.04,
+        "MoveCube": 0.0,
+        "InsertPeg": 0.0,
+        "PatternLock": 0.0,
+        "RouteStick": 0.0
+      },
+      "tags": [
+        "open_sourced_model"
+      ],
+      "model_type": "VLM+VLA",
+      "setting": "ZS",
+      "evaluation": {
+        "completed": 800,
+        "counts": {
+          "fail": 611,
+          "success": 23,
+          "timeout": 166
+        },
+        "latest_episode_finished_utc": "2026-10-26T20:30:48.504191+00:00",
+        "summary_sha256": "f32d8e7f24445e16f488330b8372206f1d3a25c8670fbd7fffb122f6a4428518"
+      },
+      "runtime": {
+        "episodes": 800,
+        "episode_seconds": 149.87584046815056,
+        "model_seconds_per_step": 0.19938608270807404,
+        "api_seconds_per_request": null,
+        "api_attempts": 0,
+        "api_applicable": false,
+        "metrics_snapshot_utc": "2026-10-27T22:00:48+00:00"
+      },
+      "api_cost": {
+        "total_usd": null,
+        "approximate": true,
+        "lower_bound": false,
+        "unpriced_attempts": 0,
+        "note": "This model does not use a paid inference API."
+      },
+      "total_size": "12.6B",
+      "size_note": "Approximate total of the 9B Ponder model and 3.6B Pounce action model; excludes small interface additions (Section IV-A).",
+      "training_compute": {
+        "status": "not_reported",
+        "note": "RoboMME training steps are reported, but GPU count and training duration are not.",
+        "source": "https://arxiv.org/html/2608.24115"
+      }
+    },
+    {
+      "id": "embodied-astra",
+      "name": "Embodied-Astra",
+      "type": "Proprietary VLM · waypoint control",
+      "results": {
+        "BinFill": 0.3,
+        "PickXtimes": 0.56,
+        "SwingXtimes": 0.28,
+        "StopCube": 0.3,
+        "VideoUnmask": 0.12,
+        "ButtonUnmask": 0.34,
+        "VideoUnmaskSwap": 0.02,
+        "ButtonUnmaskSwap": 0.12,
+        "PickHighlight": 0.32,
+        "VideoRepick": 0.18,
+        "VideoPlaceButton": 0.2,
+        "VideoPlaceOrder": 0.2,
+        "MoveCube": 0.22,
+        "InsertPeg": 0.2,
+        "PatternLock": 0.14,
+        "RouteStick": 0.12
+      },
+      "tags": [
+        "proprietary_model"
+      ],
+      "model_type": "Agent",
+      "setting": "ZS",
+      "evaluation": {
+        "completed": 800,
+        "counts": {
+          "success": 181,
+          "fail": 542,
+          "timeout": 77
+        },
+        "latest_episode_finished_utc": "2026-10-28T03:34:17.556641+00:00",
+        "summary_sha256": "32cd3ea08d32b144031b2de35b8c6dbe2f76c89e2c1813e67455b5a125375ebf"
+      },
+      "total_size": "N/A",
+      "training_compute": {
+        "status": "not_applicable",
+        "note": "No RoboMME training or fine-tuning. Foundation-model pretraining and API inference are outside this column scope.",
+        "source": "https://github.com/jackbjed/embodied-astra-robomme/blob/main/submission/embodied-gpt-6-astra.md"
+      },
+      "api_cost": {
+        "approximate": true,
+        "display_usd": 759,
+        "display_note": "Maintainer-provided rounded API cost for all 800 RoboMME-Plus test episodes: US$759. Excludes local GPU compute."
+      }
+    },
+    {
+      "id": "embodied-astra-fs",
+      "name": "One-shot Embodied-Astra",
+      "type": "Proprietary VLM · waypoint control",
+      "results": {
+        "BinFill": 0.28,
+        "PickXtimes": 0.84,
+        "SwingXtimes": 0.98,
+        "StopCube": 0.32,
+        "VideoUnmask": 0.24,
+        "ButtonUnmask": 0.94,
+        "VideoUnmaskSwap": 0.02,
+        "ButtonUnmaskSwap": 0.32,
+        "PickHighlight": 0.42,
+        "VideoRepick": 0.14,
+        "VideoPlaceButton": 0.24,
+        "VideoPlaceOrder": 0.18,
+        "MoveCube": 0.18,
+        "InsertPeg": 0.28,
+        "PatternLock": 0.18,
+        "RouteStick": 0.08
+      },
+      "tags": [
+        "proprietary_model"
+      ],
+      "model_type": "Agent",
+      "setting": "FS",
+      "evaluation": {
+        "completed": 800,
+        "counts": {
+          "success": 282,
+          "fail": 478,
+          "timeout": 40
+        },
+        "latest_episode_finished_utc": "2026-10-28T04:59:14.126076+00:00",
+        "summary_sha256": "63fbb9ce3a1ef8f8bc95cda7a84eb353cb2b1d06b647b3507add63689e8ab06d"
+      },
+      "total_size": "N/A",
+      "training_compute": {
+        "status": "not_applicable",
+        "note": "No RoboMME training or fine-tuning. Foundation-model pretraining and API inference are outside this column scope.",
+        "source": "https://github.com/jackbjed/embodied-astra-robomme/blob/main/submission/embodied-gpt-6-astra.md"
+      },
+      "api_cost": {
+        "approximate": true,
+        "display_usd": 2100,
+        "display_note": "Maintainer-provided rounded API cost for all 800 RoboMME-Plus test episodes: US$2,100. Excludes local GPU compute."
+      }
+    },
+    {
+      "id": "3-tier-astra",
+      "name": "3-tier Astra",
+      "type": "Proprietary VLM + VLA",
+      "results": {
+        "BinFill": 0.06,
+        "PickXtimes": 0.06,
+        "SwingXtimes": 0.1,
+        "StopCube": 0.0,
+        "VideoUnmask": 0.04,
+        "ButtonUnmask": 0.0,
+        "VideoUnmaskSwap": 0.0,
+        "ButtonUnmaskSwap": 0.0,
+        "PickHighlight": 0.0,
+        "VideoRepick": 0.02,
+        "VideoPlaceButton": 0.68,
+        "VideoPlaceOrder": 0.56,
+        "MoveCube": 0.0,
+        "InsertPeg": 0.0,
+        "PatternLock": 0.0,
+        "RouteStick": 0.0
+      },
+      "tags": [
+        "proprietary_model"
+      ],
+      "model_type": "Agent+VLA",
+      "setting": "ZS",
+      "evaluation": {
+        "completed": 800,
+        "counts": {
+          "fail": 452,
+          "timeout": 272,
+          "success": 76
+        },
+        "latest_episode_finished_utc": "2026-10-28T05:49:51.795128+00:00",
+        "summary_sha256": "9347ae4ba70b31307aac92095ebb631748541411794d721500301f9938689c85"
+      },
+      "total_size": "N/A",
+      "training_compute": {
+        "status": "not_reported",
+        "note": "Uses the GroundSG VLA policy (≈44 H100 GPU-hours). System 1.5 is a Qwen3-VL-4B LoRA monitor trained for 2,246 steps over 2 epochs on 8 GPUs; the released model card and training configuration do not report its GPU type or elapsed training time, so total training compute remains N/R.",
+        "source": "https://huggingface.co/bingaochen/Astra-on-RoboMME-Monitor#training",
+        "policy_source": "https://github.com/bingaochen/Astra-on-RoboMME/blob/main/examples/champ/weights.json"
+      },
+      "api_cost": {
+        "approximate": true,
+        "display_usd": 843,
+        "display_note": "Maintainer-provided rounded API cost for all 800 RoboMME-Plus test episodes: US$843. Excludes local GPU compute."
+      }
+    }
+  ],
+  "evaluation": {
+    "updated_utc": "2026-10-28T17:26:48.398896+00:00",
+    "episodes_per_task": 50,
+    "note": "Completed rollout snapshot after the October 28 refresh: all 4,800 episode outcomes and 96 per-task scores were checked against the six published method summaries. Includes the refreshed PickHighlight results and 3-tier Astra ButtonUnmaskSwap results; retains other saved evaluations. Maintainer-provided approximate API display totals are unchanged."
+  }
+}

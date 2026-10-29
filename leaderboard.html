@@ -8,49 +8,9 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bulma/0.9.4/css/bulma.min.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-  <style>
-    body { font-family: 'Noto Sans', sans-serif; }
-    .leaderboard-hero .title { font-family: 'Google Sans', sans-serif; font-size: 3rem; font-weight: bold; }
-    .navbar .navbar-item,
-    .navbar .navbar-link { font-size: 1.0rem; }
-
-    .stat-card {
-      background: linear-gradient(135deg, #f8f9fa 0%, #fff 100%);
-      border-radius: 12px; padding: 1.25rem; text-align: center;
-      box-shadow: 0 2px 12px rgba(0,0,0,0.06); border: 1px solid #eee;
-    }
-    .stat-value { font-size: 2.5rem; font-weight: 700; color: #3273dc; }
-    .stat-label { font-size: 1rem; color: #666; margin-top: 0.25rem; }
-
-    /* Leaderboard section: one shared width for heading, toolbar, table, About/Submit */
-    .leaderboard-content {
-      max-width: 90%;
-      margin-left: auto;
-      margin-right: auto;
-    }
-
-    .section-block h2 { font-size: 1.5rem; margin-bottom: 0.75rem; padding-bottom: 0.4rem; border-bottom: 2px solid #3273dc; }
-    .navbar .navbar-item:hover,
-    .navbar .navbar-link:hover { background: #f5f5f5; }
-
-    /* All desktop/tablet: same scale on laptop and large monitors */
-    @media screen and (min-width: 769px) {
-      .container { max-width: 90%; }
-      .leaderboard-hero .title.is-1 { font-size: 2.75rem; }
-      .stat-value { font-size: 2.2rem; }
-      .stat-label { font-size: 1rem; }
-      .section-block h2 { font-size: 1.3rem; }
-    }
-
-    @media screen and (min-width: 769px) and (max-width: 1200px) {
-      .container { max-width: 90%; }
-      .leaderboard-hero .title.is-1 { font-size: 2.2rem; }
-      .stat-value { font-size: 2rem; }
-    }
-  </style>
-  <link rel="stylesheet" href="leaderboard.css">
+  <link rel="stylesheet" href="leaderboard.css?v=3448d35ac923">
 </head>
-<body>
+<body class="leaderboard-page">
 
 <nav class="navbar" role="navigation" aria-label="main navigation">
   <div class="navbar-brand">
@@ -61,12 +21,14 @@
   <div id="navMenu" class="navbar-menu">
     <div class="navbar-start" style="flex-grow: 1; justify-content: center;">
       <a class="navbar-item" href="index.html">
-        <span class="icon"><i class="fas fa-home"></i></span>
-        <span style="margin-left: 0.5rem; font-size: 1.2rem;">Home</span>
+        <span style="margin-left: 0.5rem; font-size: 1.2rem;"><span aria-hidden="true">🏠</span> Home</span>
       </a>
       <a class="navbar-item" href="challenge.html">
         <span class="icon"><i class="fas fa-rocket"></i></span>
         <span style="margin-left: 0.5rem; font-size: 1.2rem;">CVPR 2026 Challenge</span>
+      </a>
+      <a class="navbar-item" href="plus.html">
+        <span style="margin-left: 0.5rem; font-size: 1.2rem;"><span aria-hidden="true">🧗</span> RoboMME-Plus</span>
       </a>
       <div class="navbar-item has-dropdown is-hoverable">
         <a class="navbar-link"><span style="font-size: 1.2rem;">More Research</span></a>
@@ -82,17 +44,27 @@
 
 <!-- Hero -->
 <section class="leaderboard-hero hero">
-  <div class="hero-body" style="padding: 2rem 1.5rem 1rem;">
+  <div class="hero-body">
     <div class="container">
-      <h1 class="title is-1 has-text-centered" style="font-family:'Google Sans',sans-serif;">🏆 RoboMME Leaderboard</h1>
-      <p class="subtitle is-4 has-text-centered" style="color:#666;margin-bottom:0.75rem;">Benchmarking memory-augmented robotic generalist policies</p>
-      <div class="columns is-multiline is-centered" style="margin-top:0.75rem;gap:0.75rem;">
+      <h1 class="title is-1 has-text-centered" id="leaderboard-title"><span><span id="leaderboard-emoji" aria-hidden="true">🏆</span> <span id="leaderboard-name">RoboMME</span></span> <span>Leaderboard</span></h1>
+      <p class="subtitle is-4 has-text-centered" id="leaderboard-subtitle">Benchmarking memory-augmented robotic generalist policies</p>
+      <div class="benchmark-tabs" role="group" aria-label="Choose benchmark leaderboard">
+        <button type="button" data-benchmark="regular" aria-label="RoboMME" aria-pressed="true" aria-controls="lb-table">
+          <span class="benchmark-symbol" aria-hidden="true">📊</span>
+          <span class="benchmark-copy"><span class="benchmark-name">RoboMME</span><span class="benchmark-description">Original benchmark</span></span>
+        </button>
+        <button type="button" data-benchmark="plus" aria-label="RoboMME-Plus" aria-pressed="false" aria-controls="lb-table">
+          <span class="benchmark-symbol" aria-hidden="true">🧗</span>
+          <span class="benchmark-copy"><span class="benchmark-name">RoboMME-Plus</span><span class="benchmark-description">Distribution shift</span></span>
+        </button>
+      </div>
+      <div class="columns is-centered leaderboard-stats">
         <div class="column is-narrow"><div class="stat-card"><div class="stat-value">16</div><div class="stat-label">Tasks</div></div></div>
         <div class="column is-narrow"><div class="stat-card"><div class="stat-value">800</div><div class="stat-label">Test Episodes</div></div></div>
-        <div class="column is-narrow"><div class="stat-card"><div class="stat-value" id="stat-models">—</div><div class="stat-label">Models Evaluated</div></div></div>
+        <div class="column is-narrow"><div class="stat-card"><div class="stat-value" id="stat-models">—</div><div class="stat-label" id="stat-models-label">Models Evaluated</div></div></div>
       </div>
 
-      <p class="has-text-centered" style="margin-top:0.75rem;font-size:0.95rem;color:#999;">(Data updated on 10/21/2026)</p>
+      <p class="has-text-centered" id="data-update">(Data updated on 10/21/2026)</p>
       <!-- <div class="has-text-centered" style="margin-top:1.5rem;">
         <a href="#" class="button is-link is-rounded is-light" style="margin:0.25rem;"><span class="icon"><i class="fas fa-file-pdf"></i></span><span>Paper</span></a>
         <a href="https://github.com/RoboMME/robomme_benchmark" class="button is-link is-rounded is-light" target="_blank" style="margin:0.25rem;"><span class="icon"><i class="fab fa-github"></i></span><span>Benchmark Code</span></a>
@@ -109,10 +81,10 @@
   <div class="container">
     <div class="leaderboard-content">
 <div class="leaderboard-table" aria-labelledby="results-title">
+  <p id="benchmark-notice" class="benchmark-notice" role="status" hidden></p>
   <div class="section-heading">
     <div>
-      <h2 class="title is-4" id="results-title">📊 Standard Leaderboard</h2>
-      <p class="section-kicker">Success rate (%) · Higher is better</p>
+      <h2 class="title is-4" id="results-title"><span id="results-emoji" aria-hidden="true">📊</span> <span id="results-name">Standard Leaderboard</span></h2>
     </div>
     <div class="view-controls">
       <button type="button" id="details-toggle" class="details-toggle-btn is-active" aria-pressed="true" aria-controls="lb-table model-details-notes">Hide details</button>
@@ -157,26 +129,31 @@
       </table>
     </div>
     <div class="table-footer"><span><strong id="visible-count">—</strong> methods &amp; references shown</span><span>16 tasks · 50 test episodes per task</span></div>
+    <p id="plus-setting-note" class="setting-note" hidden>ZS: Zero-shot · FS: Few-shot</p>
+    <p id="plus-rollout-note" class="setting-note" hidden>Model rollouts are available on <a href="https://huggingface.co/datasets/Yinpei/RoboMME-OOD-model-rollout" target="_blank" rel="noopener noreferrer">Hugging Face</a>.</p>
   </div>
       <details id="model-details-notes" class="compute-note">
         <summary>Metric notes</summary>
         <p data-metric-note="parameters"><strong>Params:</strong> approximate parameter count. B = billion; M = million.</p>
-        <p data-metric-note="apiCost" hidden><strong>API Cost:</strong> reported API spending in USD for the RoboMME result, excluding local GPU compute. Hover over a value for its scope.</p>
-        <p><strong>N/R:</strong> not reported. <strong>N/A:</strong> not applicable.</p>
+        <p id="regular-api-note" data-metric-note="apiCost" hidden><strong>API Cost:</strong> reported API spending in USD for the RoboMME result, excluding local GPU compute. Hover over a value for its scope.</p>
+        <div id="plus-api-notes" hidden>
+          <p data-metric-note="apiCost"><strong>API cost:</strong> approximate total API spending across all 800 test episodes; excludes local GPU compute.</p>
+        </div>
+        <p><strong>N/R:</strong> not reported. <strong>N/A:</strong> not applicable. <strong>≈:</strong> approximate.</p>
       </details>
 </div>
       <div class="columns" style="margin-top:3rem;">
         <div class="column section-block">
-          <h2 class="title is-5">📋 About</h2>
-          <p class="content">A benchmark for evaluating <b>memory-augmented</b> robotic policies across <b>16</b> tasks in four suites: <i>Counting</i>, <i>Permanence</i>, <i>Reference</i>, and <i>Imitation</i>.</p>
+          <h2 class="title is-5">About</h2>
+          <p class="content" id="benchmark-about">A benchmark for evaluating <b>memory-augmented</b> robotic policies across <b>16</b> tasks in four suites: <i>Counting</i>, <i>Permanence</i>, <i>Reference</i>, and <i>Imitation</i>.</p>
         </div>
         <div class="column section-block">
-          <h2 class="title is-5">⚖️ Evaluation</h2>
-          <p class="content">Models are evaluated on 800 test episodes (50 per task). Multiple runs with different random seeds are recommended.</p>
+          <h2 class="title is-5">Evaluation</h2>
+          <p class="content" id="benchmark-evaluation">Models are evaluated on 800 test episodes (50 per task). Multiple runs with different random seeds are recommended.</p>
         </div>
         <div class="column section-block">
-          <h2 class="title is-5" id="submit">🔄 Submit</h2>
-          <p class="content">(1) Download the <a href="https://huggingface.co/datasets/Yinpei/robomme_data_h5" target="_blank">dataset</a> and <a href="https://github.com/RoboMME/robomme_benchmark" target="_blank">RoboMME repository</a>, (2) train and evaluate with your policy, (3) submit a PR following the <a href="https://github.com/RoboMME/robomme_benchmark?tab=readme-ov-file#-submit-your-models" target="_blank">submission instructions</a>.</p>
+          <h2 class="title is-5" id="submit">Submit</h2>
+          <p class="content" id="benchmark-submit">(1) Download the <a href="https://huggingface.co/datasets/Yinpei/robomme_data_h5" target="_blank">dataset</a> and <a href="https://github.com/RoboMME/robomme_benchmark" target="_blank">RoboMME repository</a>, (2) train and evaluate with your policy, (3) submit a PR following the <a href="https://github.com/RoboMME/robomme_benchmark?tab=readme-ov-file#-submit-your-models" target="_blank">submission instructions</a>.</p>
         </div>
       </div>
     </div>
@@ -770,7 +747,120 @@ var RESULTS = {
 
 (function() {
   var D = RESULTS;
+  var benchmark = 'regular';
+  var requestedBenchmark = 'regular';
+  var plusDataPromise = null;
+  var benchmarkFilters = {};
+  var regularContent = {};
   var allTasks = Object.keys(D.models[0].tasks);
+
+  function isScore(value) {
+    return typeof value === 'number' && Number.isFinite(value) && value >= 0 && value <= 1;
+  }
+
+  function loadPlusResults() {
+    if (!plusDataPromise) {
+      plusDataPromise = fetch('data/plus.json', { cache: 'no-store' }).then(function(response) {
+        if (!response.ok) throw new Error('Data request failed (' + response.status + ')');
+        return response.json();
+      }).then(function(data) {
+        var suites = {};
+        data.suites.forEach(function(suite) {
+          suites[suite.name] = data.tasks.filter(function(task) { return task.suite === suite.id; }).map(function(task) { return task.id; });
+        });
+        return {
+          updated_utc: data.evaluation && data.evaluation.updated_utc,
+          task_suites: suites,
+          task_characteristics: RESULTS.task_characteristics,
+          models: data.methods.map(function(method) {
+            return {
+              name: method.name,
+              model_type: method.model_type,
+              setting: method.setting,
+              tags: method.tags,
+              tasks: method.results,
+              total_size: method.total_size,
+              size_note: method.size_note,
+              api_cost: method.api_cost,
+              link: method.link
+            };
+          })
+        };
+      }).catch(function(error) {
+        plusDataPromise = null;
+        throw error;
+      });
+    }
+    return plusDataPromise;
+  }
+
+  function updateBenchmarkContent() {
+    var plus = benchmark === 'plus';
+    document.body.dataset.leaderboardBenchmark = benchmark;
+    document.title = plus ? 'RoboMME-Plus Leaderboard' : 'RoboMME Leaderboard';
+    var plusTrophy = '<img class="plus-trophy" src="image/plus-trophy-laurel.svg?v=859fd1ba6850" alt="" width="64" height="64">';
+    document.getElementById('leaderboard-emoji').innerHTML = plus ? plusTrophy : '🏆';
+    document.getElementById('leaderboard-name').textContent = plus ? 'RoboMME-Plus' : 'RoboMME';
+    document.getElementById('leaderboard-subtitle').textContent = plus
+      ? 'Evaluating robotic memory under more demanding conditions'
+      : 'Benchmarking memory-augmented robotic generalist policies';
+    document.getElementById('results-emoji').textContent = plus ? '🧗' : '📊';
+    document.getElementById('lb-table').setAttribute('aria-label', plus ? 'RoboMME-Plus model success rates' : 'RoboMME model success rates');
+    document.querySelectorAll('[data-benchmark]').forEach(function(button) {
+      button.setAttribute('aria-pressed', String(button.dataset.benchmark === benchmark));
+    });
+    document.getElementById('stat-models').textContent = D.models.filter(function(model) { return model.name !== 'Human Performance'; }).length;
+    document.getElementById('stat-models-label').textContent = 'Models Evaluated';
+    if (plus) {
+      document.getElementById('benchmark-about').innerHTML = 'RoboMME-Plus benchmarks robot memory under more demanding conditions across <b>16 tasks</b> in four suites. Explore the <a href="plus.html#task-examples">task examples</a>.';
+      document.getElementById('benchmark-evaluation').innerHTML = 'Test <b>zero-shot transfer (ZS)</b> or <b>few-shot adaptation (FS)</b> on <b>800 episodes</b>, with 50 per task. Report each setting separately.';
+      document.getElementById('submit').textContent = 'Submit';
+      document.getElementById('benchmark-submit').innerHTML = 'Use the <a href="https://github.com/RoboMME/robomme_benchmark/blob/main/doc/submission/model_example_plus.md" target="_blank" rel="noopener noreferrer">submission template</a> to report per-task scores and your ZS or FS setting. Submit a <a href="https://github.com/RoboMME/robomme_benchmark/pulls" target="_blank" rel="noopener noreferrer">pull request</a>.';
+      document.querySelector('.radar-note').innerHTML = 'Shows the <b>top 5</b> fully evaluated methods overall and methods with the <b>best score</b> in any category. Rankings follow the selected Standard or Agentic track, or Combined ranking.<br>Click a model name in the legend to show or hide its line.';
+    } else {
+      ['benchmark-about', 'benchmark-evaluation', 'benchmark-submit', 'submit'].forEach(function(id) {
+        document.getElementById(id).innerHTML = regularContent[id];
+      });
+      document.querySelector('.radar-note').innerHTML = regularContent.radarNote;
+    }
+  }
+
+  async function switchBenchmark(next, updateURL) {
+    requestedBenchmark = next;
+    var notice = document.getElementById('benchmark-notice');
+    var nextData;
+    if (next === 'plus') {
+      notice.hidden = false;
+      notice.textContent = 'Loading RoboMME-Plus results…';
+      try {
+        nextData = await loadPlusResults();
+      } catch (error) {
+        if (requestedBenchmark !== next) return;
+        notice.textContent = 'RoboMME-Plus data could not be loaded. Select RoboMME-Plus to try again.';
+        return;
+      }
+    } else nextData = RESULTS;
+    if (requestedBenchmark !== next) return;
+    if (next !== benchmark) {
+      benchmarkFilters[benchmark] = Object.assign({}, selectedTags);
+      selectedTags = benchmarkFilters[next] || {
+        oracle_action_planner: false, oracle_subgoal: false
+      };
+    }
+    benchmark = next;
+    D = nextData;
+    allTasks = Object.keys(D.models[0].tasks);
+    setViewMode('table');
+    updateBenchmarkContent();
+    renderMethodLegend();
+    render();
+    if (updateURL) {
+      var url = new URL(window.location.href);
+      if (benchmark === 'plus') url.searchParams.set('benchmark', 'plus');
+      else url.searchParams.delete('benchmark');
+      history.replaceState(null, '', url);
+    }
+  }
   var methodTags = {
     open_sourced_model: { label: 'Open-sourced model', description: 'Built on public model weights, without a proprietary model dependency; does not imply the full method and trained checkpoints are released.' },
     proprietary_model: { label: 'Proprietary model', description: 'Uses a proprietary model whose weights are not public. Combined ranking compares open-source and proprietary models together.' },
@@ -785,9 +875,12 @@ var RESULTS = {
   var trackNames = { standard: 'Standard', agentic: 'Agentic' };
 
   function renderMethodLegend() {
-    document.getElementById('method-legend').innerHTML = ['oracle_subgoal', 'oracle_action_planner'].map(function(key) {
+    document.getElementById('method-legend').innerHTML = ['oracle_subgoal', 'oracle_action_planner'].filter(function(key) {
+      return D.models.some(function(model) { return !model.always_visible && (model.tags || []).indexOf(key) !== -1; });
+    }).map(function(key) {
       var tag = methodTags[key];
-      return '<button type="button" class="method-filter method-' + key + (selectedTags[key] ? ' is-active' : '') + '" data-tag="' + key + '" aria-label="' + tag.label + '" aria-pressed="' + selectedTags[key] + '" title="' + tag.description + '">' + tag.label + '</button>';
+      var description = tag.description;
+      return '<button type="button" class="method-filter method-' + key + (selectedTags[key] ? ' is-active' : '') + '" data-tag="' + key + '" aria-label="' + tag.label + '" aria-pressed="' + selectedTags[key] + '" title="' + description + '">' + tag.label + '</button>';
     }).join('');
     document.querySelectorAll('.method-filter').forEach(function(button) {
       button.addEventListener('click', function() {
@@ -825,22 +918,30 @@ var RESULTS = {
   var detailColumns = [
     { key: 'type', label: 'Type', width: 5.25, title: 'Architecture of the evaluated system. Hover over a value for its definition.' },
     { key: 'parameters', label: 'Total<br>Params', width: 4.5, title: 'Approximate number of model parameters.' },
-    { key: 'training', label: 'Train<br>Hours', width: 3.75, title: 'RoboMME training per run, in H100-equivalent GPU-hours. See notes below for conversion assumptions.' },
-    { key: 'apiCost', label: 'API<br>Cost', width: 3.5, title: 'Reported API spending in USD for the RoboMME result. Hover over a value for its scope. Excludes local GPU compute.' }
+    { key: 'apiCost', label: 'API<br>Cost', width: 4.5, title: 'Total API cost in USD for the reported evaluation. Excludes local GPU compute.' }
   ];
 
+  var settingLabels = {
+    ZS: { label: 'ZS', title: 'Zero-shot: no RoboMME-Plus training examples.' },
+    FS: { label: 'FS', title: 'Few-shot: adaptation using RoboMME-Plus training examples.' }
+  };
+
   function getDetailColumns() {
-    if (!showDetails) return [];
-    return detailColumns.filter(function(column) {
+    var columns = benchmark === 'plus'
+      ? [{ key: 'setting', label: 'Setting', width: 3.25, title: 'ZS = Zero-shot; FS = Few-shot' }]
+      : [];
+    if (!showDetails) return columns;
+    return columns.concat(detailColumns.filter(function(column) {
       if (column.key === 'type') return true;
-      if (column.key !== 'parameters' && column.key !== 'apiCost') return false;
       return combinedRanking || column.key === (activeTrack === 'agentic' ? 'apiCost' : 'parameters');
-    });
+    }));
   }
 
   function syncViewControls() {
     document.getElementById('view-toggle').setAttribute('aria-pressed', String(viewMode === 'radar'));
-    document.querySelector('.table-footer').hidden = viewMode !== 'table';
+    document.querySelector('.table-footer').hidden = benchmark === 'plus' || viewMode !== 'table';
+    document.getElementById('plus-setting-note').hidden = benchmark !== 'plus' || viewMode !== 'table';
+    document.getElementById('plus-rollout-note').hidden = benchmark !== 'plus';
     var button = document.getElementById('details-toggle');
     button.hidden = viewMode !== 'table';
     button.classList.toggle('is-active', showDetails);
@@ -851,6 +952,8 @@ var RESULTS = {
     document.querySelectorAll('[data-metric-note]').forEach(function(note) {
       note.hidden = !visibleDetails.some(function(column) { return column.key === note.getAttribute('data-metric-note'); });
     });
+    document.getElementById('regular-api-note').hidden = benchmark === 'plus' || !visibleDetails.some(function(column) { return column.key === 'apiCost'; });
+    document.getElementById('plus-api-notes').hidden = benchmark !== 'plus';
   }
 
   function syncTrackControls() {
@@ -859,23 +962,38 @@ var RESULTS = {
       input.checked = input.value === activeTrack;
     });
     var title = combinedRanking ? 'Combined' : trackNames[activeTrack];
-    document.getElementById('results-title').textContent = '📊 ' + title + ' Leaderboard';
-    document.getElementById('lb-table').setAttribute('aria-label', 'RoboMME ' + title + ' leaderboard');
+    document.getElementById('results-name').textContent = (benchmark === 'plus' ? 'RoboMME-Plus · ' : '') + title + ' Leaderboard';
+    document.getElementById('lb-table').setAttribute('aria-label', (benchmark === 'plus' ? 'RoboMME-Plus ' : 'RoboMME ') + title + ' leaderboard');
+  }
+
+  function setViewMode(next) {
+    viewMode = next;
+    var radar = next === 'radar';
+    document.querySelector('.lb-wrap').style.display = radar ? 'none' : '';
+    document.getElementById('radar-container').style.display = radar ? 'block' : 'none';
+    document.getElementById('view-toggle-icon').className = radar ? 'fas fa-table' : 'fas fa-chart-area';
+    document.getElementById('view-toggle-label').textContent = radar ? 'Table View' : 'Radar View';
+    syncViewControls();
+    if (radar) {
+      applyRadarData();
+      if (radarChart) setTimeout(function() { radarChart.resize(); }, 10);
+    }
+    updateStickyHeader();
   }
 
   var radarChart = null;
   var pendingRadarData = null;
   var radarColors = [
-    { bg: 'rgba(50, 115, 220, 0.18)',  border: 'rgb(50, 115, 220)' },
-    { bg: 'rgba(255, 56, 96, 0.18)',   border: 'rgb(255, 56, 96)' },
-    { bg: 'rgba(0, 184, 148, 0.18)',   border: 'rgb(0, 184, 148)' },
-    { bg: 'rgba(253, 167, 0, 0.18)',   border: 'rgb(253, 167, 0)' },
-    { bg: 'rgba(142, 68, 173, 0.18)',  border: 'rgb(142, 68, 173)' },
-    { bg: 'rgba(52, 73, 94, 0.18)',    border: 'rgb(52, 73, 94)' },
-    { bg: 'rgba(230, 126, 34, 0.18)',  border: 'rgb(230, 126, 34)' },
-    { bg: 'rgba(26, 188, 156, 0.18)',  border: 'rgb(26, 188, 156)' },
-    { bg: 'rgba(241, 196, 15, 0.18)',  border: 'rgb(241, 196, 15)' },
-    { bg: 'rgba(155, 89, 182, 0.18)',  border: 'rgb(155, 89, 182)' }
+    { bg: 'rgba(81, 90, 154, 0.14)', border: 'rgb(81, 90, 154)' },
+    { bg: 'rgba(79, 130, 126, 0.14)', border: 'rgb(79, 130, 126)' },
+    { bg: 'rgba(162, 139, 98, 0.14)', border: 'rgb(162, 139, 98)' },
+    { bg: 'rgba(139, 125, 176, 0.14)', border: 'rgb(139, 125, 176)' },
+    { bg: 'rgba(178, 119, 123, 0.14)', border: 'rgb(178, 119, 123)' },
+    { bg: 'rgba(111, 145, 162, 0.14)', border: 'rgb(111, 145, 162)' },
+    { bg: 'rgba(140, 152, 112, 0.14)', border: 'rgb(140, 152, 112)' },
+    { bg: 'rgba(178, 138, 104, 0.14)', border: 'rgb(178, 138, 104)' },
+    { bg: 'rgba(114, 133, 154, 0.14)', border: 'rgb(114, 133, 154)' },
+    { bg: 'rgba(162, 135, 156, 0.14)', border: 'rgb(162, 135, 156)' }
   ];
 
   function cleanLabel(html) {
@@ -892,7 +1010,7 @@ var RESULTS = {
   }
 
   function isRanked(row) {
-    return !row.baseline && !isOtherTrack(row);
+    return isScore(row.Avg) && !row.baseline && !isOtherTrack(row);
   }
 
   function updateRadar(cols, rows) {
@@ -927,7 +1045,7 @@ var RESULTS = {
       var ri = rankMap[m.id];
       var prefix = ri < 3 ? medals[ri] + ' ' : '#' + (ri + 1) + ' ';
       return {
-        label: prefix + m.name,
+        label: prefix + m.name + (benchmark === 'plus' && settingLabels[m.setting] ? ' (' + m.setting + ')' : ''),
         data: cols.map(function(c) { return +pct(m[c.key]); }),
         fill: true,
         backgroundColor: color.bg,
@@ -964,10 +1082,10 @@ var RESULTS = {
             r: {
               beginAtZero: true,
               max: 100,
-              ticks: { stepSize: 20, font: { size: 10 }, color: '#8a98ad', backdropColor: 'transparent' },
+              ticks: { stepSize: 20, font: { size: 12 }, color: '#333333', backdropColor: 'transparent' },
               pointLabels: {
-                color: '#536680',
-                font: { size: 11, weight: '600', family: 'Noto Sans' },
+                color: '#333333',
+                font: { size: 13, weight: '600', family: 'Noto Sans' },
                 callback: function(label) {
                   return mode === 'suite' && window.matchMedia('(max-width: 650px)').matches && Array.isArray(label) ? label[0] : label;
                 }
@@ -979,14 +1097,14 @@ var RESULTS = {
           plugins: {
             legend: {
               position: 'bottom',
-              labels: { padding: 15, boxWidth: 7, boxHeight: 7, color: '#536680', usePointStyle: true, pointStyle: 'circle', font: { size: 10, family: 'Noto Sans' } }
+              labels: { padding: 15, boxWidth: 7, boxHeight: 7, color: '#333333', usePointStyle: true, pointStyle: 'circle', font: { size: 12, family: 'Noto Sans' } }
             },
             tooltip: {
               backgroundColor: '#17243c',
               padding: 12,
               cornerRadius: 8,
-              titleFont: { size: 12 },
-              bodyFont: { size: 11 },
+              titleFont: { size: 14 },
+              bodyFont: { size: 13 },
               callbacks: {
                 label: function(context) {
                   return context.dataset.label + ': ' + context.parsed.r.toFixed(2) + '%';
@@ -1010,9 +1128,9 @@ var RESULTS = {
   }
 
   function avgTasks(model, tasks) {
-    if (!tasks.length) return 0;
+    if (!tasks.length || tasks.some(function(task) { return !isScore(model.tasks[task]); })) return null;
     var s = 0;
-    tasks.forEach(function(t) { s += (model.tasks[t] || 0); });
+    tasks.forEach(function(t) { s += model.tasks[t]; });
     return s / tasks.length;
   }
 
@@ -1076,52 +1194,19 @@ var RESULTS = {
     return cols;
   }
 
-  function trainingCompute(model) {
-    var compute = model.training_compute;
-    if (!compute) return { label: 'N/R', title: 'RoboMME training cost is not reported.' };
-    if (compute.status === 'not_applicable') return { label: 'N/A', title: compute.note };
-    if (compute.status === 'no_training') return { label: '0', title: compute.note };
-    if (compute.status === 'not_reported') return { label: 'N/R', title: compute.note };
-    if (typeof compute.h100_hours === 'number') {
-      return { label: (compute.approximate ? '≈' : '') + compute.h100_hours.toLocaleString('en-US'), title: compute.note };
-    }
-
-    // Dense BF16 TFLOPS: NVIDIA lists 1,979 with sparsity for H100/H200 SXM;
-    // dense throughput is half that value. A40/A100 specify 149.7/312 without sparsity.
-    var gpuFactors = { H100: 1, H200: 1, A40: 149.7 / 989.5, A100: 312 / 989.5 };
-    var stages = compute.stages || [compute];
-    var low = 0, high = 0, converted = false;
-    var approximate = compute.approximate;
-    for (var i = 0; i < stages.length; i++) {
-      var stage = stages[i];
-      var factor = gpuFactors[stage.gpu];
-      if (factor === undefined) return { label: 'N/R', title: 'No conversion factor is available for the reported GPU.' };
-      low += stage.gpus * stage.hours[0] * factor;
-      high += stage.gpus * stage.hours[1] * factor;
-      converted = converted || stage.gpu !== 'H100';
-      approximate = approximate || stage.approximate;
-    }
-    low = Math.round(low);
-    high = Math.round(high);
-    var label = low.toLocaleString('en-US');
-    if (high !== low) label += '–' + high.toLocaleString('en-US');
-    if (approximate || converted) label = '≈' + label;
-    return {
-      label: compute.display_label || label,
-      title: compute.note + (compute.display_label ? ' Displayed estimate: ' + compute.display_label + ' H100 GPU-hours; hardware-based conversion: ' + label + '.' : '') + (converted ? ' Estimated H100-equivalent GPU-hours using peak dense BF16 throughput.' : ' Reported H100 GPU-hours.')
-    };
-  }
-
   function buildRows(cols) {
     return D.models.map(function(m, idx) {
       var row = { id: idx, name: m.name, org: m.organization, memory: m.memory || '\u2014', tasks: m.tasks, baseline: !!m.baseline, alwaysVisible: !!m.always_visible, link: m.link || null, tags: m.tags || [], totalSize: m.total_size || 'Not reported' };
+      row.setting = m.setting;
       var apiCost = m.api_cost;
       row.details = {
+        setting: settingLabels[m.setting] || { label: '—', title: 'Evaluation setting is not reported.' },
         type: { label: m.model_type ? m.model_type.replace(/\+/g, ' + ') : 'N/R', title: modelTypes[m.model_type] || 'Architecture type is not reported.', badgeClass: m.model_type ? 'type-' + m.model_type.toLowerCase().replace(/[+\s]+/g, '-') : '' },
         parameters: { label: row.totalSize, title: m.size_note || 'Approximate parameter count; B = billion, M = million.' },
-        training: trainingCompute(m),
-        apiCost: apiCost && typeof apiCost.total_usd === 'number'
-          ? { label: (apiCost.approximate ? '≈' : '') + '$' + apiCost.total_usd.toLocaleString('en-US'), title: apiCost.note }
+        apiCost: apiCost && typeof apiCost.display_usd === 'number'
+          ? { label: '$' + apiCost.display_usd.toLocaleString('en-US'), title: apiCost.display_note || apiCost.note }
+          : apiCost && typeof apiCost.total_usd === 'number'
+          ? { label: (apiCost.lower_bound ? '≥' : apiCost.approximate ? '≈' : '') + '$' + (benchmark === 'plus' ? (apiCost.lower_bound ? Math.floor(apiCost.total_usd) : Math.round(apiCost.total_usd)) : apiCost.total_usd).toLocaleString('en-US'), title: apiCost.note }
           : { label: row.tags.indexOf('proprietary_model') !== -1 ? 'N/R' : 'N/A', title: apiCost ? apiCost.note : 'Inference API spending is not applicable to this local model or reference.' }
       };
       row.Avg = avgTasks(m, allTasks);
@@ -1132,7 +1217,9 @@ var RESULTS = {
 
   function sortRows(rows) {
     rows.sort(function(a, b) {
-      var va = a[sortCol] || 0, vb = b[sortCol] || 0;
+      var va = a[sortCol], vb = b[sortCol];
+      if (!isScore(va)) return isScore(vb) ? 1 : 0;
+      if (!isScore(vb)) return -1;
       return sortAsc ? va - vb : vb - va;
     });
   }
@@ -1232,7 +1319,6 @@ var RESULTS = {
   }
 
   function render() {
-    syncViewControls();
     syncTrackControls();
     var visibleDetails = getDetailColumns();
     var cols = getColumns();
@@ -1242,6 +1328,22 @@ var RESULTS = {
       return activeTrack !== 'agentic' || combinedRanking || r.tags.indexOf('proprietary_model') !== -1;
     });
     document.getElementById('visible-count').textContent = rows.length;
+
+    var hasRanked = rows.some(isRanked);
+    var viewToggle = document.getElementById('view-toggle');
+    viewToggle.disabled = !hasRanked;
+    viewToggle.title = hasRanked ? '' : 'Radar view is available when a selected method has scores for all 16 tasks.';
+    if (!hasRanked && viewMode === 'radar') setViewMode('table');
+    syncViewControls();
+    var notice = document.getElementById('benchmark-notice');
+    notice.hidden = true;
+    notice.textContent = '';
+    var updatedAt = benchmark === 'plus' && D.updated_utc ? new Date(D.updated_utc) : null;
+    document.getElementById('data-update').textContent = benchmark === 'plus'
+      ? (updatedAt && Number.isFinite(updatedAt.getTime())
+          ? '(Data updated on ' + updatedAt.toLocaleDateString('en-US', { timeZone: 'UTC', month: '2-digit', day: '2-digit', year: 'numeric' }) + ')'
+          : '')
+      : '(Data updated on 10/21/2026)';
 
     sortRows(rows);
 
@@ -1278,7 +1380,12 @@ var RESULTS = {
       var content = '<strong>' + formatModelName(r.name) + '</strong>';
       if (r.link) content = '<a class="model-label" title="' + r.name + '" href="' + r.link + '" target="_blank" rel="noopener">' + content + '</a>';
       else content = '<span class="model-label" title="' + r.name + '">' + content + '</span>';
-      return '<span class="model-name">' + content + '</span>';
+      var status = '';
+      if (benchmark === 'plus' && !isScore(r.Avg)) {
+        var reported = allTasks.filter(function(task) { return isScore(r.tasks[task]); }).length;
+        status = '<small class="model-status">' + (reported ? reported + '/16 tasks reported' : 'Pending evaluation') + '</small>';
+      }
+      return '<span class="model-name">' + content + '</span>' + status;
     }
 
     function memoryHtml(mem) {
@@ -1302,16 +1409,18 @@ var RESULTS = {
       html += '<td>' + nameHtml(r) + '</td>';
       visibleDetails.forEach(function(c) {
         var value = r.details[c.key];
-        var label = value.label.replace(/≈/g, '');
+        var label = benchmark === 'plus' ? value.label : value.label.replace(/≈/g, '');
         var content = value.badgeClass ? '<span class="model-type-badge ' + value.badgeClass + '">' + label.replace(/ \+ /g, '<br>+ ') + '</span>' : label;
         html += '<td class="model-detail" data-detail="' + c.key + '" title="' + value.title + '">' + content + '</td>';
       });
       var avgCls = (!otherTrack && r.Avg > 0 && r.Avg === best.Avg) ? ' class="best-score"' : '';
-      html += '<td' + avgCls + '><span class="overall-score" style="--score:' + pct(r.Avg) + '%">' + pct(r.Avg) + '</span></td>';
+      html += isScore(r.Avg)
+        ? '<td' + avgCls + '><span class="overall-score" style="--score:' + pct(r.Avg) + '%">' + pct(r.Avg) + '</span></td>'
+        : '<td><span class="pending-score" aria-label="Not reported">—</span></td>';
       cols.forEach(function(c) {
         var v = r[c.key];
         var cls = (!otherTrack && v > 0 && v === best[c.key]) ? ' class="best-score"' : '';
-        html += '<td' + cls + '>' + pct(v) + '</td>';
+        html += isScore(v) ? '<td' + cls + '>' + pct(v) + '</td>' : '<td><span class="pending-score" aria-label="Not reported">—</span></td>';
       });
       html += '</tr>';
     }
@@ -1327,7 +1436,15 @@ var RESULTS = {
     updateRadar(cols, rows);
   }
 
-  document.addEventListener('DOMContentLoaded', function() {
+  document.addEventListener('DOMContentLoaded', async function() {
+    ['benchmark-about', 'benchmark-evaluation', 'benchmark-submit', 'submit'].forEach(function(id) {
+      regularContent[id] = document.getElementById(id).innerHTML;
+    });
+    regularContent.radarNote = document.querySelector('.radar-note').innerHTML;
+    benchmarkFilters.regular = Object.assign({}, selectedTags);
+    document.querySelectorAll('[data-benchmark]').forEach(function(button) {
+      button.addEventListener('click', function() { switchBenchmark(button.dataset.benchmark, true); });
+    });
     window.addEventListener('scroll', updateStickyHeader, { passive: true });
     window.addEventListener('resize', updateStickyHeader);
     if (document.fonts) document.fonts.ready.then(updateStickyHeader);
@@ -1361,44 +1478,23 @@ var RESULTS = {
     });
 
     document.getElementById('view-toggle').addEventListener('click', function() {
-      var radarEl = document.getElementById('radar-container');
-      var tableEl = document.querySelector('.lb-wrap');
-      var icon = document.getElementById('view-toggle-icon');
-      var label = document.getElementById('view-toggle-label');
-      if (viewMode === 'table') {
-        viewMode = 'radar';
-        tableEl.style.display = 'none';
-        radarEl.style.display = 'block';
-        icon.className = 'fas fa-table';
-        label.textContent = 'Table View';
-        applyRadarData();
-        if (radarChart) setTimeout(function() { radarChart.resize(); }, 10);
-      } else {
-        viewMode = 'table';
-        radarEl.style.display = 'none';
-        tableEl.style.display = '';
-        icon.className = 'fas fa-chart-area';
-        label.textContent = 'Radar View';
-      }
-      syncViewControls();
-      updateStickyHeader();
+      if (!this.disabled) setViewMode(viewMode === 'table' ? 'radar' : 'table');
     });
 
     render();
+
+    if (['plus', 'ood'].includes(new URLSearchParams(window.location.search).get('benchmark'))) {
+      await switchBenchmark('plus', false);
+      var canonicalURL = new URL(window.location.href);
+      canonicalURL.searchParams.set('benchmark', 'plus');
+      window.history.replaceState({}, '', canonicalURL);
+    }
 
     // If linked with #radar-view, group by task characteristics and switch to radar view
     if (window.location.hash === '#radar-view') {
       mode = 'char';
       render();
-      viewMode = 'radar';
-      document.querySelector('.lb-wrap').style.display = 'none';
-      var radarEl = document.getElementById('radar-container');
-      radarEl.style.display = 'block';
-      document.getElementById('view-toggle-icon').className = 'fas fa-table';
-      document.getElementById('view-toggle-label').textContent = 'Table View';
-      syncViewControls();
-      applyRadarData();
-      if (radarChart) setTimeout(function() { radarChart.resize(); }, 10);
+      if (!document.getElementById('view-toggle').disabled) setViewMode('radar');
     }
 
     // If linked with #each-task, group by each task

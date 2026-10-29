@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Benchmarking robot memory under more demanding conditions: 16 tasks, 50 training examples, and 800 test episodes for zero-shot evaluation and few-shot adaptation from RoboMME.">
+  <meta name="theme-color" content="#4f46e5">
+  <meta property="og:title" content="RoboMME-Plus: Benchmarking Robot Memory under More Demanding Conditions">
+  <meta property="og:description" content="Explore 50 training rollouts across 16 memory tasks, and evaluate transfer from RoboMME on 800 test episodes.">
+  <meta property="og:type" content="website">
+  <title>RoboMME-Plus: Benchmarking Robot Memory under More Demanding Conditions</title>
+  <link href="https://fonts.googleapis.com/css?family=Google+Sans|Noto+Sans|Castoro" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bulma/0.9.4/css/bulma.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="main.css">
+  <link rel="stylesheet" href="plus.css?v=a0b30dd752b9">
+  <script src="plus.js?v=101852096fc1" defer></script>
+</head>
+<body class="plus-page">
+<div class="section-nav" id="sectionNav">
+  <div class="section-nav-inner">
+    <a class="section-nav-link" href="#overview" data-target="overview">About RoboMME-Plus</a>
+    <a class="section-nav-link" href="#task-examples" data-target="task-examples">Task Examples</a>
+    <a class="section-nav-link" href="#dataset" data-target="dataset">Training Data</a>
+    <a class="section-nav-link" href="#evaluation" data-target="evaluation">Evaluation</a>
+    <a class="section-nav-link" href="leaderboard.html?benchmark=plus">RoboMME-Plus Leaderboard</a>
+  </div>
+</div>
+<nav class="navbar" role="navigation" aria-label="main navigation">
+  <div class="navbar-brand">
+    <a role="button" class="navbar-burger" aria-label="menu" aria-expanded="false" data-target="navMenu">
+      <span aria-hidden="true"></span>
+      <span aria-hidden="true"></span>
+      <span aria-hidden="true"></span>
+    </a>
+  </div>
+  <div id="navMenu" class="navbar-menu">
+    <div class="navbar-start" style="flex-grow: 1; justify-content: center;">
+      <a class="navbar-item" href="index.html"><span style="margin-left: 0.5rem; font-size: 1.2rem;"><span aria-hidden="true">🏠</span> Home</span></a>
+      <a class="navbar-item is-active" href="plus.html" aria-current="page">
+        <span style="margin-left: 0.5rem; font-size: 1.2rem;"><span aria-hidden="true">🧗</span> RoboMME-Plus</span>
+      </a>
+      <a class="navbar-item" href="leaderboard.html?benchmark=plus">
+        <span style="margin-left: 0.5rem; font-size: 1.2rem;"><img class="plus-trophy" src="image/plus-trophy-laurel.svg?v=859fd1ba6850" alt="" width="64" height="64"> Leaderboard</span>
+      </a>
+      <a class="navbar-item" href="challenge.html">
+        <span style="margin-left: 0.5rem; font-size: 1.2rem;">🚀 CVPR 2026 Challenge</span>
+      </a>
+      <div class="navbar-item has-dropdown is-hoverable">
+        <a class="navbar-link">
+          <span style="font-size: 1.2rem;">More Research</span>
+        </a>
+        <div class="navbar-dropdown">
+          <a class="navbar-item" href="https://aimbot-reticle.github.io/" target="_blank">
+            AimBot (CoRL'25)
+          </a>
+          <a class="navbar-item" href="https://rich-language-failure-recovery.github.io" target="_blank">
+            RACER (ICRA'25)
+          </a>
+          <a class="navbar-item" href="https://github.com/sled-group/navchat" target="_blank">
+            NavChat (ICRA'24)
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+</nav>
+
+<main>
+<section class="hero">
+  <div class="hero-body">
+    <div class="container is-max-desktop">
+      <div class="columns is-centered">
+        <div class="column has-text-centered">
+          <h1 class="title is-1 publication-title">
+            <span class="publication-title-line">RoboMME-Plus: Benchmarking Robot Memory</span>
+            <span class="publication-title-line">under More Demanding Conditions</span>
+          </h1>
+          <div class="publication-authors plus-authors">
+            <span class="author-block"><a href="https://yinpeidai.github.io/" target="_blank" rel="noopener noreferrer">Yinpei Dai</a><sup>1</sup>,</span>
+            <span class="author-block"><a href="https://hongzefu.github.io/" target="_blank" rel="noopener noreferrer">Hongze Fu</a><sup>1</sup>,</span>
+            <span class="author-block"><a href="https://sites.google.com/view/yuejiangliu/home" target="_blank" rel="noopener noreferrer">Yuejiang Liu</a><sup>2</sup>,</span>
+            <span class="author-block"><a href="https://ai.stanford.edu/~cbfinn/" target="_blank" rel="noopener noreferrer">Chelsea Finn</a><sup>2</sup>,</span>
+            <span class="author-block"><a href="https://www.mmintlab.com/people/nima-fazeli/" target="_blank" rel="noopener noreferrer">Nima Fazeli</a><sup>1</sup>,</span>
+            <span class="author-block"><a href="https://web.eecs.umich.edu/~chaijy/" target="_blank" rel="noopener noreferrer">Joyce Chai</a><sup>1</sup></span>
+          </div>
+          <p class="plus-affiliations">
+            <span><sup>1</sup>University of Michigan</span>
+            <span><sup>2</sup>Stanford University</span>
+          </p>
+          <div class="column has-text-centered" style="margin-top: 1.5rem;">
+            <div class="publication-links plus-publication-links">
+              <span class="link-block"><button type="button" class="button is-link is-rounded" disabled title="Coming soon"><span class="icon"><i class="fas fa-file-pdf" aria-hidden="true"></i></span><span>Paper</span></button></span>
+              <span class="link-block"><button type="button" class="button is-link is-rounded" disabled title="Coming soon"><span class="icon"><i class="fas fa-newspaper" aria-hidden="true"></i></span><span>Blog</span></button></span>
+              <span class="link-block"><a href="https://github.com/RoboMME/robomme_benchmark" class="button is-link is-rounded" target="_blank" rel="noopener noreferrer"><span class="icon"><i class="fab fa-github" aria-hidden="true"></i></span><span>Code</span></a></span>
+              <span class="link-block"><a href="https://huggingface.co/datasets/Yinpei/robomme_ood_data_h5" class="button is-link is-rounded" target="_blank" rel="noopener noreferrer"><span class="icon"><i class="fas fa-database" aria-hidden="true"></i></span><span>Training Data</span></a></span>
+              <span class="link-block"><a href="https://huggingface.co/collections/Yinpei/robomme-ood" class="button is-link is-rounded" target="_blank" rel="noopener noreferrer"><span class="icon"><i class="fas fa-layer-group" aria-hidden="true"></i></span><span>Collection</span></a></span>
+              <span class="link-block"><a href="leaderboard.html?benchmark=plus" class="button is-link is-rounded"><span class="icon" aria-hidden="true"><img class="plus-trophy" src="image/plus-trophy-laurel.svg?v=859fd1ba6850" alt="" width="64" height="64"></span><span>Leaderboard</span></a></span>
+            </div>
+          </div>
+          <div class="plus-teaser">
+            <video id="plus-teaser" src="video/plus-teaser.mp4?v=043ba043a865" poster="video/plus-teaser.jpg?v=89ec44e6726a" width="1920" height="1080" autoplay muted loop playsinline controls aria-label="RoboMME-Plus teaser">
+              Your browser does not support embedded video. <a href="video/plus-teaser.mp4?v=043ba043a865">Download the teaser</a>.
+            </video>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="overview" class="section">
+  <div class="container is-max-desktop">
+    <div class="columns is-centered">
+      <div class="column has-text-centered">
+        <h2 class="title is-3">What is RoboMME-Plus?</h2>
+        <div class="content has-text-justified" style="font-size: 1.1rem;">
+          <p><b>RoboMME-Plus</b> tests whether models trained on <a href="index.html">RoboMME</a> can use their memory skills under more demanding conditions. It retains the <b>16 tasks</b> across Counting, Permanence, Reference, and Imitation, while varying object counts, motion, occlusion, demonstration histories, and tool usage to introduce new memory-augmented manipulation challenges.</p>
+          <p>The benchmark supports <b>zero-shot evaluation</b>, without adaptation to RoboMME-Plus data, and <b>few-shot adaptation</b> using a <a href="https://huggingface.co/datasets/Yinpei/robomme_ood_data_h5" target="_blank" rel="noopener noreferrer">small RoboMME-Plus training set</a>. Both settings use the same <b>800 fixed test episodes</b>, enabling consistent evaluation of direct transfer and the gains from limited adaptation data.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="task-examples" class="section" style="background-color: #f5f5f5;">
+  <div class="container is-widescreen">
+    <h2 class="title is-3 has-text-centered" style="margin-bottom: 1.5rem;">RoboMME-Plus Task Examples</h2>
+    <div class="plus-gallery-toolbar">
+      <button type="button" id="toggle-comparisons" class="plus-comparison-toggle" aria-expanded="true">Hide comparisons</button>
+      <button type="button" id="toggle-subgoals" class="plus-comparison-toggle" aria-expanded="false">Show grounded subgoals</button>
+      <label for="playback-speed">Playback <select id="playback-speed"><option value="1" selected>1×</option><option value="2">2×</option><option value="4">4×</option></select></label>
+    </div>
+    <div class="tabs-container"><div id="suite-tabs" class="task-tabs" role="tablist" aria-label="Task suite"></div></div>
+    <div id="task-panels"><p class="has-text-centered" role="status">Loading task examples…</p></div>
+    <p class="has-text-centered" style="margin-top: 1.5rem;"><a href="leaderboard.html?benchmark=plus">View the RoboMME-Plus leaderboard →</a></p>
+  </div>
+</section>
+
+<section id="dataset" class="section">
+  <div class="container is-max-desktop">
+    <h2 class="title is-3 has-text-centered">A small training set for adaptation</h2>
+    <div class="content">
+      <p>The training split contains <b>50 successful episodes</b>: three for each task, except MoveCube, which includes one for each of its five manipulation methods. Training and test seeds are disjoint within each task.</p>
+      <p>The HDF5 data contains front and wrist camera observations, robot actions, task goals, and episode information. The videos above are previews of these training episodes.</p>
+      <p><b>Adaptation protocol</b></p>
+      <ul>
+        <li>Adapt only with the released RoboMME-Plus training data or simulator interactions using the provided training seeds. Keep test episodes exclusively for evaluation.</li>
+        <li>Do not reverse-engineer the task source code to derive solutions or extract privileged information.</li>
+        <li>Keep task-specific prompting minimal; avoid detailed, hand-written solution instructions.</li>
+      </ul>
+      <p class="has-text-centered"><a class="button is-link is-rounded" href="https://huggingface.co/datasets/Yinpei/robomme_ood_data_h5" target="_blank" rel="noopener noreferrer">Get the training data on Hugging Face <span aria-hidden="true">↗</span></a></p>
+      <p class="has-text-centered"><a href="https://huggingface.co/collections/Yinpei/robomme-ood" target="_blank" rel="noopener noreferrer">Browse the RoboMME-Plus collection →</a></p>
+    </div>
+  </div>
+</section>
+
+<section id="evaluation" class="section plus-evaluation">
+  <div class="container is-max-desktop">
+    <h2 class="title is-3 has-text-centered">Evaluate your model</h2>
+    <div class="plus-protocols">
+      <article><h3>Zero-shot transfer</h3><p>Evaluate a RoboMME-trained model directly on the RoboMME-Plus test split, without using RoboMME-Plus training examples.</p></article>
+      <article><h3>Few-shot adaptation</h3><p>Adapt using the RoboMME-Plus training examples or by interacting with the simulator using the training seeds, then evaluate on the same test split.</p></article>
+    </div>
+    <div class="content">
+      <p>Results use two leaderboard tracks: <b>Standard</b> for open-source models and <b>Agentic</b> for methods using proprietary frontier models.</p>
+      <p>Use the RoboMME simulator setup and the <code>robomme_plus</code> environment builder. All <b>16 tasks × 50 test episodes</b> support <code>joint_angle</code>, <code>ee_pose</code>, and <code>waypoint</code> actions.</p>
+      <details class="plus-code-example" open>
+        <summary>Minimal evaluation loop</summary>
+        <pre><code>from robomme_plus import BenchmarkEnvBuilder
+
+builder = BenchmarkEnvBuilder(
+    "VideoRepick", dataset="test", action_space="joint_angle"
+)
+env = builder.make_env_for_episode(0)
+try:
+    obs, info = env.reset()
+    task_goal = info["task_goal"][0]
+    while True:
+        action = policy.predict(obs, task_goal,
+                                error_message=info.get("error_message"))
+        obs, reward, terminated, truncated, info = env.step(action)
+        if terminated or truncated:
+            success = info.get("status") == "success"
+            break
+finally:
+    env.close()</code></pre>
+        <p>Implement <code>policy.predict</code> for your model. Keep the demonstration frames returned by reset. Observation fields are lists; the last item is the current sample.</p>
+      </details>
+      <div class="plus-resource-links">
+        <a href="https://github.com/RoboMME/robomme_benchmark" target="_blank" rel="noopener noreferrer">Code and installation ↗</a>
+        <a href="https://github.com/RoboMME/robomme_benchmark/blob/main/doc/submission/model_example_plus.md" target="_blank" rel="noopener noreferrer">Submission template ↗</a>
+        <a href="https://huggingface.co/collections/Yinpei/robomme-ood" target="_blank" rel="noopener noreferrer">Hugging Face collection ↗</a>
+        <a href="leaderboard.html?benchmark=plus">RoboMME-Plus leaderboard →</a>
+      </div>
+    </div>
+  </div>
+</section>
+<section id="citation" class="section">
+  <div class="container is-max-desktop">
+    <h2 class="title is-3 has-text-centered">Citation</h2>
+    <div class="content">
+      <p>If you find RoboMME-Plus useful, please cite:</p>
+      <pre><code>@article{dai2026robommeplus,
+  title = {{RoboMME-Plus}: Benchmarking Robot Memory under More Demanding Conditions},
+  author = {Dai, Yinpei and Fu, Hongze and Liu, Yuejiang and Finn, Chelsea and Fazeli, Nima and Chai, Joyce},
+  journal = {robomme.github.io},
+  year = {2026},
+  month = {October}
+}</code></pre>
+    </div>
+  </div>
+</section>
+</main>
+
+<footer class="footer">
+  <div class="container"><div class="content has-text-centered">
+    <p><a href="index.html">RoboMME</a> · <a href="plus.html">RoboMME-Plus</a> · <a href="leaderboard.html?benchmark=plus">Leaderboard</a></p>
+    <p>Website template borrowed from <a href="https://github.com/nerfies/nerfies.github.io">Nerfies</a>.</p>
+  </div></div>
+</footer>
+<noscript><p class="has-text-centered">JavaScript is needed to display task examples.</p></noscript>
+</body>
+</html>
