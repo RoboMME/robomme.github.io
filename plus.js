@@ -435,7 +435,7 @@
     carousel.append(intro, samples, controls, comparisonSlot);
     cardObserver.observe(introContent);
     cardObserver.observe(comparison);
-    showSample(0);
+    showSample(Math.max(0, task.samples.findIndex(sample => sample.difficulty === 'medium')));
     return carousel;
   }
 

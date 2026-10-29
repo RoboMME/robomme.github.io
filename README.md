@@ -84,6 +84,7 @@ and the [Hugging Face collection](https://huggingface.co/collections/Yinpei/robo
   RoboMME-Plus-finetuned FrameSamp variants are excluded. The snapshot note is retained
   in the JSON for provenance and is not displayed on the leaderboard.
 - **Samples:** each task shows one video at a time in the two-column card layout.
+  Tasks open on their Medium example by default; MoveCube opens on its first method.
   Arrows cycle through three examples, or all five methods for MoveCube.
   The selected episode's instruction appears above the video. Below it, sample
   labels include Easy, Medium, or Hard, and the comparison shows only that level's
