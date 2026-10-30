@@ -64,7 +64,7 @@
         <div class="column is-narrow"><div class="stat-card"><div class="stat-value" id="stat-models">—</div><div class="stat-label" id="stat-models-label">Models Evaluated</div></div></div>
       </div>
 
-      <p class="has-text-centered" id="data-update">(Data updated on 10/21/2026)</p>
+      <p class="has-text-centered" id="data-update">(Data updated on 10/30/2026)</p>
       <!-- <div class="has-text-centered" style="margin-top:1.5rem;">
         <a href="#" class="button is-link is-rounded is-light" style="margin:0.25rem;"><span class="icon"><i class="fas fa-file-pdf"></i></span><span>Paper</span></a>
         <a href="https://github.com/RoboMME/robomme_benchmark" class="button is-link is-rounded is-light" target="_blank" style="margin:0.25rem;"><span class="icon"><i class="fab fa-github"></i></span><span>Benchmark Code</span></a>
@@ -621,6 +621,24 @@ var RESULTS = {
         "VideoUnmask": 0.9400, "ButtonUnmask": 1.0000, "VideoUnmaskSwap": 0.9600, "ButtonUnmaskSwap": 0.9800,
         "PickHighlight": 0.9800, "VideoRepick": 1.0000, "VideoPlaceButton": 1.0000, "VideoPlaceOrder": 0.9800,
         "MoveCube": 0.5400, "InsertPeg": 0.9200, "PatternLock": 1.0000, "RouteStick": 0.9400
+      }
+    },
+    {
+      "name": "Astra-Guide (Chen et al.)",
+      "model_type": "Agent+VLA",
+      "api_cost": {"total_usd": 3000, "note": "Maintainer-provided total API spending for this RoboMME evaluation: US$3,000."},
+      "training_compute": {"gpu": "A40", "gpus": 4, "hours": [72, 72], "approximate": true, "note": "Reuses the official GroundSG pi0.5 checkpoint at step 79,999 (policy training: approximately 3 days on 4 A40 GPUs). The harness introduces no additional model-weight training; experience is revised across evaluation episodes with fixed weights.", "source": "https://github.com/RoboMME/robomme_benchmark/blob/3818966a5b2adffcd39e2b98b262a76e97648218/doc/submission/astra-guide-vla.md", "policy_source": "https://arxiv.org/html/2603.04639"},
+      "tags": ["proprietary_model"],
+      "total_size": "N/A",
+      "size_note": "Combines the proprietary GPT-6 Astra API model with the GroundSG pi0.5 policy. Astra's parameter count is not publicly reported, so the total is unavailable.",
+      "link": "https://legend717.github.io/astra-guide-vla-website/",
+      // 777/800 successes, single test run (50 episodes per task); 1,300 control-step limit, hybrid joint_angle / ee_pose control, no oracle subgoals or multi_choice.
+      // Submission: https://github.com/RoboMME/robomme_benchmark/pull/23
+      "tasks": {
+        "BinFill": 0.9600, "PickXtimes": 1.0000, "SwingXtimes": 0.9600, "StopCube": 0.9600,
+        "VideoUnmask": 1.0000, "ButtonUnmask": 1.0000, "VideoUnmaskSwap": 0.9800, "ButtonUnmaskSwap": 0.9200,
+        "PickHighlight": 1.0000, "VideoRepick": 1.0000, "VideoPlaceButton": 0.9800, "VideoPlaceOrder": 0.9000,
+        "MoveCube": 1.0000, "InsertPeg": 0.9000, "PatternLock": 1.0000, "RouteStick": 0.9800
       }
     },
     {
@@ -1343,7 +1361,7 @@ var RESULTS = {
       ? (updatedAt && Number.isFinite(updatedAt.getTime())
           ? '(Data updated on ' + updatedAt.toLocaleDateString('en-US', { timeZone: 'UTC', month: '2-digit', day: '2-digit', year: 'numeric' }) + ')'
           : '')
-      : '(Data updated on 10/21/2026)';
+      : '(Data updated on 10/30/2026)';
 
     sortRows(rows);
 
