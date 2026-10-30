@@ -802,7 +802,7 @@ var RESULTS = {
     document.getElementById('leaderboard-emoji').innerHTML = plus ? plusTrophy : '🏆';
     document.getElementById('leaderboard-name').textContent = plus ? 'RoboMME-Plus' : 'RoboMME';
     document.getElementById('leaderboard-subtitle').textContent = plus
-      ? 'Evaluating robotic memory under more demanding conditions'
+      ? 'Benchmarking memory generalization for robot policies'
       : 'Benchmarking memory-augmented robotic generalist policies';
     document.getElementById('results-emoji').textContent = plus ? '🧗' : '📊';
     document.getElementById('lb-table').setAttribute('aria-label', plus ? 'RoboMME-Plus model success rates' : 'RoboMME model success rates');
@@ -812,7 +812,7 @@ var RESULTS = {
     document.getElementById('stat-models').textContent = D.models.filter(function(model) { return model.name !== 'Human Performance'; }).length;
     document.getElementById('stat-models-label').textContent = 'Models Evaluated';
     if (plus) {
-      document.getElementById('benchmark-about').innerHTML = 'RoboMME-Plus benchmarks robot memory under more demanding conditions across <b>16 tasks</b> in four suites. Explore the <a href="plus.html#task-examples">task examples</a>.';
+      document.getElementById('benchmark-about').innerHTML = 'RoboMME-Plus benchmarks memory generalization for robot policies across <b>16 tasks</b> in four suites. Explore the <a href="plus.html#task-examples">task examples</a>.';
       document.getElementById('benchmark-evaluation').innerHTML = 'Test <b>zero-shot transfer (ZS)</b> or <b>few-shot adaptation (FS)</b> on <b>800 episodes</b>, with 50 per task. Report each setting separately.';
       document.getElementById('submit').textContent = 'Submit';
       document.getElementById('benchmark-submit').innerHTML = 'Use the <a href="https://github.com/RoboMME/robomme_benchmark/blob/main/doc/submission/model_example_plus.md" target="_blank" rel="noopener noreferrer">submission template</a> to report per-task scores and your ZS or FS setting. Submit a <a href="https://github.com/RoboMME/robomme_benchmark/pulls" target="_blank" rel="noopener noreferrer">pull request</a>.';
