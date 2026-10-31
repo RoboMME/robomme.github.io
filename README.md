@@ -11,6 +11,12 @@ python3 scripts/serve_preview.py --port 8851
 
 The preview server supports byte-range requests so video seeking works locally.
 
+The RoboMME-Plus **Blog** button opens `blog/`. Preview it at
+<http://localhost:8851/blog/> using the same server. The folder includes the article,
+interactive figures, data, logos, and compressed rollout videos as local files.
+To refresh it from the blog source without committing or pushing, run
+`python3 /home/daiyp/robomme/scripts/blog/publish_github_io.py`.
+
 For a public RoboMME-Plus preview, run `python3 scripts/serve_preview.py --bind 127.0.0.1
 --port 8852 --public-plus`, then point a Cloudflare tunnel at
 `http://127.0.0.1:8852`. This mode opens directly on RoboMME-Plus and serves only

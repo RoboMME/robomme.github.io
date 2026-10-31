@@ -1,0 +1,291 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Do RoboMME Policies Generalize to RoboMME? RoboMME-Plus: Benchmarking Memory Generalization for Robot Policies</title>
+<meta name="description" content="Memory-augmented policies now exceed human performance on RoboMME. RoboMME-Plus tests whether their memory generalizes beyond the conditions they were trained on.">
+<link rel="icon" href="data:,">
+<link rel="stylesheet" href="rollout_player.css?v=dd9783b1d5">
+<link rel="stylesheet" href="style.css?v=48e0ffada5">
+</head>
+<body>
+<header class="hero">
+  <h1>Do RoboMME Policies Generalize to RoboMME?</h1>
+  <p class="subtitle">RoboMME-Plus: Benchmarking Memory Generalization for Robot Policies</p>
+  <div class="byline">
+    <span class="author"><a href="https://yinpeidai.github.io/" target="_blank" rel="noopener">Yinpei Dai</a><sup>1</sup></span>,
+    <span class="author"><a href="https://hongzefu.github.io/" target="_blank" rel="noopener">Hongze Fu</a><sup>1</sup></span>,
+    <span class="author"><a href="https://sites.google.com/view/yuejiangliu/home" target="_blank" rel="noopener">Yuejiang Liu</a><sup>2</sup></span>,
+    <span class="author"><a href="https://ai.stanford.edu/~cbfinn/" target="_blank" rel="noopener">Chelsea Finn</a><sup>2</sup></span>,
+    <span class="author"><a href="https://www.mmintlab.com/people/nima-fazeli/" target="_blank" rel="noopener">Nima Fazeli</a><sup>1</sup></span>,
+    <span class="author"><a href="https://web.eecs.umich.edu/~chaijy/" target="_blank" rel="noopener">Joyce Chai</a><sup>1</sup></span>
+  </div>
+  <div class="affiliations"><span><sup>1</sup>University of Michigan</span><span><sup>2</sup>Stanford University</span></div>
+  <p class="lede">Memory is essential for long-horizon robotic manipulation, helping robots recall object locations, track
+    task progress, avoid repeating mistakes, and learn new tasks from video demonstrations. RoboMME
+    <cite data-ref="2603.04639"></cite> was designed to evaluate these capabilities. In less than eight months, its best
+    reported success rate has risen from 44.5% to 97.0%, exceeding the reported human baseline of 90.5%.</p>
+  <p class="lede">But how much of this progress carries over when task conditions change? Our pilot studies reveal two
+    gaps: fine-tuned policies struggle beyond their training ranges, while a strong proprietary model transfers better but
+    falters under precise timing, dynamic scenes, occlusion, and limited interaction.</p>
+  <p class="lede">These findings motivate <b>RoboMME-Plus</b>, a more challenging extension that retains RoboMME’s 16 tasks and
+    interfaces while making success harder to achieve. Fine-tuned policies achieving up to 88% success on
+    RoboMME fall below 3% without adaptation, while even the strongest Astra-based policy achieves only 35.3% success.
+    These results highlight the need for memory-augmented policies that generalize to more challenging memory-dependent
+    settings.</p>
+</header>
+
+<nav class="toc" aria-label="Contents"></nav>
+<main class="wrap">
+
+<!-- ================================================================ MOTIVATION -->
+<section id="motivation">
+  <div class="part-label">Motivation</div>
+  <h2>1. The current state of the RoboMME benchmark</h2>
+  <p>RoboMME evaluates robot memory through 16 tasks across four suites: <b>Counting</b> tests memory for repeated
+    actions and events; <b>Permanence</b> tests tracking objects once they are hidden; <b>Reference</b> tests which objects were
+    indicated earlier; and <b>Imitation</b> tests how demonstrated actions were reproduced. Together, these tasks assess
+    whether policies can use past information to guide current actions.</p>
+  <p>Since its release, the benchmark has supported steady progress across a variety of memory-augmented policies (Figure 1). As leading methods approach its
+    performance ceiling, a natural question emerges:</p>
+  <p class="key-question">Can these policies generalize their memory capabilities beyond their training conditions?</p>
+  <div class="card" data-card="timeline"></div>
+</section>
+
+<!-- ================================================================ FINE-TUNED -->
+<section id="finetuned">
+  <h2>2. Fine-tuned policies: limited generalization</h2>
+  <p>We begin with SimpleMemVLA <cite data-ref="2609.05533"></cite>, the strongest open-source policy on the
+    leaderboard. Its approach to memory modeling is surprisingly simple: fine-tune a Qwen3.5-4B VLM to draw directly on
+    native video history, without dedicated memory design. The VLM predicts subgoals, and their hidden representations
+    guide a DiT-based action expert. After 2,560 H100 GPU-hours of training, the policy achieves 88% overall success,
+    including 100% on the PickXtimes task.</p>
+  <p>To probe its generalization, we retain the original RoboMME scenes but extend task parameters beyond their
+    training ranges, evaluating each setting over 10 episodes. Figure 2 reveals clear limits. On PickXtimes, the policy succeeds in every episode
+    requiring up to five repetitions but fails when more are required. Its predicted subgoals never advance past “for the
+    fifth time,” matching the largest count in the training data (Figure 2, top).</p>
+  <p>Similarly, on PickHighlight, it solves 27 of
+    30 episodes within the training range, where 1–3 cubes are highlighted among 3–6 total cubes. When 4–6
+    cubes are highlighted among 8–12 total cubes, it solves only 4 of 30 episodes, with predicted subgoals rarely advancing
+    beyond “the third highlighted cube” (Figure 2, middle).</p>
+  <p>On VideoUnmaskSwap, the robot sees a cube revealed under one of four containers, then watches the containers swap
+    positions before lifting the one that hides it. SimpleMemVLA solves 28 of 30 episodes with 1–3 swaps, as in training,
+    but only 9 of 30 with 4–6 swaps, falling to 1 of 10 with 6 swaps (Figure 2, bottom). In 20 of its 21 failures beyond the
+    training range, it lifts the container standing where the cube was first revealed, as if the swaps had not
+    happened.</p>
+  <div class="card" data-card="sweeps"></div>
+  <p>These results indicate that the policy’s ability to count and track objects remains bounded by its training data.
+    Despite extensive fine-tuning, it struggles to apply these capabilities beyond training conditions, even with familiar setups. Other fine-tuned
+    policies, including FrameSamp+Modul <cite data-ref="2603.04639"></cite> and PonderPounce
+    <cite data-ref="2608.24115"></cite>, show similar limitations (Figure 2b). Together, these findings suggest that high
+    success within the training distribution may reflect learned task patterns rather than generalizable memory
+    capabilities.</p>
+  <details class="more" id="fig2b">
+    <summary>See results for more models</summary>
+    <div class="card" data-card="sweeps-all"></div>
+  </details>
+</section>
+
+<!-- ================================================================ ASTRA -->
+<section id="astra">
+  <h2>3. Proprietary policies: strong transfer, remaining challenges</h2>
+  <p>Large proprietary models offer a different route. Embodied Astra <cite data-ref="2610.17350"></cite> prompts
+    GPT-6-Astra with the full image history, robot state, and camera calibration to generate reasoning and end-effector
+    waypoints directly. Without task-specific fine-tuning, it achieves 92.1% success on RoboMME, exceeding the
+    <span class="note" tabindex="0" data-note="note-human">reported human baseline</span> of 90.5%.</p>
+  <p>On the <a href="#fig2b" class="show-link" data-show="sweeps-all" data-task="PickXtimes" data-method="embodied-astra"
+    data-setting="n9">same out-of-range tests</a>, Embodied Astra succeeds in 91 of 100 episodes, showing strong transfer
+    within these tabletop settings. But this capability comes with practical constraints: Astra is unavailable for downstream
+    fine-tuning, and a full RoboMME evaluation costs approximately $300 and takes around 40 hours with a single worker. Its undisclosed model
+    size also limits direct comparison with smaller open-source policies.</p>
+  <p>Beyond these practical constraints, Astra’s success raises a broader question: How reliable are its capabilities under
+    more demanding manipulation conditions? Our experiments reveal limitations in four settings: (1) <b>time-sensitive
+    tasks</b>, where the robot must act at the right moment based on remembered events; (2) <b>continuous scene changes</b>,
+    where it must track target identities as objects move; (3) <b>occlusion</b>, where it must establish and remember target
+    associations despite partial observations; and (4) <b>interaction-limited tasks</b>, where it must learn from previous
+    attempts with few opportunities for correction. The following studies examine each challenge in detail.</p>
+
+  <h3 id="challenge-timing">Challenge 1: Time-sensitive tasks</h3>
+  <p>StopCube is a time-sensitive task in RoboMME, where the robot must press a button when a moving cube reaches a
+    target for the k-th time. Success requires both remembering the number of passes and acting at the critical moment. Fine-tuned open-source policies perform
+    well: SimpleMemVLA reaches 92% success, PonderPounce <cite data-ref="2608.24115"></cite> 83%, and T²Mem
+    <cite data-ref="2609.36720"></cite> 70%. However, Astra reaches only 54%.</p>
+  <p>On inspection, Astra often counts the passes correctly in its reasoning but misses the 0.4–0.8-second window for pressing the
+    button. It sometimes oscillates above the button while waiting, then moves closer as the critical moment approaches,
+    but this strategy can trigger premature presses (Figure 3). These failures highlight the gap
+    between remembering events correctly and acting on them at the right time.</p>
+  <div class="card" data-card="stopcube"></div>
+
+  <h3 id="challenge-motion">Challenge 2: Continuous scene changes</h3>
+  <p>In VideoRepick, the robot watches a demonstration to identify a cube, then picks it up a specified number of times.
+    In the original condition, the cubes swap positions 0–2 times at the end of the demonstration and then remain
+    stationary.</p>
+  <p>To test continuous tracking, we instead keep the cubes moving throughout the demonstration. Both conditions use the
+    same initial layouts, with 3–7 identical cubes, running 10 episodes per count under each condition. Astra succeeds in all
+    50 original-condition episodes but only 25 of 50 with continuous motion, falling to 2 of 10 with N=7 cubes
+    (Figure 4).</p>
+  <div class="card" data-card="repick"></div>
+  <p>VideoPlaceOrder shows a similar pattern. The robot must place a cube on the ring it visited at a requested step of the demonstration. We
+    compare the original condition, with at most one ring swap at the end, against continuous swaps throughout the
+    demonstration. With 3–7 rings and 10 episodes per count under each condition, success falls from 50 of 50 to 27 of 50,
+    including just 3 of 10 with N=7 continuously swapping rings (Figure 5). Placements remain spatially accurate, but
+    target identities are lost.</p>
+  <div class="card" data-card="placeorder"></div>
+
+  <h3 id="challenge-occlusion">Challenge 3: Occlusion</h3>
+  <p>Real scenes often obscure task-relevant objects, requiring robots to combine viewpoints and remember earlier
+    observations. In VideoUnmask, the robot watches colored cubes being simultaneously covered by containers, then lifts
+    the containers hiding the requested colors in order. Some containers are empty, and no other cube shares a target’s
+    color. The original task provides an unobstructed front view of the cubes before they are covered. To stress-test
+    Astra under partial observability, we introduce a fence that obscures at least half of each target cube from this
+    view without fully hiding any target.</p>
+  <p>We compare identical layouts with and without the fence across five container-count ranges, from 6–10 to 26–30,
+    with 2–4 targets per episode and 10 episodes per range. Astra succeeds in all 50 episodes without the fence but only 40 of 50
+    with it (Figure 6). In nine of the ten failures, it lifts a container that does not hide the requested cube, revealing
+    difficulty in establishing or retaining the correct target–container association under occlusion.</p>
+  <div class="card" data-card="occlusion"></div>
+
+  <h3 id="challenge-interaction">Challenge 4: Interaction-limited tasks</h3>
+  <p>Astra often recovers by correcting its actions repeatedly. In MoveCube, it can replan and push again when a cube
+    deviates from its intended path (Figure 7, left). But can it use a failed attempt to improve the next when continuous
+    correction is unavailable?</p>
+  <p>We test a variant in which the robot must roll a ball into the cube. Once released, the ball cannot be redirected.
+    We allow two attempts, giving Astra one opportunity to use the first trajectory to adjust its aim or release.</p>
+  <p>Astra succeeds in only 2 of 10 episodes (Figure 7, right). This result exposes a challenge beyond recalling
+    execution history: using that history to make an effective action adjustment within a limited number of attempts.
+    Both successes come on the second attempt; no first attempt succeeds.</p>
+  <div class="card" data-card="movecube"></div>
+
+  <!-- Challenge 5 (precise manipulation, InsertPeg): hidden for now, kept for later.
+  <h3 id="challenge-precision">Challenge 5: Precise manipulation</h3>
+  <p>Beyond memory, our evaluation also reveals a broader limitation of Astra: precise manipulation. On the original
+    InsertPeg task, Astra achieves 92% success, compared
+    to 54% for the best fine-tuned robot policy. Its advantage appears largely strategic: Astra maintains its grasp and
+    repeatedly repositions the peg, while fine-tuned policies often release it after a single insertion attempt.</p>
+  <p>This persistence works well with the original 34 mm hole and 20 mm peg. As we narrow the hole from 34 mm to 21 mm,
+    however, Astra’s success falls from 10 of 10 episodes to just 2 of 10 (Figure 8). Although the demonstrated grasp
+    keeps the peg’s free end visible in the wrist camera, Astra repeatedly presses it against the surface around the hole
+    until time runs out. These failures suggest that persistence alone is insufficient when insertion requires finer
+    alignment.</p>
+  <div class="card" data-card="insertpeg"></div>
+  -->
+</section>
+
+<!-- ================================================================ DESIGN -->
+<section id="design">
+  <h2>4. Designing RoboMME-Plus</h2>
+  <p>Our out-of-range tests expose generalization limits in fine-tuned policies that Astra largely overcomes, while Section 3
+    reveals challenges that remain even for Astra. RoboMME-Plus combines these findings into a benchmark for memory-guided
+    behavior under more demanding conditions. It retains RoboMME’s 16 tasks, four suites, observation format, and action
+    spaces, allowing direct evaluation of existing policies, and introduces four types of variation:</p>
+  <ol>
+    <li><b>Larger counts and more objects.</b> Higher repetition counts, more distractors, and more goal objects test
+      counting and tracking beyond the original training ranges.</li>
+    <li><b>Continuous motion and tighter timing.</b> Moving targets, conveyor belts, and swapping containers and rings
+      test tracking during demonstrations and execution. Shorter action windows require timely responses to remembered
+      events.</li>
+    <li><b>Partial observability.</b> Barriers obscure task-relevant objects from the front camera, requiring policies to
+      combine front and wrist views with earlier observations.</li>
+    <li><b>Limited correction.</b> Some tasks permit only two attempts and no correction after release; others end
+      immediately after errors such as a repeated button press or interaction with the wrong object. These constraints
+      test execution precision and the ability to use feedback across attempts.</li>
+  </ol>
+  <p>Figure 8 compares the original and extended tasks. All tasks have easy, medium, and hard levels except MoveCube,
+    which varies the manipulation method. Easy levels preserve the original mechanics but extend parameters beyond the
+    training ranges (variation 1). Medium and hard levels add increasingly demanding motion, timing, visibility, or
+    correction constraints (variations 2–4). The evaluation contains 800 episodes across 16 tasks, with overall success
+    reflecting combined demands on memory, perception, timing, and control. Episodes also require longer execution: the
+    oracle’s median episode length increases from 241 to 608 steps (2.5×), with the distribution shifting toward longer
+    episodes (Figure 9).</p>
+  <div class="card" data-card="design"></div>
+  <div class="card" data-card="horizon"></div>
+
+</section>
+
+<!-- ================================================================ RESULTS -->
+<section id="results">
+  <h2>5. Experimental results</h2>
+  <p>We evaluate six methods on all 800 test episodes:</p>
+  <ul>
+    <li><b>FrameSamp+Modul</b> (MME-VLA) <cite data-ref="2603.04639"></cite>: trained on RoboMME with a batch size of 64 for
+      80k steps, requiring approximately 300 A40 GPU-hours.</li>
+    <li><b>SimpleMemVLA</b> <cite data-ref="2609.05533"></cite>: trained on RoboMME for 20 hours using 128 H100 GPUs,
+      totaling 2,560 H100 GPU-hours.</li>
+    <li><b>PonderPounce</b> <cite data-ref="2608.24115"></cite>: the released 9B checkpoint, pairing a Qwen3.5-9B planner
+      that retains the full episode history with a π0.5 <cite data-ref="2504.16054"></cite> controller fine-tuned on
+      RoboMME.</li>
+    <li><b>3-tier Astra</b> <cite data-ref="astra-on-robomme"></cite>: GPT-6-Astra plans grounded subtasks, a small
+      vision-language model checks completion, and a π0.5-based VLA executes them.</li>
+    <li><b>Embodied Astra</b> <cite data-ref="2610.17350"></cite>: GPT-6-Astra predicts end-effector waypoints, which
+      RoboMME’s motion planner executes.</li>
+    <li><b>One-shot Embodied Astra</b>: Embodied Astra with one in-context training example.</li>
+  </ul>
+  <p>The first five methods are evaluated zero-shot, while one-shot Embodied Astra receives a single in-context example
+    from the RoboMME-Plus training set. We leave few-shot fine-tuning of open-source policies on the 50
+    RoboMME-Plus demonstrations to future work.</p>
+  <div class="card" data-card="results"></div>
+  <div class="card" data-card="overall"></div>
+  <p>Table 1 reports per-task success rates; Table 2 summarizes overall success, runtime, and API cost. Three findings
+    stand out.</p>
+  <ol>
+    <li><b>Fine-tuned policies transfer poorly.</b> SimpleMemVLA falls from 88.3% on RoboMME to 2.0% on RoboMME-Plus,
+      FrameSamp+Modul from 44.5% to 2.8%, and PonderPounce from 60.8% to 2.9%. High performance on the original
+      benchmark carries over only minimally without adaptation.</li>
+    <li><b>Astra’s transfer has clear limits.</b> Embodied Astra falls from 92.1% on RoboMME to 22.6% on RoboMME-Plus.
+      It succeeds on 59% of easy episodes but only 10% of hard ones, and reaches just 2% on VideoUnmaskSwap. Its strong
+      performance on the initial out-of-range tests does not extend to the full range of challenges.</li>
+    <li><b>One example helps, but selectively.</b> One-shot Embodied Astra reaches 35.3% overall, a gain of 12.6
+      percentage points. The largest improvements occur on SwingXtimes (28% → 98%), ButtonUnmask (34% → 94%), and
+      PickXtimes (56% → 84%), suggesting that an example can clarify an effective strategy. But it does not improve
+      VideoUnmaskSwap, VideoRepick, VideoPlaceOrder, or RouteStick, where tracking or execution remains challenging.</li>
+  </ol>
+</section>
+
+<!-- ================================================================ FORWARD -->
+<section id="forward">
+  <h2>6. Looking forward</h2>
+  <p>RoboMME-Plus shifts the focus from remembering in familiar settings to using memory reliably under more demanding
+    conditions. Our findings point to four promising directions:</p>
+  <ul>
+    <li><b>Memory discovery</b> <cite data-ref="memi"></cite> to learn which information to retain
+      and how to update it.</li>
+    <li><b>Self-improving agents</b> <cite data-ref="2607.00272, 2610.12424"></cite> that refine their strategies through
+      simulator interaction on the provided training seeds.</li>
+    <li><b>World models</b> <cite data-ref="2608.27549, 2610.07922"></cite> that anticipate scene changes and guide
+      precisely timed actions.</li>
+    <li><b>Hybrid systems</b> that combine high-level reasoning and recovery planning with responsive VLA control.</li>
+  </ul>
+  <p>We hope RoboMME-Plus helps reveal where current memory-augmented policies fall short and advances robots that can
+    turn remembered experience into reliable action.</p>
+</section>
+
+<!-- ================================================================ CITATION -->
+<section id="citation">
+  <h2>Citation</h2>
+  <p>If you find this blog useful, please cite:</p>
+  <div class="bib-wrap"><button type="button" class="bib-copy" aria-label="Copy BibTeX">Copy</button><pre class="bib">@article{dai2026robommeplus,
+  title = {{RoboMME-Plus}: Benchmarking Memory Generalization for Robot Policies},
+  author = {Dai, Yinpei and Fu, Hongze and Liu, Yuejiang and Finn, Chelsea and Fazeli, Nima and Chai, Joyce},
+  journal = {robomme.github.io},
+  year = {2026},
+  month = {October},
+  url = {https://robomme.github.io/blog/}
+}</pre></div>
+</section>
+
+<section id="references">
+  <h2>References</h2>
+  <ol class="refs" data-render="references"></ol>
+</section>
+
+</main>
+<div class="tooltip" id="tooltip" role="status" aria-live="polite"></div>
+<!-- text of the hover notes (class="note" data-note="<id>") -->
+<div hidden id="note-human">In our human study, participants could watch the video demonstration <b>only once</b>, while the latest
+  policies on RoboMME often keep the full history in context, which may make the comparison unfair.</div>
+<script src="data/bundle.js?v=7396ab1a06"></script>
+<script src="rollout_player.js?v=1fc84c51ce"></script>
+<script src="app.js?v=0d61dc03c7"></script>
+</body>
+</html>

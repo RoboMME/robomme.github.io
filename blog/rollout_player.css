@@ -1,0 +1,198 @@
+/* Rollout player (design B): phase badge top-left (demonstration only), the subgoal in a band over the table at the
+   bottom, red frame while the demonstration plays, and a coloured timeline with a draggable playhead. */
+.rp { --rp-demo: #d93a2b; --rp-w: 340px; width: min(100%, var(--rp-w)); margin: 0 auto; font-size: 13.5px; }
+.rp-video { position: relative; width: 100%; aspect-ratio: 1; border-radius: 8px; overflow: hidden; background: #111;
+  outline: 4px solid transparent; outline-offset: -4px; transition: outline-color 0.15s; }
+.rp-video.demo { outline-color: var(--rp-demo); }
+.rp-video video { width: 100%; height: 100%; display: block; object-fit: cover; cursor: pointer; }
+.rp-phase { position: absolute; top: 9px; z-index: 2; display: inline-flex; align-items: center; gap: 6px; padding: 2px 10px;
+  border-radius: 999px; font-size: 13px; font-weight: 650; letter-spacing: 0.03em; line-height: 1.6; }
+.rp-phase { left: 9px; text-transform: uppercase; background: rgba(255, 255, 255, 0.93); color: #30343b; }
+.rp-phase::before { content: ""; width: 7px; height: 7px; border-radius: 50%; background: currentColor; }
+.rp-video.demo .rp-phase { background: var(--rp-demo); color: #fff; }
+.rp-band { position: absolute; left: 0; right: 0; bottom: 0; z-index: 2; padding: 30px 12px 11px; color: #fff; text-align: left; line-height: 1.38; font-size: 17px;
+  background: linear-gradient(rgba(0, 0, 0, 0), rgba(0, 0, 0, 0.74) 45%); pointer-events: none; }
+.rp-band b { font-size: 12px; font-weight: 700; letter-spacing: 0.07em; text-transform: uppercase; opacity: 0.75; margin-right: 6px; }
+.rp-band .none { opacity: 0.7; font-style: italic; }
+.rp-timeline { position: relative; height: 16px; margin-top: 7px; cursor: pointer; touch-action: none; }
+.rp-timeline .seg { position: absolute; top: 5px; height: 6px; }
+.rp-timeline .seg.demo { background: #f0a39b; border-radius: 3px 0 0 3px; }
+.rp-timeline .seg.exec { background: #c3c9d2; border-radius: 0 3px 3px 0; }
+.rp-timeline .seg.only { border-radius: 3px; }
+.rp-timeline .head { position: absolute; top: 0; width: 3px; height: 16px; margin-left: -1.5px; border-radius: 2px; background: #30343b; }
+.rp-timeline:hover .head, .rp-timeline.drag .head { width: 4px; margin-left: -2px; }
+.rp-video.demo .rp-band { display: none; }  /* no subgoal while the demonstration plays */
+
+/* subgoal style variants: <div class="rp band-<style>"> (default: dark) */
+.rp.band-white .rp-band { background: rgba(255, 255, 255, 0.95); color: #141414; padding: 9px 12px 10px; }
+.rp.band-card .rp-band { left: 10px; right: 10px; bottom: 10px; border-radius: 8px; background: rgba(255, 255, 255, 0.95); color: #141414;
+  padding: 8px 11px 9px; box-shadow: 0 2px 10px rgba(0, 0, 0, 0.28); }
+.rp.band-label .rp-band { left: 50%; right: auto; bottom: 10px; transform: translateX(-50%); width: max-content; max-width: calc(100% - 20px);
+  border-radius: 8px; background: rgba(255, 255, 255, 0.95); color: #141414; padding: 6px 12px 7px; text-align: center;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.25); }
+.rp.band-outline .rp-band { background: none; padding: 0 12px 12px; text-align: center; font-weight: 600;
+  text-shadow: 0 0 3px #000, 0 0 3px #000, 0 1px 2px #000; }
+.rp.band-white .rp-band b, .rp.band-card .rp-band b, .rp.band-label .rp-band b { color: #656d77; opacity: 1; }
+.rp.band-white .rp-band .none, .rp.band-card .rp-band .none, .rp.band-label .rp-band .none { color: #656d77; opacity: 1; }
+.rp-video:not(.demo) .rp-phase { display: none; }  /* phase text only while the demonstration plays */
+.rp-goal { display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 5; line-clamp: 5; overflow: hidden; }  /* at most five lines, then … */
+/* under the video: ‹ Sample i (outcome) › */
+.rp-nav { display: flex; align-items: center; justify-content: center; gap: 10px; margin-top: 4px; font-size: 15.5px; color: var(--ink, #30343b); }
+.rp-arrow { font: inherit; font-size: 18px; line-height: 1; width: 28px; height: 28px; border: 1px solid var(--line, #e1e4e8); border-radius: 50%;
+  background: #fff; color: var(--accent, #0f0f70); cursor: pointer; }
+.rp-arrow:disabled { opacity: 0.35; cursor: default; }
+.rp-arrow:not(:disabled):hover { border-color: var(--accent, #0f0f70); }
+.rp-outcome { font-weight: 650; }
+.rp-label { text-align: center; line-height: 1.3; }
+.rp-model { font-weight: 650; color: var(--ink, #30343b); }
+.rp-nav.has-set .rp-model { display: block; }
+.rp-label { white-space: nowrap; }
+.rp-outcome.failure { color: #9b2c2c; }
+.rp-outcome.success { color: #1f6f3a; }
+.rp-outcome.oracle { color: #0f0f70; }
+.rp-outcome.level { color: var(--accent, #0f0f70); }
+/* speed dropdown at the top right just above a figure: <div class="card-tabs has-speed"> */
+.card-tabs.has-speed { position: relative; min-height: 34px; }
+.card-tabs.has-speed > .rp-speed { position: absolute; right: 0; top: 3px; z-index: 3; }  /* level with the first selection row */
+/* the selection rows (Task, Model, Axis) sit on the left, clear of the controls on the right */
+@media (min-width: 821px) {
+  .card-tabs.has-speed { align-items: flex-start; }
+  .card-tabs.has-speed > .tab-row { justify-content: flex-start; }
+  .card-tabs.has-speed:not(.speed-inline) > .tab-row:first-child { max-width: calc(100% - 300px); }  /* only the first row shares the line */
+  .card-tabs.has-speed > .tab-row .tabs { justify-content: flex-start; }
+}
+.rp-speed { display: inline-flex; align-items: center; gap: 16px; font-size: 14px; color: var(--muted, #656d77); }
+.rp-speed-sel, .rp-text-toggle { display: inline-flex; align-items: center; gap: 7px; cursor: pointer; }
+.rp-text-toggle input { width: 16px; height: 16px; margin: 0; accent-color: var(--accent, #0f0f70); cursor: pointer; }
+.rp-text-toggle:hover { color: var(--ink, #30343b); }
+/* the model's text band (VLM subgoal / Thought) shows only with "Subgoal prediction" ticked */
+html:not(.rp-text-on) .rp-band:not(.oracle) { display: none; }
+html:not(.rp-oracle-on) .rp-band.oracle { display: none; }  /* oracle subgoals: "Oracle subgoal" checkbox */
+html.rp-wrist-off .rp-pip { display: none; }               /* "Wrist camera" checkbox */
+html.rp-wrist-off .rp.view-pip .rp-band { right: 10px; }
+html.rp-wrist-off .rp.view-pip .rp-goal { -webkit-line-clamp: 5; line-clamp: 5; }
+.rp-speed select { font: inherit; font-size: 14.5px; padding: 3px 8px; border: 1px solid var(--line, #e1e4e8); border-radius: 6px; background: #fff; color: var(--accent, #0f0f70); cursor: pointer; }
+.rp-speed select:hover, .rp-speed select:focus-visible { border-color: var(--accent, #0f0f70); }
+@media (max-width: 820px) { .card-tabs.has-speed > .rp-speed { position: static; align-self: flex-end; } }
+/* cards whose body is a rollout player beside a chart: just tall enough for the player (video + timeline + arrows) */
+.card.rp-fit { --card-h: 494px; height: auto; min-height: var(--card-h); }  /* grows when the caption wraps */
+.card.rp-fit > .card-body { flex: 1 0 auto; min-height: 440px; }  /* the player's full height (two-line sample label included), also when the caption wraps */
+/* task goal placements: <div class="rp goal-<mode>">; always the full sentence, font fitted to its length (rollout_player.js fitGoal) */
+.rp-task { text-align: left; line-height: 1.4; color: var(--ink, #30343b); }
+.rp-task b { font-size: 0.8em; font-weight: 700; letter-spacing: 0.07em; text-transform: uppercase; color: var(--muted, #656d77); margin-right: 7px; }
+.rp-task-inner { line-height: 1.4; }
+.rp.goal-above .rp-task { font-size: 15px; margin: 0 0 7px; }
+.rp.goal-bar .rp-task { font-size: 15px; padding: 8px 12px; background: #f1f3f7; border: 1px solid var(--line, #e1e4e8); border-bottom: 0; border-radius: 8px 8px 0 0; }
+.rp.goal-bar .rp-video { border-radius: 0 0 8px 8px; }
+.rp.goal-overlay .rp-task { position: absolute; top: 10px; left: 10px; right: 10px; z-index: 2; font-size: 15px; padding: 7px 11px; border-radius: 8px;
+  background: rgba(255, 255, 255, 0.95); color: #141414; box-shadow: 0 2px 10px rgba(0, 0, 0, 0.28); }
+.rp.goal-overlay .rp-phase { top: auto; bottom: 10px; }  /* the goal card takes the top; the demo badge goes bottom-left */
+.rp.goal-quote .rp-task { font-size: 15.5px; font-style: italic; text-align: center; color: var(--muted, #656d77); margin: 0 0 8px; }
+.rp.goal-quote .rp-goal-text::before { content: "“"; } .rp.goal-quote .rp-goal-text::after { content: "”"; }
+.rp-task-chip { position: absolute; top: 10px; right: 10px; z-index: 3; font: inherit; font-size: 12.5px; font-weight: 650; letter-spacing: 0.04em;
+  padding: 2px 10px; border: 0; border-radius: 999px; background: rgba(255, 255, 255, 0.93); color: var(--accent, #0f0f70); cursor: pointer; }
+.rp.goal-chip .rp-task { position: absolute; top: 42px; left: 10px; right: 10px; z-index: 3; font-size: 15px; padding: 8px 11px; border-radius: 8px;
+  background: rgba(255, 255, 255, 0.97); color: #141414; box-shadow: 0 2px 10px rgba(0, 0, 0, 0.28);
+  opacity: 0; pointer-events: none; transition: opacity 0.12s; }
+.rp.goal-chip .rp-video:hover .rp-task, .rp.goal-chip .rp-video.show-task .rp-task { opacity: 1; }
+/* goal: button variants (pill | strip | link) - the full goal drops down over the video, which pauses and dims */
+.rp.goal-button { position: relative; }
+.rp.goal-button .rp-video::after { content: ""; position: absolute; inset: 0; z-index: 3; background: rgba(12, 14, 24, 0.35); opacity: 0; transition: opacity 0.15s; pointer-events: none; }
+.rp.goal-button.goal-open .rp-video::after { opacity: 1; }
+.rp-goal-btn { font: inherit; cursor: pointer; display: inline-flex; align-items: center; gap: 8px; color: var(--accent, #0f0f70); }
+.rp-goal-btn .ic { display: inline-flex; }
+.rp-goal-btn .caret { font-size: 11px; transition: transform 0.15s; }
+.rp-goal-btn[aria-expanded="true"] .caret { transform: rotate(180deg); }
+/* A. pill */
+.rp.goal-pill { text-align: center; }
+.rp-goal-btn.pill { margin: 0 auto 10px; padding: 6px 15px 6px 12px; font-size: 14.5px; font-weight: 600; border: 1px solid #d9daf0; border-radius: 999px;
+  background: linear-gradient(#ffffff, #f4f4fc); box-shadow: 0 1px 2px rgba(15, 15, 112, 0.08); transition: box-shadow 0.15s, border-color 0.15s; }
+.rp-goal-btn.pill:hover, .rp-goal-btn.pill[aria-expanded="true"] { border-color: var(--accent, #0f0f70); box-shadow: 0 2px 8px rgba(15, 15, 112, 0.16); }
+/* B. strip */
+.rp-goal-btn.strip { display: flex; width: 100%; margin: 0 0 9px; padding: 9px 12px; font-size: 14.5px; font-weight: 600; text-align: left;
+  border: 1px solid #dfe0f3; border-radius: 10px; background: #f5f5fc; }
+.rp-goal-btn.strip .lbl { flex: 1; }
+.rp-goal-btn.strip .state { font-size: 13px; font-weight: 600; color: var(--muted, #656d77); }
+.rp-goal-btn.strip:hover, .rp-goal-btn.strip[aria-expanded="true"] { border-color: var(--accent, #0f0f70); background: #f0f0fb; }
+/* C. link */
+.rp.goal-link { text-align: right; }
+.rp-goal-btn.link { margin: 0 2px 6px auto; padding: 2px 0; font-size: 14px; font-weight: 600; border: 0; background: none; gap: 5px; }
+.rp-goal-btn.link .lbl { text-decoration: underline dotted; text-underline-offset: 3px; }
+/* the drop-down card */
+.rp-goal-drop { position: absolute; z-index: 5; left: 0; right: 0; padding: 12px 15px 10px; font-size: 15px; line-height: 1.5; text-align: left;
+  background: #fff; color: #1d2027; border-radius: 10px; box-shadow: 0 12px 30px rgba(10, 12, 30, 0.28), 0 0 0 1px rgba(15, 15, 112, 0.08);
+  cursor: pointer; opacity: 0; transform: translateY(-6px) scale(0.98); transform-origin: top center; pointer-events: none; transition: opacity 0.16s, transform 0.16s; }
+.rp.goal-open .rp-goal-drop { opacity: 1; transform: none; pointer-events: auto; }
+.rp-goal-drop .drop-head { font-size: 11.5px; font-weight: 700; letter-spacing: 0.09em; text-transform: uppercase; color: var(--accent, #0f0f70); margin-bottom: 4px; }
+.rp-goal-drop .drop-hint { margin-top: 8px; padding-top: 7px; border-top: 1px solid #eef0f3; font-size: 12px; color: var(--muted, #656d77); }
+.rp-goal-drop.pill { top: 50px; }
+.rp-goal-drop.pill::before { content: ""; position: absolute; top: -6px; left: 50%; width: 12px; height: 12px; margin-left: -6px; background: #fff;
+  transform: rotate(45deg); box-shadow: -1px -1px 0 rgba(15, 15, 112, 0.08); }
+.rp-goal-drop.strip { top: 52px; border-left: 4px solid var(--accent, #0f0f70); }
+.rp-goal-drop.link { top: 32px; left: auto; width: min(100%, 290px); font-size: 14.5px; }
+/* D. corner: the button pinned on the video's top-right corner; the card opens under it, right-aligned */
+.rp-goal-btn.corner { position: absolute; top: 9px; right: 9px; z-index: 6; padding: 2px 10px; font-size: 13px; line-height: 1.6; font-weight: 650; gap: 5px;  /* same height as the demo badge */
+  border: 0; border-radius: 999px; background: rgba(255, 255, 255, 0.42); color: rgba(15, 15, 112, 0.78); box-shadow: none;
+  -webkit-backdrop-filter: blur(2px); backdrop-filter: blur(2px); transition: background 0.15s, color 0.15s, box-shadow 0.15s; }  /* light and see-through by default */
+.rp-goal-btn.corner:hover, .rp-goal-btn.corner:focus-visible, .rp-goal-btn.corner[aria-expanded="true"] {  /* dense on hover / while open */
+  background: #fff; color: var(--accent, #0f0f70); box-shadow: 0 2px 8px rgba(0, 0, 0, 0.25); }
+.rp-goal-btn.corner[aria-expanded="true"] { box-shadow: 0 0 0 2px var(--accent, #0f0f70), 0 2px 8px rgba(0, 0, 0, 0.25); }
+.rp-goal-drop.corner { top: 42px; left: auto; right: 9px; width: min(calc(100% - 18px), 300px); font-size: 15px; }
+.rp-goal-drop.corner::before { content: ""; position: absolute; top: -6px; right: 36px; width: 12px; height: 12px; background: #fff; transform: rotate(45deg); }
+.rp-goal-btn.corner .ic svg { width: 12px; height: 12px; }
+.rp-goal-btn.corner .caret { font-size: 10px; }
+.rp-arrow.set { font-size: 17px; border-radius: 8px; width: 32px; color: var(--muted, #656d77); }  /* « » : previous / next setting */
+.rp-arrow.set:not(:disabled):hover { color: var(--accent, #0f0f70); }
+.rp-nav .rp-arrow.set:first-child { margin-right: 2px; } .rp-nav .rp-arrow.set:last-child { margin-left: 2px; }
+.rp-goal-text strong { font-weight: 700; color: #0b0c10; }  /* goal keywords: colours, counts, ordinals */
+/* a running count on the video, top-left (e.g. StopCube passes); hidden while a demonstration plays */
+.rp-counter { position: absolute; top: 9px; left: 9px; z-index: 2; padding: 2px 10px; border-radius: 999px; font-size: 13px; line-height: 1.6;
+  font-variant-numeric: tabular-nums; background: rgba(255, 255, 255, 0.93); color: #1d2027; }
+.rp-counter b { font-weight: 650; color: var(--ink, #30343b); margin-right: 2px; }  /* e.g. the model name */
+.rp-video.demo .rp-counter { display: none; }
+.rp-tag { font-weight: 650; }
+/* callouts (sample.callouts): a caption over the paused video, and a tick on the timeline */
+.rp-callout { position: absolute; left: 50%; top: 21%; z-index: 4; transform: translate(-50%, -50%) scale(0.96); max-width: calc(100% - 40px);
+  padding: 9px 18px 10px; border-radius: 10px; background: rgba(255, 255, 255, 0.96); color: #141414; font-size: 19px; font-weight: 650; white-space: nowrap;
+  line-height: 1.3; text-align: center; box-shadow: 0 3px 16px rgba(0, 0, 0, 0.35); opacity: 0; pointer-events: none; transition: opacity 0.18s, transform 0.18s; }
+.rp-video.callout-on .rp-callout { opacity: 1; transform: translate(-50%, -50%) scale(1); }
+.rp-video.callout-on video { filter: brightness(0.8); }
+.rp-timeline .mark { position: absolute; top: 2px; width: 8px; height: 12px; margin-left: -4px; border-radius: 2px; background: #2a78d6; border: 1.5px solid #fff; box-sizing: border-box; }
+/* end of a play-through: the outcome over the last frame; the auto-opened task goal hides its "paused" hint */
+.rp-end { position: absolute; left: 50%; top: 50%; z-index: 4; transform: translate(-50%, -50%) scale(0.96); display: flex; flex-direction: column; align-items: center; gap: 6px;
+  width: max-content; max-width: calc(100% - 44px); padding: 11px 20px 12px; border-radius: 12px; background: rgba(255, 255, 255, 0.97); font-size: 21px; font-weight: 700;
+  box-shadow: 0 3px 16px rgba(0, 0, 0, 0.35); opacity: 0; pointer-events: none; transition: opacity 0.2s, transform 0.2s; }
+.rp-end-head { display: inline-flex; align-items: center; gap: 9px; white-space: nowrap; }
+.rp-end-text { font-size: 15.5px; font-weight: 450; line-height: 1.4; color: #30343b; text-align: center; }
+.rp-end .ic { display: inline-grid; place-items: center; width: 28px; height: 28px; border-radius: 50%; color: #fff; font-size: 17px; }
+.rp-end.success { color: #1f6f3a; } .rp-end.success .ic { background: #1f8a4a; }
+.rp-end.failure { color: #9b2c2c; } .rp-end.failure .ic { background: #c23b33; }
+.rp-end.oracle { color: #0f0f70; } .rp-end.oracle .ic { background: #0f0f70; }
+.rp-video.end-on .rp-end { opacity: 1; transform: translate(-50%, -50%) scale(1); }
+.rp-video.end-on video { filter: brightness(0.75); }
+.rp-video.end-on .rp-band { display: none; }
+.rp.goal-auto .drop-hint { display: none; }
+/* controls inside a selection row (Figure 2b: on the Task line), pushed to its right end */
+.card-tabs .tab-row.with-speed { width: 100%; }
+.tab-row.with-speed > .rp-speed { margin-left: auto; }
+/* front|wrist recordings: view-strip (2:1, both halves, Front | Wrist bar above) and view-pip (front + wrist inset) */
+.rp.view-strip { --rp-w: 100%; display: flex; flex-direction: column; }
+.rp.view-strip .rp-video { aspect-ratio: 2 / 1; order: 1; border-radius: 0 0 8px 8px; }
+.rp.view-strip .rp-cams { order: 0; display: grid; grid-template-columns: 1fr 1fr; padding: 4px 0; background: #eeeff4; border-radius: 8px 8px 0 0;
+  color: #55596a; font-size: 12px; font-weight: 650; letter-spacing: 0.06em; text-transform: uppercase; text-align: center; }
+.rp.view-strip .rp-cams span + span { border-left: 1px solid #d9dbe3; }
+.rp.view-strip .rp-timeline { order: 2; } .rp.view-strip .rp-nav { order: 3; }
+.rp.view-strip .rp-task, .rp.view-strip .rp-goal-btn { order: 1; }
+.rp.view-pip .rp-video video { width: 200%; max-width: none; object-fit: fill; }  /* the front half fills the square */
+.rp-pip { position: absolute; right: 9px; bottom: 9px; z-index: 3; width: 36%; aspect-ratio: 1; }
+.rp-pip canvas { display: block; width: 100%; height: 100%; box-sizing: border-box; border-radius: 7px; border: 2px solid rgba(255, 255, 255, 0.92);
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.35); background: #111; }
+/* the "Wrist" tag sits just above the inset, off the wrist image */
+.rp-pip-label { position: absolute; right: 0; bottom: calc(100% + 4px); padding: 0 7px; border-radius: 999px; background: rgba(0, 0, 0, 0.6); color: #fff;
+  font-size: 10.5px; font-weight: 650; letter-spacing: 0.06em; text-transform: uppercase; line-height: 1.7; }
+/* with the inset, the subgoal box is narrower (left of it) and may run taller: up to seven lines */
+.rp.view-pip .rp-band { right: calc(36% + 18px); }
+.rp.view-pip .rp-goal { -webkit-line-clamp: 7; line-clamp: 7; }
+/* task goal always shown in a bar above the video (goal: "bar"), tall enough for three lines so side-by-side players align */
+.rp.goal-bar .rp-task { font-size: 14.5px; min-height: calc(3 * 1.4em + 16px); display: flex; align-items: center; box-sizing: border-box; }
+.rp.goal-bar .rp-video { border-radius: 0 0 8px 8px; }
