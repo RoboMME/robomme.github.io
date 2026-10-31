@@ -492,7 +492,7 @@
       }
       return `${mon(b)} ${b.slice(0, 4)}`;  // every month with its year: Aug 2026, Sep 2026, Oct 2026
     };
-    const R = 5.5, LOGO = 13, GAP = 3;
+    const R = 5.5, GAP = 3;
     const logosOf = (p) => p.logos || (p.logo ? [p.logo] : []);
     const dot = (fill, x, y) => [
       svg("circle", { cx: x, cy: y, r: R + 1.6, fill: "rgba(30, 40, 60, 0.28)" }),  // thin outline: light dots stay visible on snow
@@ -510,17 +510,23 @@
       .forEach((p, k) => (p.order = 0.36 + 0.14 * k));
     // LogLook and Embodied Astra sit in the middle, under the summit, as a pair centred on it (LogLook left, Astra right)
     const MIDDLE = { LogLook: -1, "Embodied Astra": 1 };
+    // Near-equal summit scores need separate labels, while their markers keep their exact heights.
+    const summit = [...byDate].filter((p) => p.rate >= 0.95).sort((a, b) => b.rate - a.rate).slice(0, 2);
+    const summitSide = new Map(summit.map((p, i) => [p.name, i === 0 ? 1 : -1]));
     const tip = (p) => (evt) => {
       const r = REFS[p.paper];
       // method and its overall RoboMME success first, then the paper (or project page)
       const v = Math.round(p.rate * 10000) / 100, rate = Number.isInteger(Math.round(v * 100) / 10) ? v.toFixed(1) : v.toFixed(2);  // 97.0, 79.13
       const head = el("div", { class: "tt-rate" }, [el("b", { text: p.name }), ` · ${rate}% overall success`]);
-      showTip(evt, r ? [head, el("div", { class: "tt-title", text: r.title }), el("div", { class: "tt-head", text: r.url.replace(/^https:\/\//, "") })]
-        : [head, el("div", { class: "tt-title", text: "No paper yet" }), el("div", { class: "tt-head", text: (p.page || p.site).replace(/^https:\/\//, "") })]);
+      const details = r ? [head, el("div", { class: "tt-title", text: r.title }), el("div", { class: "tt-head", text: r.url.replace(/^https:\/\//, "") })]
+        : [head, el("div", { class: "tt-title", text: "No paper yet" }), el("div", { class: "tt-head", text: (p.page || p.site).replace(/^https:\/\//, "") })];
+      if (p.protocol_note) details.push(el("div", { class: "tt-title", text: p.protocol_note }));
+      showTip(evt, details);
     };
     const draw = () => {
       wrap.replaceChildren();
       const W = Math.max(300, wrap.clientWidth || 860), narrow = W < 600, H = narrow ? 640 : fillHeight(wrap, 360);
+      const LOGO = narrow ? 11 : 13;
       const cx = W / 2, top = 34, base = H - 6, spread = W * (narrow ? 0.7 : 0.56);
       const yAt = (r) => base - r * (base - top);
       const hw = (h) => spread * Math.pow(Math.max(0, 1 - h), 0.8);  // half-width of the main peak at height h
@@ -601,11 +607,23 @@
       const layer = svg("g");
       root.appendChild(layer);
       const PAD = narrow ? 3 : 7;  // spacing between methods (px)
+      const pad = (b) => ({ x: b.x - PAD, y: b.y - PAD / 2, w: b.w + 2 * PAD, h: b.h + PAD });
       const placed = [...byDate].sort((a, b) => b.rate - a.rate).map((p) => {
         const st = { r: R };
         measure.textContent = p.name;
         const logoW = logosOf(p).length * (LOGO + 1) - 1;
         const tw = logoW + GAP + measure.getComputedTextLength(), th = 14;  // label = logo(s) + name
+        if (summitSide.has(p.name)) {
+          const side = summitSide.get(p.name), y = yAt(p.rate);
+          const x = cx + side * Math.max(10, Math.min(18, hw(p.rate) * 0.65));
+          const lx = side < 0 ? Math.max(4, x - R - 10 - tw) : Math.min(W - tw - 4, x + R + 10);
+          // On the smallest screens, lift the left label if it would touch its marker.
+          const ly = side < 0 && lx + tw > x - R - 4 ? -22 : 0;
+          const mk = { x: x - R - 1.5, y: y - R - 1.5, w: 2 * R + 3, h: 2 * R + 3 };
+          const lb = { x: lx - 1, y: y + ly - th / 2 - 1, w: tw + 2, h: th + 2 };
+          boxes.push(pad(mk), pad(lb));
+          return { p, st, x, y, side, lx, ly, mk, lb, leaderX: side < 0 ? lx + tw + 3 : lx - 3 };
+        }
         const best = { cost: Infinity }, half = (4 + tw) / 2;  // labels sit right of their dots: aim the middle of dot + label
         // dot x: the left item ends, the right one starts, PAD past the centre line
         // (phones: no room for the pair beside the human label, so each item is centred on its own)
@@ -652,14 +670,15 @@
           if (best.cost === Infinity) { const y = yAt(p.rate), x = cx; Object.assign(best, { x, y, side: 0, mk: { x: x - st.r, y: y - st.r, w: 2 * st.r, h: 2 * st.r } }); }
         }
         // keep a margin around every placed dot and label so neighbouring methods stay apart
-        const pad = (b) => ({ x: b.x - PAD, y: b.y - PAD / 2, w: b.w + 2 * PAD, h: b.h + PAD });
         boxes.push(pad(best.mk)); if (best.lb) boxes.push(pad(best.lb));
         return { p, st, ...best };
       });
       measure.remove();
-      placed.forEach(({ p, x, y, side, lx, ly = 0 }) => {
+      placed.forEach(({ p, x, y, side, lx, ly = 0, leaderX }) => {
         // the whole item links to the project website
-        const g = svg("a", { class: "mtn-item", href: p.site, target: "_blank", rel: "noopener" }, dot(shade(binOf(p.released)), x, y));
+        const g = svg("a", { class: "mtn-item", "data-method": p.name, href: p.site, target: "_blank", rel: "noopener" });
+        if (leaderX !== undefined) g.append(svg("line", { x1: x, y1: y, x2: leaderX, y2: y + ly, stroke: "#718099", "stroke-width": 1 }));
+        g.append(...dot(shade(binOf(p.released)), x, y));
         if (side) {
           const ls = logosOf(p);
           ls.forEach((k, i) => g.append(svg("image", { href: `logos/${k}.png`, x: lx + i * (LOGO + 1), y: y + ly - LOGO / 2, width: LOGO, height: LOGO, preserveAspectRatio: "xMidYMid meet" })));
