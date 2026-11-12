@@ -64,7 +64,7 @@
         <div class="column is-narrow"><div class="stat-card"><div class="stat-value" id="stat-models">—</div><div class="stat-label" id="stat-models-label">Models Evaluated</div></div></div>
       </div>
 
-      <p class="has-text-centered" id="data-update">(Data updated on 10/30/2026)</p>
+      <p class="has-text-centered" id="data-update">(Data updated on 11/11/2026)</p>
       <!-- <div class="has-text-centered" style="margin-top:1.5rem;">
         <a href="#" class="button is-link is-rounded is-light" style="margin:0.25rem;"><span class="icon"><i class="fas fa-file-pdf"></i></span><span>Paper</span></a>
         <a href="https://github.com/RoboMME/robomme_benchmark" class="button is-link is-rounded is-light" target="_blank" style="margin:0.25rem;"><span class="icon"><i class="fab fa-github"></i></span><span>Benchmark Code</span></a>
@@ -116,7 +116,7 @@
         <span>Agentic</span>
       </label>
     </div>
-    <p class="track-note" id="track-note">Standard uses open-source models; Agentic uses proprietary frontier models.</p>
+    <p class="track-note" id="track-note">Policies built with open-source (Standard) or proprietary frontier models (Agentic).</p>
     <div id="radar-container" style="display:none;">
       <div class="radar-plot"><canvas id="radar-chart" role="img" aria-label="Success rates of top-ranked models across the selected task groups"></canvas></div>
       <p class="radar-note">Shows the <b>top 5</b> ranked models overall and ranked models with the <b>best score</b> in any category. Uses the table's ranking rules; human and oracle references are excluded.<br>Click a model name in the legend to show or hide its line.</p>
@@ -624,6 +624,25 @@ var RESULTS = {
       }
     },
     {
+      "name": "Code-as-Memory (Ryu et al.)",
+      "model_type": "Code",
+      "api_cost": {"total_usd": 30, "note": "Maintainer-provided total API cost: US$30, covering one-time policy development across 16 tasks. Evaluation uses frozen Python policies without model or API calls. Excludes local compute and data preparation."},
+      "training_compute": {"status": "not_applicable", "note": "No model-weight training. A coding agent generates one frozen Python policy per task from 25 offline training demonstrations (400 total), without simulator interaction during development.", "source": "https://github.com/RoboMME/robomme_benchmark/blob/main/doc/submission/code-as-memory.md"},
+      // Agentic submission: a proprietary model generates the policies offline; evaluation itself uses only Python execution.
+      "tags": ["proprietary_model"],
+      "total_size": "N/A",
+      "size_note": "Total parameter count is not applicable to the frozen Python policies. Claude Opus 5.5 is used during offline development; its parameter count is not publicly reported.",
+      "link": "https://github.com/YinpeiDai/Code-as-Memory",
+      // 795/800 successes, single test run on November 5–6, 2026: 50 episodes per task, ee_pose, max_steps=1300, 40-decision cap (capped episodes count as failures).
+      // Submission: https://github.com/RoboMME/robomme_benchmark/blob/main/doc/submission/code-as-memory.md
+      "tasks": {
+        "BinFill": 1.0000, "PickXtimes": 1.0000, "SwingXtimes": 1.0000, "StopCube": 0.9400,
+        "VideoUnmask": 1.0000, "ButtonUnmask": 1.0000, "VideoUnmaskSwap": 1.0000, "ButtonUnmaskSwap": 1.0000,
+        "PickHighlight": 1.0000, "VideoRepick": 1.0000, "VideoPlaceButton": 1.0000, "VideoPlaceOrder": 0.9600,
+        "MoveCube": 1.0000, "InsertPeg": 1.0000, "PatternLock": 1.0000, "RouteStick": 1.0000
+      }
+    },
+    {
       "name": "Astra-Guide (Chen et al.)",
       "model_type": "Agent+VLA",
       "api_cost": {"total_usd": 3000, "note": "Maintainer-provided total API spending for this RoboMME evaluation: US$3,000."},
@@ -920,6 +939,7 @@ var RESULTS = {
   var showDetails = true;
   var combinedRanking = false;
   var modelTypes = {
+    'Code': 'Executable policies generated offline by a coding agent. Code-as-Memory uses Claude Opus 5.5 during development; its frozen Python policies run without learned weights or model/API calls during evaluation.',
     'Agent': 'A vision-language model with weights that are not publicly available directly selects robot actions or waypoints.',
     'Agent+Oracle': 'A model with private weights chooses high-level subgoals from benchmark options, and the benchmark oracle executes them. MEMI-Astra-Plan uses text scene descriptions derived from simulator segmentation.',
     'Agent+VLA': 'A vision-language model with weights that are not publicly available generates subgoals for a VLA controller; 3-tier Astra also uses a learned completion monitor.',
@@ -1361,7 +1381,7 @@ var RESULTS = {
       ? (updatedAt && Number.isFinite(updatedAt.getTime())
           ? '(Data updated on ' + updatedAt.toLocaleDateString('en-US', { timeZone: 'UTC', month: '2-digit', day: '2-digit', year: 'numeric' }) + ')'
           : '')
-      : '(Data updated on 10/30/2026)';
+      : '(Data updated on 11/11/2026)';
 
     sortRows(rows);
 

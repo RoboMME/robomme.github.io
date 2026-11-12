@@ -158,6 +158,7 @@
 .leaderboard-table .lb-wrap td.model-detail { padding-inline: 0.25rem; font-size: 0.875rem; color: var(--muted); }
 .leaderboard-table .lb-wrap td[data-detail="type"] { padding-block: 0.2rem; }
 .leaderboard-table .model-type-badge { display: inline-block; vertical-align: middle; padding: 0.2rem 0.25rem; border-radius: 4px; font-size: 0.75rem; font-weight: 700; line-height: 1.2; white-space: nowrap; }
+.leaderboard-table .type-code { background: #e5f0f4; color: #245d72; }
 .leaderboard-table .type-agent { background: #e0f2fe; color: #0369a1; }
 .leaderboard-table .type-agent-vla { background: #fff1d6; color: #92400e; }
 .leaderboard-table .type-agent-oracle { background: #faf3e2; color: #76612d; }
