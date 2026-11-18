@@ -1090,7 +1090,7 @@ var RESULTS = {
     var topModels = ranked.filter(function(r) {
       if (top5Ids[r.id]) return true;
       for (var i = 0; i < cols.length; i++) {
-        if (r[cols[i].key] === bestInCol[cols[i].key] && bestInCol[cols[i].key] > 0) return true;
+        if (isBestScore(r[cols[i].key], bestInCol[cols[i].key])) return true;
       }
       return false;
     });
@@ -1176,6 +1176,10 @@ var RESULTS = {
   }
 
   function pct(v) { return (Math.round((v + Number.EPSILON) * 10000) / 100).toFixed(2); }
+
+  function isBestScore(value, best) {
+    return isScore(value) && value > 0 && pct(value) === pct(best);
+  }
 
   function medal(i) {
     if (i === 0) return '<span class="rank-medal gold" aria-label="Rank 1">🥇</span>';
@@ -1470,13 +1474,13 @@ var RESULTS = {
         var content = value.badgeClass ? '<span class="model-type-badge ' + value.badgeClass + '">' + label.replace(/ \+ /g, '<br>+ ') + '</span>' : label;
         html += '<td class="model-detail" data-detail="' + c.key + '" title="' + value.title + '">' + content + '</td>';
       });
-      var avgCls = (!otherTrack && r.Avg > 0 && r.Avg === best.Avg) ? ' class="best-score"' : '';
+      var avgCls = (!otherTrack && isBestScore(r.Avg, best.Avg)) ? ' class="best-score"' : '';
       html += isScore(r.Avg)
         ? '<td' + avgCls + '><span class="overall-score" style="--score:' + pct(r.Avg) + '%">' + pct(r.Avg) + '</span></td>'
         : '<td><span class="pending-score" aria-label="Not reported">—</span></td>';
       cols.forEach(function(c) {
         var v = r[c.key];
-        var cls = (!otherTrack && v > 0 && v === best[c.key]) ? ' class="best-score"' : '';
+        var cls = (!otherTrack && isBestScore(v, best[c.key])) ? ' class="best-score"' : '';
         html += isScore(v) ? '<td' + cls + '>' + pct(v) + '</td>' : '<td><span class="pending-score" aria-label="Not reported">—</span></td>';
       });
       html += '</tr>';
