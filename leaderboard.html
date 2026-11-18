@@ -64,7 +64,7 @@
         <div class="column is-narrow"><div class="stat-card"><div class="stat-value" id="stat-models">—</div><div class="stat-label" id="stat-models-label">Models Evaluated</div></div></div>
       </div>
 
-      <p class="has-text-centered" id="data-update">(Data updated on 11/11/2026)</p>
+      <p class="has-text-centered" id="data-update">(Data updated on 11/18/2026)</p>
       <!-- <div class="has-text-centered" style="margin-top:1.5rem;">
         <a href="#" class="button is-link is-rounded is-light" style="margin:0.25rem;"><span class="icon"><i class="fas fa-file-pdf"></i></span><span>Paper</span></a>
         <a href="https://github.com/RoboMME/robomme_benchmark" class="button is-link is-rounded is-light" target="_blank" style="margin:0.25rem;"><span class="icon"><i class="fab fa-github"></i></span><span>Benchmark Code</span></a>
@@ -728,6 +728,25 @@ var RESULTS = {
       }
     },
     {
+      "name": "GR-SAC (Zhu et al.)",
+      "model_type": "VLA",
+      "training_compute": {"status": "not_reported", "note": "Residual training uses eight H200 GPUs (one learner and seven asynchronous collectors) for 35,000 SAC updates on top of a frozen SimpleMemVLA checkpoint. Elapsed training time is not reported, so total training compute is unavailable.", "source": "https://github.com/RoboMME/robomme_benchmark/blob/2fb1bc866e006428d4f6b6a76ddf7838a3a85769/doc/submission/gr-sac.md"},
+      "tags": ["open_sourced_model"],
+      "total_size": "5.71B",
+      "size_source": "https://github.com/RoboMME/robomme_benchmark/blob/2fb1bc866e006428d4f6b6a76ddf7838a3a85769/doc/submission/gr-sac.md",
+      "size_note": "5,708,745,910 unique inference parameters: 5,708,513,800 in the frozen SimpleMemVLA base model plus 232,110 in the residual actor. Shared embedding/output weights are counted once; training-only critics are excluded. Rounded to 5.71B.",
+      "link": "https://github.com/zhudongwork/GR-SAC",
+      // 711/800 successes, single-seed test evaluation: 50 episodes per task, joint_angle actions, max_steps=1300, one shared base checkpoint and residual actor.
+      // The 35k actor was selected by comparing the 20k, 25k, 30k, 35k, and 40k checkpoints on the test split, as disclosed in PR #27.
+      // All 800 outcomes verified against https://github.com/zhudongwork/GR-SAC/blob/fc4d610a1d372ab3efaa2d49261bad01a18bf0a5/release/residual_sac/reference_episodes.jsonl
+      "tasks": {
+        "BinFill": 0.7600, "PickXtimes": 1.0000, "SwingXtimes": 1.0000, "StopCube": 0.9000,
+        "VideoUnmask": 1.0000, "ButtonUnmask": 0.9800, "VideoUnmaskSwap": 0.9200, "ButtonUnmaskSwap": 0.9400,
+        "PickHighlight": 0.9000, "VideoRepick": 0.6400, "VideoPlaceButton": 0.8800, "VideoPlaceOrder": 0.8600,
+        "MoveCube": 1.0000, "InsertPeg": 0.5200, "PatternLock": 0.9400, "RouteStick": 0.9800
+      }
+    },
+    {
       "name": "SimpleMemVLA (Yin et al.)",
       "model_type": "VLA",
       "training_compute": {"gpu": "H100", "gpus": 128, "hours": [20, 20], "approximate": false, "note": "RoboMME training: 128 H100 GPUs × 20 wall-clock hours (SimpleMemVLA Appendix A, Table 8).", "source": "https://arxiv.org/html/2609.05533"},
@@ -1381,7 +1400,7 @@ var RESULTS = {
       ? (updatedAt && Number.isFinite(updatedAt.getTime())
           ? '(Data updated on ' + updatedAt.toLocaleDateString('en-US', { timeZone: 'UTC', month: '2-digit', day: '2-digit', year: 'numeric' }) + ')'
           : '')
-      : '(Data updated on 11/11/2026)';
+      : '(Data updated on 11/18/2026)';
 
     sortRows(rows);
 
