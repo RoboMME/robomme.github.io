@@ -1114,7 +1114,7 @@
   "methods": [
     {
       "id": "framesamp-modul",
-      "name": "FrameSamp+Modul",
+      "name": "FrameSamp+Modul (Dai et al.)",
       "type": "VLA · perceptual memory",
       "results": {
         "BinFill": 0.0,
@@ -1126,9 +1126,9 @@
         "VideoUnmaskSwap": 0.0,
         "ButtonUnmaskSwap": 0.0,
         "PickHighlight": 0.0,
-        "VideoRepick": 0.02,
-        "VideoPlaceButton": 0.2,
-        "VideoPlaceOrder": 0.18,
+        "VideoRepick": 0.04,
+        "VideoPlaceButton": 0.16,
+        "VideoPlaceOrder": 0.14,
         "MoveCube": 0.0,
         "InsertPeg": 0.0,
         "PatternLock": 0.0,
@@ -1142,12 +1142,14 @@
       "evaluation": {
         "completed": 800,
         "counts": {
-          "fail": 640,
-          "timeout": 138,
-          "success": 22
+          "fail": 645,
+          "timeout": 136,
+          "success": 19
         },
-        "latest_episode_finished_utc": "2026-10-28T02:37:46.632766+00:00",
-        "summary_sha256": "e8724f664dcab52521b1c756d01d1c2b533d85665fed092abc1e123ce3b06281"
+        "latest_episode_finished_utc": "2026-11-14T21:56:01.729284+00:00",
+        "summary_sha256": "f680e2194498f0c5f9ae150b4ab4a247d09150d863d0e78a42ce7a69dab0c90d",
+        "version": "v2",
+        "source": "https://huggingface.co/datasets/Yinpei/RoboMME-plus-model-rollout/resolve/ebef7bcd1abe4cc1748c3257cd787434489265fc/performance.json"
       },
       "total_size": "3.44B",
       "size_note": "3,441,899,024 parameters, counted from the released MME-VLA checkpoint global tensor shapes, including the pi0.5 backbone and memory modules.",
@@ -1162,11 +1164,14 @@
         "display_label": "≈50",
         "note": "Perceptual-memory family estimate: approximately 3–4 days on 4 A40 GPUs per run (RoboMME Appendix B.2.3).",
         "source": "https://arxiv.org/html/2603.04639"
-      }
+      },
+      "training_rollout_limit": 0,
+      "released_demonstrations_used": false,
+      "link": "https://arxiv.org/abs/2603.04639"
     },
     {
       "id": "simplememvla",
-      "name": "SimpleMemVLA",
+      "name": "SimpleMemVLA (Yin et al.)",
       "type": "VLA · memory-augmented policy",
       "results": {
         "BinFill": 0.0,
@@ -1179,8 +1184,8 @@
         "ButtonUnmaskSwap": 0.0,
         "PickHighlight": 0.0,
         "VideoRepick": 0.02,
-        "VideoPlaceButton": 0.16,
-        "VideoPlaceOrder": 0.06,
+        "VideoPlaceButton": 0.14,
+        "VideoPlaceOrder": 0.04,
         "MoveCube": 0.0,
         "InsertPeg": 0.0,
         "PatternLock": 0.0,
@@ -1194,12 +1199,14 @@
       "evaluation": {
         "completed": 800,
         "counts": {
-          "timeout": 104,
-          "fail": 680,
-          "success": 16
+          "timeout": 129,
+          "fail": 657,
+          "success": 14
         },
-        "latest_episode_finished_utc": "2026-10-28T03:19:43.790989+00:00",
-        "summary_sha256": "a25b5e95552229a0163380f6d5d0b031ec636a16561e34189331496340665928"
+        "latest_episode_finished_utc": "2026-11-15T06:13:37.742726+00:00",
+        "summary_sha256": "1fbaebd5cc623c868d8f2b3b996af49a58564c985f7aa41cd42f4e946cbb8506",
+        "version": "v2",
+        "source": "https://huggingface.co/datasets/Yinpei/RoboMME-plus-model-rollout/resolve/ebef7bcd1abe4cc1748c3257cd787434489265fc/performance.json"
       },
       "total_size": "5.71B",
       "size_note": "5,708,513,800 unique parameters: 4,539,265,536 in the Qwen3.5 backbone and 1,169,248,264 in the action head. Shared input/output embeddings are counted once; rounded to 5.71B.",
@@ -1213,11 +1220,14 @@
         "approximate": false,
         "note": "RoboMME training: 128 H100 GPUs × 20 wall-clock hours (SimpleMemVLA Appendix A, Table 8).",
         "source": "https://arxiv.org/html/2609.05533"
-      }
+      },
+      "training_rollout_limit": 0,
+      "released_demonstrations_used": false,
+      "link": "https://arxiv.org/abs/2609.05533"
     },
     {
       "id": "ponderpounce",
-      "name": "PonderPounce",
+      "name": "PonderPounce (Choi et al.)",
       "type": "VLM + VLA",
       "results": {
         "BinFill": 0.02,
@@ -1230,8 +1240,8 @@
         "ButtonUnmaskSwap": 0.0,
         "PickHighlight": 0.0,
         "VideoRepick": 0.08,
-        "VideoPlaceButton": 0.22,
-        "VideoPlaceOrder": 0.04,
+        "VideoPlaceButton": 0.18,
+        "VideoPlaceOrder": 0.02,
         "MoveCube": 0.0,
         "InsertPeg": 0.0,
         "PatternLock": 0.0,
@@ -1245,12 +1255,14 @@
       "evaluation": {
         "completed": 800,
         "counts": {
-          "fail": 611,
-          "success": 23,
-          "timeout": 166
+          "fail": 603,
+          "success": 20,
+          "timeout": 177
         },
-        "latest_episode_finished_utc": "2026-10-26T20:30:48.504191+00:00",
-        "summary_sha256": "f32d8e7f24445e16f488330b8372206f1d3a25c8670fbd7fffb122f6a4428518"
+        "latest_episode_finished_utc": "2026-11-15T22:58:16.592051+00:00",
+        "summary_sha256": "ff87dc204dc1de54685e000fd9284fa66cf0ef26945a11eb047aa72926e8b651",
+        "version": "v2",
+        "source": "https://huggingface.co/datasets/Yinpei/RoboMME-plus-model-rollout/resolve/ebef7bcd1abe4cc1748c3257cd787434489265fc/performance.json"
       },
       "runtime": {
         "episodes": 800,
@@ -1274,25 +1286,28 @@
         "status": "not_reported",
         "note": "RoboMME training steps are reported, but GPU count and training duration are not.",
         "source": "https://arxiv.org/html/2608.24115"
-      }
+      },
+      "training_rollout_limit": 0,
+      "released_demonstrations_used": false,
+      "link": "https://worv-ai.github.io/ponderpounce/"
     },
     {
       "id": "embodied-astra",
-      "name": "Embodied-Astra",
+      "name": "Embodied-Astra (Jedlicki et al.)",
       "type": "Proprietary VLM · waypoint control",
       "results": {
-        "BinFill": 0.3,
-        "PickXtimes": 0.56,
-        "SwingXtimes": 0.28,
-        "StopCube": 0.3,
-        "VideoUnmask": 0.12,
+        "BinFill": 0.26,
+        "PickXtimes": 0.54,
+        "SwingXtimes": 0.32,
+        "StopCube": 0.22,
+        "VideoUnmask": 0.2,
         "ButtonUnmask": 0.34,
         "VideoUnmaskSwap": 0.02,
         "ButtonUnmaskSwap": 0.12,
-        "PickHighlight": 0.32,
-        "VideoRepick": 0.18,
-        "VideoPlaceButton": 0.2,
-        "VideoPlaceOrder": 0.2,
+        "PickHighlight": 0.34,
+        "VideoRepick": 0.22,
+        "VideoPlaceButton": 0.36,
+        "VideoPlaceOrder": 0.26,
         "MoveCube": 0.22,
         "InsertPeg": 0.2,
         "PatternLock": 0.14,
@@ -1306,12 +1321,14 @@
       "evaluation": {
         "completed": 800,
         "counts": {
-          "success": 181,
-          "fail": 542,
-          "timeout": 77
+          "success": 194,
+          "fail": 527,
+          "timeout": 79
         },
-        "latest_episode_finished_utc": "2026-10-28T03:34:17.556641+00:00",
-        "summary_sha256": "32cd3ea08d32b144031b2de35b8c6dbe2f76c89e2c1813e67455b5a125375ebf"
+        "latest_episode_finished_utc": "2026-11-14T22:31:35.726902+00:00",
+        "summary_sha256": "f5c38cb0ef26ef099c4eca23c90fe37fbbc3cc7c07af65e0591635f1c001c1b8",
+        "version": "v2",
+        "source": "https://huggingface.co/datasets/Yinpei/RoboMME-plus-model-rollout/resolve/ebef7bcd1abe4cc1748c3257cd787434489265fc/performance.json"
       },
       "total_size": "N/A",
       "training_compute": {
@@ -1321,27 +1338,30 @@
       },
       "api_cost": {
         "approximate": true,
-        "display_usd": 759,
-        "display_note": "Maintainer-provided rounded API cost for all 800 RoboMME-Plus test episodes: US$759. Excludes local GPU compute."
-      }
+        "display_usd": 760,
+        "display_note": "Maintainer-provided rounded API cost for all 800 RoboMME-Plus test episodes: about US$760. Excludes local GPU compute."
+      },
+      "training_rollout_limit": 0,
+      "released_demonstrations_used": false,
+      "link": "https://embodied-astra.github.io/"
     },
     {
       "id": "embodied-astra-fs",
-      "name": "One-shot Embodied-Astra",
+      "name": "One-shot Embodied-Astra (Jedlicki et al.)",
       "type": "Proprietary VLM · waypoint control",
       "results": {
-        "BinFill": 0.28,
-        "PickXtimes": 0.84,
+        "BinFill": 0.26,
+        "PickXtimes": 0.8,
         "SwingXtimes": 0.98,
-        "StopCube": 0.32,
-        "VideoUnmask": 0.24,
-        "ButtonUnmask": 0.94,
-        "VideoUnmaskSwap": 0.02,
-        "ButtonUnmaskSwap": 0.32,
+        "StopCube": 0.38,
+        "VideoUnmask": 0.28,
+        "ButtonUnmask": 0.78,
+        "VideoUnmaskSwap": 0.0,
+        "ButtonUnmaskSwap": 0.26,
         "PickHighlight": 0.42,
-        "VideoRepick": 0.14,
-        "VideoPlaceButton": 0.24,
-        "VideoPlaceOrder": 0.18,
+        "VideoRepick": 0.16,
+        "VideoPlaceButton": 0.36,
+        "VideoPlaceOrder": 0.22,
         "MoveCube": 0.18,
         "InsertPeg": 0.28,
         "PatternLock": 0.18,
@@ -1355,12 +1375,14 @@
       "evaluation": {
         "completed": 800,
         "counts": {
-          "success": 282,
-          "fail": 478,
-          "timeout": 40
+          "success": 281,
+          "fail": 481,
+          "timeout": 38
         },
-        "latest_episode_finished_utc": "2026-10-28T04:59:14.126076+00:00",
-        "summary_sha256": "63fbb9ce3a1ef8f8bc95cda7a84eb353cb2b1d06b647b3507add63689e8ab06d"
+        "latest_episode_finished_utc": "2026-11-15T08:40:56.592708+00:00",
+        "summary_sha256": "20bd8c9bb8b871e5c15666502c7dcdeab30f61b0b90a289265260f5f95d9b8c2",
+        "version": "v2",
+        "source": "https://huggingface.co/datasets/Yinpei/RoboMME-plus-model-rollout/resolve/ebef7bcd1abe4cc1748c3257cd787434489265fc/performance.json"
       },
       "total_size": "N/A",
       "training_compute": {
@@ -1371,26 +1393,30 @@
       "api_cost": {
         "approximate": true,
         "display_usd": 2100,
-        "display_note": "Maintainer-provided rounded API cost for all 800 RoboMME-Plus test episodes: US$2,100. Excludes local GPU compute."
-      }
+        "display_note": "Maintainer-provided rounded API cost for all 800 RoboMME-Plus test episodes: about US$2,100. Excludes local GPU compute."
+      },
+      "training_rollout_limit": 0,
+      "adaptation_note": "Reported adaptation uses a saved training demonstration as image context, with no simulator interaction phase. See scripts/plus_eval/embodied-astra/eval_plus_fs.py and the one-shot submission.",
+      "released_demonstrations_used": true,
+      "link": "https://embodied-astra.github.io/"
     },
     {
       "id": "3-tier-astra",
-      "name": "3-tier Astra",
+      "name": "3-tier Astra (Chen et al.)",
       "type": "Proprietary VLM + VLA",
       "results": {
         "BinFill": 0.06,
         "PickXtimes": 0.06,
         "SwingXtimes": 0.1,
-        "StopCube": 0.0,
+        "StopCube": 0.02,
         "VideoUnmask": 0.04,
         "ButtonUnmask": 0.0,
         "VideoUnmaskSwap": 0.0,
         "ButtonUnmaskSwap": 0.0,
-        "PickHighlight": 0.0,
-        "VideoRepick": 0.02,
-        "VideoPlaceButton": 0.68,
-        "VideoPlaceOrder": 0.56,
+        "PickHighlight": 0.02,
+        "VideoRepick": 0.04,
+        "VideoPlaceButton": 0.56,
+        "VideoPlaceOrder": 0.5,
         "MoveCube": 0.0,
         "InsertPeg": 0.0,
         "PatternLock": 0.0,
@@ -1404,12 +1430,14 @@
       "evaluation": {
         "completed": 800,
         "counts": {
-          "fail": 452,
-          "timeout": 272,
-          "success": 76
+          "fail": 466,
+          "timeout": 264,
+          "success": 70
         },
-        "latest_episode_finished_utc": "2026-10-28T05:49:51.795128+00:00",
-        "summary_sha256": "9347ae4ba70b31307aac92095ebb631748541411794d721500301f9938689c85"
+        "latest_episode_finished_utc": "2026-11-16T16:30:33.653759+00:00",
+        "summary_sha256": "b94944eb851bc37defb699982a3560ccbf7b8213485fc026374a9c47dbc67afc",
+        "version": "v2",
+        "source": "https://huggingface.co/datasets/Yinpei/RoboMME-plus-model-rollout/resolve/ebef7bcd1abe4cc1748c3257cd787434489265fc/performance.json"
       },
       "total_size": "N/A",
       "training_compute": {
@@ -1420,14 +1448,948 @@
       },
       "api_cost": {
         "approximate": true,
-        "display_usd": 843,
-        "display_note": "Maintainer-provided rounded API cost for all 800 RoboMME-Plus test episodes: US$843. Excludes local GPU compute."
-      }
+        "display_usd": 840,
+        "display_note": "Maintainer-provided rounded API cost for all 800 RoboMME-Plus test episodes: about US$840. Excludes local GPU compute."
+      },
+      "training_rollout_limit": 0,
+      "released_demonstrations_used": false,
+      "link": "https://bingaochen.github.io/Astra-on-RoboMME/"
+    },
+    {
+      "id": "aspire-demos-r0",
+      "name": "ASPIRE (Lu et al.)",
+      "type": "Proprietary coding agent · frozen programs with skill library",
+      "results": {
+        "BinFill": 0.36,
+        "ButtonUnmask": 0.46,
+        "ButtonUnmaskSwap": 0.04,
+        "InsertPeg": 0.0,
+        "MoveCube": 0.02,
+        "PatternLock": 0.0,
+        "PickHighlight": 0.0,
+        "PickXtimes": 0.0,
+        "RouteStick": 0.2,
+        "StopCube": 0.34,
+        "SwingXtimes": 0.34,
+        "VideoPlaceButton": 0.22,
+        "VideoPlaceOrder": 0.2,
+        "VideoRepick": 0.0,
+        "VideoUnmask": 0.62,
+        "VideoUnmaskSwap": 0.0
+      },
+      "tags": [
+        "proprietary_model"
+      ],
+      "model_type": "Code",
+      "setting": "FS",
+      "evaluation": {
+        "completed": 800,
+        "counts": {
+          "success": 140,
+          "fail": 660,
+          "infrastructure": 0
+        },
+        "source_experiment": "demo_only_20261121",
+        "summary_sha256": "eb52b8931e51ef8f8428f229429921e12a8a2e97ed197697e5a71cc46c44d173",
+        "audit_status": "passed",
+        "training_dataset_revision": "63cb9b5b62f5413993845c7d89b82b3bd58dc2fa"
+      },
+      "total_size": "N/A",
+      "size_note": "Frozen Python programs and a shared skill library. Claude Opus 5.5 is used only during development; its parameter count is not publicly reported. Test-time programs call local perception and planning models (SAM3, Contact-GraspNet, PyRoki, cuRobo).",
+      "training_compute": {
+        "status": "not_applicable",
+        "note": "No model-weight training; a coding agent writes the policies during development."
+      },
+      "api_cost": {
+        "total_usd": 210,
+        "approximate": true,
+        "lower_bound": false,
+        "development_usd": 210,
+        "evaluation_usd": 0,
+        "note": "Estimated development API cost across all 16 tasks. Frozen evaluation: $0 paid API cost. 1 requests have incomplete usage; excludes local compute. Rounded to the nearest $10; exact records are retained in the development logs.",
+        "usage_incomplete": true
+      },
+      "training_rollout_limit": 0,
+      "released_demonstrations_used": true,
+      "adaptation_note": "Claude Opus 5.5, high reasoning effort; Demo-only; at most 0 simulator starts per task, 0 starts across all tasks. 150-minute task deadline. Frozen policies evaluated on all 800 test episodes. Development audit: PASS.",
+      "link": "https://github.com/NVlabs/ASPIRE",
+      "audit_status": "passed"
+    },
+    {
+      "id": "aspire-interaction-r5",
+      "name": "ASPIRE (Lu et al.)",
+      "type": "Proprietary coding agent · frozen programs with skill library",
+      "results": {
+        "BinFill": 0.2,
+        "ButtonUnmask": 0.16,
+        "ButtonUnmaskSwap": 0.06,
+        "InsertPeg": 0.08,
+        "MoveCube": 0.0,
+        "PatternLock": 0.2,
+        "PickHighlight": 0.14,
+        "PickXtimes": 0.34,
+        "RouteStick": 0.2,
+        "StopCube": 0.7,
+        "SwingXtimes": 0.38,
+        "VideoPlaceButton": 0.36,
+        "VideoPlaceOrder": 0.34,
+        "VideoRepick": 0.28,
+        "VideoUnmask": 0.66,
+        "VideoUnmaskSwap": 0.2
+      },
+      "tags": [
+        "proprietary_model"
+      ],
+      "model_type": "Code",
+      "setting": "FS",
+      "evaluation": {
+        "completed": 800,
+        "counts": {
+          "success": 215,
+          "fail": 584,
+          "infrastructure": 1
+        },
+        "program_errors": 0,
+        "operator_repaired_tasks": [],
+        "source": "RoboMME-Plus protocol v2 ASPIRE/RAX study (Claude Opus 5.5), 800 held-out episodes"
+      },
+      "total_size": "N/A",
+      "size_note": "Frozen Python programs and a shared skill library. Claude Opus 5.5 is used only during development; its parameter count is not publicly reported. Test-time programs call local perception and planning models (SAM3, Contact-GraspNet, PyRoki, cuRobo).",
+      "training_compute": {
+        "status": "not_applicable",
+        "note": "No model-weight training; a coding agent writes the policies during development."
+      },
+      "api_cost": {
+        "total_usd": 150,
+        "approximate": true,
+        "note": "Estimated development API cost for all 16 tasks: about US$150 (Claude Opus 5.5 token usage at the AWS Bedrock rate card). Evaluation of the frozen programs makes no model calls (US$0). Excludes local compute. Rounded to the nearest $10; exact records are retained in the development logs.",
+        "lower_bound": false
+      },
+      "training_rollout_limit": 5,
+      "released_demonstrations_used": false,
+      "adaptation_note": "Claude Opus 5.5 (high reasoning effort) developed one frozen program per task from no released demonstrations and up to 5 simulator starts per task on training seeds, within 150 minutes per task; 80 of 80 starts used. Each budget is an independent development run. Frozen programs make no model calls at test time.",
+      "link": "https://github.com/NVlabs/ASPIRE"
+    },
+    {
+      "id": "aspire-interaction-r10",
+      "name": "ASPIRE (Lu et al.)",
+      "type": "Proprietary coding agent · frozen programs with skill library",
+      "results": {
+        "BinFill": 0.5,
+        "ButtonUnmask": 0.7,
+        "ButtonUnmaskSwap": 0.08,
+        "InsertPeg": 0.24,
+        "MoveCube": 0.06,
+        "PatternLock": 0.06,
+        "PickHighlight": 0.34,
+        "PickXtimes": 0.48,
+        "RouteStick": 0.2,
+        "StopCube": 0.8,
+        "SwingXtimes": 0.54,
+        "VideoPlaceButton": 0.18,
+        "VideoPlaceOrder": 0.3,
+        "VideoRepick": 0.48,
+        "VideoUnmask": 0.54,
+        "VideoUnmaskSwap": 0.54
+      },
+      "tags": [
+        "proprietary_model"
+      ],
+      "model_type": "Code",
+      "setting": "FS",
+      "evaluation": {
+        "completed": 800,
+        "counts": {
+          "success": 302,
+          "fail": 492,
+          "infrastructure": 6
+        },
+        "source_experiment": "r10_20261121",
+        "summary_sha256": "e737d3eb3a6104b476109c962fc030f5ccab10d2c9fa1f384033f67a18bce7e9",
+        "audit_status": "passed",
+        "training_dataset_revision": "63cb9b5b62f5413993845c7d89b82b3bd58dc2fa"
+      },
+      "total_size": "N/A",
+      "size_note": "Frozen Python programs and a shared skill library. Claude Opus 5.5 is used only during development; its parameter count is not publicly reported. Test-time programs call local perception and planning models (SAM3, Contact-GraspNet, PyRoki, cuRobo).",
+      "training_compute": {
+        "status": "not_applicable",
+        "note": "No model-weight training; a coding agent writes the policies during development."
+      },
+      "api_cost": {
+        "total_usd": 160,
+        "approximate": true,
+        "lower_bound": false,
+        "development_usd": 160,
+        "evaluation_usd": 0,
+        "note": "Estimated development API cost across all 16 tasks. Frozen evaluation: $0 paid API cost. 1 requests have incomplete usage; excludes local compute. Rounded to the nearest $10; exact records are retained in the development logs.",
+        "usage_incomplete": true
+      },
+      "training_rollout_limit": 10,
+      "released_demonstrations_used": false,
+      "adaptation_note": "Claude Opus 5.5, high reasoning effort; Interaction-only; at most 10 simulator starts per task, 157 starts across all tasks. 150-minute task deadline. Frozen policies evaluated on all 800 test episodes. Development audit: PASS.",
+      "link": "https://github.com/NVlabs/ASPIRE",
+      "audit_status": "passed"
+    },
+    {
+      "id": "aspire-demos-interaction-r5",
+      "name": "ASPIRE (Lu et al.)",
+      "type": "Proprietary coding agent · frozen programs with skill library",
+      "results": {
+        "BinFill": 0.52,
+        "ButtonUnmask": 0.56,
+        "ButtonUnmaskSwap": 0.16,
+        "InsertPeg": 0.08,
+        "MoveCube": 0.02,
+        "PatternLock": 0.2,
+        "PickHighlight": 0.06,
+        "PickXtimes": 0.24,
+        "RouteStick": 0.2,
+        "StopCube": 0.44,
+        "SwingXtimes": 0.36,
+        "VideoPlaceButton": 0.22,
+        "VideoPlaceOrder": 0.46,
+        "VideoRepick": 0.6,
+        "VideoUnmask": 0.6,
+        "VideoUnmaskSwap": 0.32
+      },
+      "tags": [
+        "proprietary_model"
+      ],
+      "model_type": "Code",
+      "setting": "FS",
+      "evaluation": {
+        "completed": 800,
+        "counts": {
+          "success": 252,
+          "fail": 547,
+          "infrastructure": 1
+        },
+        "program_errors": 0,
+        "operator_repaired_tasks": [],
+        "source": "RoboMME-Plus protocol v2 ASPIRE/RAX study (Claude Opus 5.5), 800 held-out episodes"
+      },
+      "total_size": "N/A",
+      "size_note": "Frozen Python programs and a shared skill library. Claude Opus 5.5 is used only during development; its parameter count is not publicly reported. Test-time programs call local perception and planning models (SAM3, Contact-GraspNet, PyRoki, cuRobo).",
+      "training_compute": {
+        "status": "not_applicable",
+        "note": "No model-weight training; a coding agent writes the policies during development."
+      },
+      "api_cost": {
+        "total_usd": 160,
+        "approximate": true,
+        "note": "Estimated development API cost for all 16 tasks: about US$160 (Claude Opus 5.5 token usage at the AWS Bedrock rate card). Evaluation of the frozen programs makes no model calls (US$0). Excludes local compute. Rounded to the nearest $10; exact records are retained in the development logs.",
+        "lower_bound": false
+      },
+      "training_rollout_limit": 5,
+      "released_demonstrations_used": true,
+      "adaptation_note": "Claude Opus 5.5 (high reasoning effort) developed one frozen program per task from the 50 released demonstrations and up to 5 simulator starts per task on training seeds, within 150 minutes per task; 80 of 80 starts used. Each budget is an independent development run. Frozen programs make no model calls at test time.",
+      "link": "https://github.com/NVlabs/ASPIRE"
+    },
+    {
+      "id": "aspire-demos-interaction-r10",
+      "name": "ASPIRE (Lu et al.)",
+      "type": "Proprietary coding agent · frozen programs with skill library",
+      "results": {
+        "BinFill": 0.82,
+        "ButtonUnmask": 0.56,
+        "ButtonUnmaskSwap": 0.28,
+        "InsertPeg": 0.08,
+        "MoveCube": 0.02,
+        "PatternLock": 0.2,
+        "PickHighlight": 0.22,
+        "PickXtimes": 0.22,
+        "RouteStick": 0.46,
+        "StopCube": 0.58,
+        "SwingXtimes": 0.66,
+        "VideoPlaceButton": 0.18,
+        "VideoPlaceOrder": 0.4,
+        "VideoRepick": 0.72,
+        "VideoUnmask": 0.68,
+        "VideoUnmaskSwap": 0.76
+      },
+      "tags": [
+        "proprietary_model"
+      ],
+      "model_type": "Code",
+      "setting": "FS",
+      "evaluation": {
+        "completed": 800,
+        "counts": {
+          "success": 342,
+          "fail": 458,
+          "infrastructure": 0
+        },
+        "source_experiment": "r10_20261121",
+        "summary_sha256": "cce0fc689a78b357655b61238f7c37686368f24090fee09e97c3c87c14374f96",
+        "audit_status": "passed",
+        "training_dataset_revision": "63cb9b5b62f5413993845c7d89b82b3bd58dc2fa"
+      },
+      "total_size": "N/A",
+      "size_note": "Frozen Python programs and a shared skill library. Claude Opus 5.5 is used only during development; its parameter count is not publicly reported. Test-time programs call local perception and planning models (SAM3, Contact-GraspNet, PyRoki, cuRobo).",
+      "training_compute": {
+        "status": "not_applicable",
+        "note": "No model-weight training; a coding agent writes the policies during development."
+      },
+      "api_cost": {
+        "total_usd": 160,
+        "approximate": true,
+        "lower_bound": false,
+        "development_usd": 160,
+        "evaluation_usd": 0,
+        "note": "Estimated development API cost across all 16 tasks. Frozen evaluation: $0 paid API cost. 2 requests have incomplete usage; excludes local compute. Rounded to the nearest $10; exact records are retained in the development logs.",
+        "usage_incomplete": true
+      },
+      "training_rollout_limit": 10,
+      "released_demonstrations_used": true,
+      "adaptation_note": "Claude Opus 5.5, high reasoning effort; Hybrid; at most 10 simulator starts per task, 134 starts across all tasks. 150-minute task deadline. Frozen policies evaluated on all 800 test episodes. Development audit: PASS.",
+      "link": "https://github.com/NVlabs/ASPIRE",
+      "audit_status": "passed"
+    },
+    {
+      "id": "rax-demos-r0",
+      "name": "RAX (Huang et al.)",
+      "type": "Proprietary coding agent · frozen task controllers",
+      "results": {
+        "BinFill": 0.3,
+        "ButtonUnmask": 0.52,
+        "ButtonUnmaskSwap": 0.04,
+        "InsertPeg": 0.0,
+        "MoveCube": 0.04,
+        "PatternLock": 0.2,
+        "PickHighlight": 0.02,
+        "PickXtimes": 0.0,
+        "RouteStick": 0.06,
+        "StopCube": 0.46,
+        "SwingXtimes": 0.06,
+        "VideoPlaceButton": 0.22,
+        "VideoPlaceOrder": 0.24,
+        "VideoRepick": 0.62,
+        "VideoUnmask": 0.0,
+        "VideoUnmaskSwap": 0.0
+      },
+      "tags": [
+        "proprietary_model"
+      ],
+      "model_type": "Code",
+      "setting": "FS",
+      "evaluation": {
+        "completed": 800,
+        "counts": {
+          "success": 139,
+          "fail": 661,
+          "infrastructure": 0
+        },
+        "source_experiment": "demo_only_20261121",
+        "summary_sha256": "8122eee53bcd6a77e33565b30d9147128c160ce90ee670411501f4bd70a32ee5",
+        "audit_status": "passed",
+        "training_dataset_revision": "63cb9b5b62f5413993845c7d89b82b3bd58dc2fa"
+      },
+      "total_size": "N/A",
+      "size_note": "Frozen per-task Python controllers. Claude Opus 5.5 is used only during development; its parameter count is not publicly reported. The optional Gemini service is disabled.",
+      "training_compute": {
+        "status": "not_applicable",
+        "note": "No model-weight training; a coding agent writes the policies during development."
+      },
+      "api_cost": {
+        "total_usd": 80,
+        "approximate": true,
+        "lower_bound": false,
+        "development_usd": 80,
+        "evaluation_usd": 0,
+        "note": "Estimated development API cost across all 16 tasks. Frozen evaluation: $0 paid API cost. 0 requests have incomplete usage; excludes local compute. Rounded to the nearest $10; exact records are retained in the development logs."
+      },
+      "training_rollout_limit": 0,
+      "released_demonstrations_used": true,
+      "adaptation_note": "Claude Opus 5.5, high reasoning effort; Demo-only; at most 0 simulator starts per task, 0 starts across all tasks. 150-minute task deadline. Frozen policies evaluated on all 800 test episodes. Development audit: PASS.",
+      "link": "https://robot-agent-exploration.com/",
+      "audit_status": "passed"
+    },
+    {
+      "id": "rax-interaction-r5",
+      "name": "RAX (Huang et al.)",
+      "type": "Proprietary coding agent · frozen task controllers",
+      "results": {
+        "BinFill": 0.7,
+        "ButtonUnmask": 0.74,
+        "ButtonUnmaskSwap": 0.2,
+        "InsertPeg": 0.0,
+        "MoveCube": 0.04,
+        "PatternLock": 0.18,
+        "PickHighlight": 0.72,
+        "PickXtimes": 0.08,
+        "RouteStick": 0.2,
+        "StopCube": 0.52,
+        "SwingXtimes": 0.06,
+        "VideoPlaceButton": 0.0,
+        "VideoPlaceOrder": 0.04,
+        "VideoRepick": 0.56,
+        "VideoUnmask": 0.56,
+        "VideoUnmaskSwap": 0.7
+      },
+      "tags": [
+        "proprietary_model"
+      ],
+      "model_type": "Code",
+      "setting": "FS",
+      "evaluation": {
+        "completed": 800,
+        "counts": {
+          "success": 265,
+          "fail": 535,
+          "infrastructure": 0
+        },
+        "program_errors": 0,
+        "operator_repaired_tasks": [],
+        "source": "RoboMME-Plus protocol v2 ASPIRE/RAX study (Claude Opus 5.5), 800 held-out episodes"
+      },
+      "total_size": "N/A",
+      "size_note": "Frozen per-task Python controllers. Claude Opus 5.5 is used only during development; its parameter count is not publicly reported. The optional Gemini service is disabled.",
+      "training_compute": {
+        "status": "not_applicable",
+        "note": "No model-weight training; a coding agent writes the policies during development."
+      },
+      "api_cost": {
+        "total_usd": 90,
+        "approximate": true,
+        "note": "Estimated development API cost for all 16 tasks: about US$90 (Claude Opus 5.5 token usage at the AWS Bedrock rate card). Evaluation of the frozen programs makes no model calls (US$0). Excludes local compute. Rounded to the nearest $10; exact records are retained in the development logs.",
+        "lower_bound": false
+      },
+      "training_rollout_limit": 5,
+      "released_demonstrations_used": false,
+      "adaptation_note": "Claude Opus 5.5 (high reasoning effort) developed one frozen program per task from no released demonstrations and up to 5 simulator starts per task on training seeds, within 150 minutes per task; 78 of 80 starts used. Each budget is an independent development run. Frozen programs make no model calls at test time.",
+      "link": "https://robot-agent-exploration.com/"
+    },
+    {
+      "id": "rax-interaction-r10",
+      "name": "RAX (Huang et al.)",
+      "type": "Proprietary coding agent · frozen task controllers",
+      "results": {
+        "BinFill": 0.62,
+        "ButtonUnmask": 0.64,
+        "ButtonUnmaskSwap": 0.3,
+        "InsertPeg": 0.32,
+        "MoveCube": 0.0,
+        "PatternLock": 0.2,
+        "PickHighlight": 0.36,
+        "PickXtimes": 0.7,
+        "RouteStick": 0.2,
+        "StopCube": 0.52,
+        "SwingXtimes": 0.66,
+        "VideoPlaceButton": 0.62,
+        "VideoPlaceOrder": 0.32,
+        "VideoRepick": 0.66,
+        "VideoUnmask": 0.56,
+        "VideoUnmaskSwap": 0.76
+      },
+      "tags": [
+        "proprietary_model"
+      ],
+      "model_type": "Code",
+      "setting": "FS",
+      "evaluation": {
+        "completed": 800,
+        "counts": {
+          "success": 372,
+          "fail": 428,
+          "infrastructure": 0
+        },
+        "source_experiment": "r10_20261121",
+        "summary_sha256": "a49f4ca7c137eb4b1f9654d79c5288603ee372639c4f92d92542f54e4501d765",
+        "audit_status": "passed",
+        "training_dataset_revision": "63cb9b5b62f5413993845c7d89b82b3bd58dc2fa"
+      },
+      "total_size": "N/A",
+      "size_note": "Frozen per-task Python controllers. Claude Opus 5.5 is used only during development; its parameter count is not publicly reported. The optional Gemini service is disabled.",
+      "training_compute": {
+        "status": "not_applicable",
+        "note": "No model-weight training; a coding agent writes the policies during development."
+      },
+      "api_cost": {
+        "total_usd": 90,
+        "approximate": true,
+        "lower_bound": false,
+        "development_usd": 90,
+        "evaluation_usd": 0,
+        "note": "Estimated development API cost across all 16 tasks. Frozen evaluation: $0 paid API cost. 0 requests have incomplete usage; excludes local compute. Rounded to the nearest $10; exact records are retained in the development logs."
+      },
+      "training_rollout_limit": 10,
+      "released_demonstrations_used": false,
+      "adaptation_note": "Claude Opus 5.5, high reasoning effort; Interaction-only; at most 10 simulator starts per task, 123 starts across all tasks. 150-minute task deadline. Frozen policies evaluated on all 800 test episodes. Development audit: PASS.",
+      "link": "https://robot-agent-exploration.com/",
+      "audit_status": "passed"
+    },
+    {
+      "id": "rax-demos-interaction-r5",
+      "name": "RAX (Huang et al.)",
+      "type": "Proprietary coding agent · frozen task controllers",
+      "results": {
+        "BinFill": 0.74,
+        "ButtonUnmask": 0.56,
+        "ButtonUnmaskSwap": 0.24,
+        "InsertPeg": 0.18,
+        "MoveCube": 0.02,
+        "PatternLock": 0.16,
+        "PickHighlight": 0.56,
+        "PickXtimes": 0.54,
+        "RouteStick": 0.2,
+        "StopCube": 0.66,
+        "SwingXtimes": 0.3,
+        "VideoPlaceButton": 0.24,
+        "VideoPlaceOrder": 0.12,
+        "VideoRepick": 0.58,
+        "VideoUnmask": 0.56,
+        "VideoUnmaskSwap": 0.0
+      },
+      "tags": [
+        "proprietary_model"
+      ],
+      "model_type": "Code",
+      "setting": "FS",
+      "evaluation": {
+        "completed": 800,
+        "counts": {
+          "success": 283,
+          "fail": 517,
+          "infrastructure": 0
+        },
+        "program_errors": 0,
+        "operator_repaired_tasks": [],
+        "source": "RoboMME-Plus protocol v2 ASPIRE/RAX study (Claude Opus 5.5), 800 held-out episodes"
+      },
+      "total_size": "N/A",
+      "size_note": "Frozen per-task Python controllers. Claude Opus 5.5 is used only during development; its parameter count is not publicly reported. The optional Gemini service is disabled.",
+      "training_compute": {
+        "status": "not_applicable",
+        "note": "No model-weight training; a coding agent writes the policies during development."
+      },
+      "api_cost": {
+        "total_usd": 80,
+        "approximate": true,
+        "note": "Estimated development API cost for all 16 tasks: about US$80 (Claude Opus 5.5 token usage at the AWS Bedrock rate card). Evaluation of the frozen programs makes no model calls (US$0). Excludes local compute. Rounded to the nearest $10; exact records are retained in the development logs.",
+        "lower_bound": false
+      },
+      "training_rollout_limit": 5,
+      "released_demonstrations_used": true,
+      "adaptation_note": "Claude Opus 5.5 (high reasoning effort) developed one frozen program per task from the 50 released demonstrations and up to 5 simulator starts per task on training seeds, within 150 minutes per task; 72 of 80 starts used. Each budget is an independent development run. Frozen programs make no model calls at test time.",
+      "link": "https://robot-agent-exploration.com/"
+    },
+    {
+      "id": "rax-demos-interaction-r10",
+      "name": "RAX (Huang et al.)",
+      "type": "Proprietary coding agent · frozen task controllers",
+      "results": {
+        "BinFill": 0.5,
+        "ButtonUnmask": 0.68,
+        "ButtonUnmaskSwap": 0.2,
+        "InsertPeg": 0.0,
+        "MoveCube": 0.02,
+        "PatternLock": 0.2,
+        "PickHighlight": 0.38,
+        "PickXtimes": 0.4,
+        "RouteStick": 0.24,
+        "StopCube": 0.66,
+        "SwingXtimes": 0.66,
+        "VideoPlaceButton": 0.38,
+        "VideoPlaceOrder": 0.36,
+        "VideoRepick": 0.64,
+        "VideoUnmask": 0.58,
+        "VideoUnmaskSwap": 0.64
+      },
+      "tags": [
+        "proprietary_model"
+      ],
+      "model_type": "Code",
+      "setting": "FS",
+      "evaluation": {
+        "completed": 800,
+        "counts": {
+          "success": 327,
+          "fail": 473,
+          "infrastructure": 0
+        },
+        "source_experiment": "r10_20261121",
+        "summary_sha256": "b4238e34d607d045ff22fea90ad9ba3113103bd6e1d2bcdcdf22e2df33223127",
+        "audit_status": "passed",
+        "training_dataset_revision": "63cb9b5b62f5413993845c7d89b82b3bd58dc2fa"
+      },
+      "total_size": "N/A",
+      "size_note": "Frozen per-task Python controllers. Claude Opus 5.5 is used only during development; its parameter count is not publicly reported. The optional Gemini service is disabled.",
+      "training_compute": {
+        "status": "not_applicable",
+        "note": "No model-weight training; a coding agent writes the policies during development."
+      },
+      "api_cost": {
+        "total_usd": 100,
+        "approximate": true,
+        "lower_bound": false,
+        "development_usd": 100,
+        "evaluation_usd": 0,
+        "note": "Estimated development API cost across all 16 tasks. Frozen evaluation: $0 paid API cost. 0 requests have incomplete usage; excludes local compute. Rounded to the nearest $10; exact records are retained in the development logs."
+      },
+      "training_rollout_limit": 10,
+      "released_demonstrations_used": true,
+      "adaptation_note": "Claude Opus 5.5, high reasoning effort; Hybrid; at most 10 simulator starts per task, 121 starts across all tasks. 150-minute task deadline. Frozen policies evaluated on all 800 test episodes. Development audit: PASS.",
+      "link": "https://robot-agent-exploration.com/",
+      "audit_status": "passed"
     }
   ],
   "evaluation": {
-    "updated_utc": "2026-10-28T17:26:48.398896+00:00",
+    "updated_utc": "2026-11-23T00:46:54.481081+00:00",
     "episodes_per_task": 50,
-    "note": "Completed rollout snapshot after the October 28 refresh: all 4,800 episode outcomes and 96 per-task scores were checked against the six published method summaries. Includes the refreshed PickHighlight results and 3-tier Astra ButtonUnmaskSwap results; retains other saved evaluations. Maintainer-provided approximate API display totals are unchanged."
-  }
+    "version": "v2",
+    "source": "https://huggingface.co/datasets/Yinpei/RoboMME-plus-model-rollout",
+    "revision": "ebef7bcd1abe4cc1748c3257cd787434489265fc",
+    "published_utc": "2026-11-16T17:33:45.044355+00:00",
+    "performance_sha256": "3189c54476b98c102af03076a17b0e33179b34437657fca03cce25cbc56c1d18",
+    "manifest_sha256": "13067d08d543ca34e33272577927696e8f390862ed675967e0a749d392169404",
+    "benchmark_commit": "7a780d6fcbd0dde1e7f7fc2ed35afe2978139a42",
+    "note": "Published RoboMME-Plus V2 rollout snapshot: all 4,800 episode outcomes and 96 per-task scores were checked against the release manifest, performance report, audit, and six model summaries. Each method retains 514 V1 episodes and replaces 286 episodes with held-out perceptual and mechanism variations. Existing API cost totals and other method metadata are unchanged.",
+    "limitations": [
+      "75 retained InsertPeg metadata mismatches",
+      "One-shot: original demonstrations in 514 retained episodes; updated demonstrations in 286 replacements",
+      "Larger 8192-token planner allowance for 10 recovered 3-tier episodes"
+    ],
+    "agentic_study": {
+      "configurations": 6,
+      "episodes": 4800,
+      "collected_utc": "2026-11-22T17:45:52.068747+00:00",
+      "source_experiments": [
+        "r10_20261121",
+        "demo_only_20261121"
+      ],
+      "audit_status": "pending",
+      "audit_note": "Updated ASPIRE/RAX scores are provisional pending the development audits.",
+      "note": "Complete frozen evaluations on 800 episodes per configuration. Interaction settings use 10 rollouts per task. Errors remain in the denominator."
+    }
+  },
+  "reference_results": [
+    {
+      "method": "aspire",
+      "setting": "interaction-only",
+      "budget": 1,
+      "total": 800,
+      "successes": 117,
+      "tasks": {
+        "BinFill": {
+          "total": 50,
+          "successes": 1
+        },
+        "ButtonUnmask": {
+          "total": 50,
+          "successes": 3
+        },
+        "ButtonUnmaskSwap": {
+          "total": 50,
+          "successes": 1
+        },
+        "InsertPeg": {
+          "total": 50,
+          "successes": 0
+        },
+        "MoveCube": {
+          "total": 50,
+          "successes": 0
+        },
+        "PatternLock": {
+          "total": 50,
+          "successes": 10
+        },
+        "PickHighlight": {
+          "total": 50,
+          "successes": 0
+        },
+        "PickXtimes": {
+          "total": 50,
+          "successes": 7
+        },
+        "RouteStick": {
+          "total": 50,
+          "successes": 10
+        },
+        "StopCube": {
+          "total": 50,
+          "successes": 32
+        },
+        "SwingXtimes": {
+          "total": 50,
+          "successes": 10
+        },
+        "VideoPlaceButton": {
+          "total": 50,
+          "successes": 8
+        },
+        "VideoPlaceOrder": {
+          "total": 50,
+          "successes": 9
+        },
+        "VideoRepick": {
+          "total": 50,
+          "successes": 16
+        },
+        "VideoUnmask": {
+          "total": 50,
+          "successes": 2
+        },
+        "VideoUnmaskSwap": {
+          "total": 50,
+          "successes": 8
+        }
+      },
+      "development_api": {
+        "requests": 1445,
+        "known_estimated_cost_usd": 134.613789,
+        "incomplete_requests": 2,
+        "pending_usage_requests": 0
+      },
+      "evaluation_api_cost_usd": 0,
+      "reference_only": true,
+      "source_experiment": "full_20261116_protocol_v2"
+    },
+    {
+      "method": "aspire",
+      "setting": "demo&interaction",
+      "budget": 1,
+      "total": 800,
+      "successes": 155,
+      "tasks": {
+        "BinFill": {
+          "total": 50,
+          "successes": 13
+        },
+        "ButtonUnmask": {
+          "total": 50,
+          "successes": 24
+        },
+        "ButtonUnmaskSwap": {
+          "total": 50,
+          "successes": 0
+        },
+        "InsertPeg": {
+          "total": 50,
+          "successes": 3
+        },
+        "MoveCube": {
+          "total": 50,
+          "successes": 0
+        },
+        "PatternLock": {
+          "total": 50,
+          "successes": 0
+        },
+        "PickHighlight": {
+          "total": 50,
+          "successes": 8
+        },
+        "PickXtimes": {
+          "total": 50,
+          "successes": 13
+        },
+        "RouteStick": {
+          "total": 50,
+          "successes": 0
+        },
+        "StopCube": {
+          "total": 50,
+          "successes": 14
+        },
+        "SwingXtimes": {
+          "total": 50,
+          "successes": 2
+        },
+        "VideoPlaceButton": {
+          "total": 50,
+          "successes": 5
+        },
+        "VideoPlaceOrder": {
+          "total": 50,
+          "successes": 16
+        },
+        "VideoRepick": {
+          "total": 50,
+          "successes": 37
+        },
+        "VideoUnmask": {
+          "total": 50,
+          "successes": 19
+        },
+        "VideoUnmaskSwap": {
+          "total": 50,
+          "successes": 1
+        }
+      },
+      "development_api": {
+        "requests": 1990,
+        "known_estimated_cost_usd": 170.526937,
+        "incomplete_requests": 3,
+        "pending_usage_requests": 0
+      },
+      "evaluation_api_cost_usd": 0,
+      "reference_only": true,
+      "source_experiment": "full_20261116_protocol_v2"
+    },
+    {
+      "method": "rax",
+      "setting": "interaction-only",
+      "budget": 1,
+      "total": 800,
+      "successes": 26,
+      "tasks": {
+        "BinFill": {
+          "total": 50,
+          "successes": 6
+        },
+        "ButtonUnmask": {
+          "total": 50,
+          "successes": 6
+        },
+        "ButtonUnmaskSwap": {
+          "total": 50,
+          "successes": 0
+        },
+        "InsertPeg": {
+          "total": 50,
+          "successes": 0
+        },
+        "MoveCube": {
+          "total": 50,
+          "successes": 0
+        },
+        "PatternLock": {
+          "total": 50,
+          "successes": 0
+        },
+        "PickHighlight": {
+          "total": 50,
+          "successes": 0
+        },
+        "PickXtimes": {
+          "total": 50,
+          "successes": 0
+        },
+        "RouteStick": {
+          "total": 50,
+          "successes": 10
+        },
+        "StopCube": {
+          "total": 50,
+          "successes": 1
+        },
+        "SwingXtimes": {
+          "total": 50,
+          "successes": 0
+        },
+        "VideoPlaceButton": {
+          "total": 50,
+          "successes": 0
+        },
+        "VideoPlaceOrder": {
+          "total": 50,
+          "successes": 1
+        },
+        "VideoRepick": {
+          "total": 50,
+          "successes": 0
+        },
+        "VideoUnmask": {
+          "total": 50,
+          "successes": 2
+        },
+        "VideoUnmaskSwap": {
+          "total": 50,
+          "successes": 0
+        }
+      },
+      "development_api": {
+        "requests": 1059,
+        "known_estimated_cost_usd": 107.366355,
+        "incomplete_requests": 0,
+        "pending_usage_requests": 0
+      },
+      "evaluation_api_cost_usd": 0,
+      "reference_only": true,
+      "source_experiment": "full_20261116_protocol_v2"
+    },
+    {
+      "method": "rax",
+      "setting": "demo&interaction",
+      "budget": 1,
+      "total": 800,
+      "successes": 156,
+      "tasks": {
+        "BinFill": {
+          "total": 50,
+          "successes": 36
+        },
+        "ButtonUnmask": {
+          "total": 50,
+          "successes": 0
+        },
+        "ButtonUnmaskSwap": {
+          "total": 50,
+          "successes": 1
+        },
+        "InsertPeg": {
+          "total": 50,
+          "successes": 1
+        },
+        "MoveCube": {
+          "total": 50,
+          "successes": 2
+        },
+        "PatternLock": {
+          "total": 50,
+          "successes": 10
+        },
+        "PickHighlight": {
+          "total": 50,
+          "successes": 7
+        },
+        "PickXtimes": {
+          "total": 50,
+          "successes": 10
+        },
+        "RouteStick": {
+          "total": 50,
+          "successes": 7
+        },
+        "StopCube": {
+          "total": 50,
+          "successes": 15
+        },
+        "SwingXtimes": {
+          "total": 50,
+          "successes": 10
+        },
+        "VideoPlaceButton": {
+          "total": 50,
+          "successes": 13
+        },
+        "VideoPlaceOrder": {
+          "total": 50,
+          "successes": 27
+        },
+        "VideoRepick": {
+          "total": 50,
+          "successes": 17
+        },
+        "VideoUnmask": {
+          "total": 50,
+          "successes": 0
+        },
+        "VideoUnmaskSwap": {
+          "total": 50,
+          "successes": 0
+        }
+      },
+      "development_api": {
+        "requests": 2044,
+        "known_estimated_cost_usd": 151.081022,
+        "incomplete_requests": 1,
+        "pending_usage_requests": 0
+      },
+      "evaluation_api_cost_usd": 0,
+      "reference_only": true,
+      "source_experiment": "full_20261116_protocol_v2"
+    }
+  ]
 }

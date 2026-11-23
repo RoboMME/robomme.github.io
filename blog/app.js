@@ -63,6 +63,7 @@
     return n;
   }
   const pct = (r) => (r === null || r === undefined ? "–" : `${Math.round(r * 100)}%`);
+  const pct2 = (r) => (r === null || r === undefined ? "–" : `${(Math.round((r * 100 + Number.EPSILON) * 100) / 100).toFixed(2)}%`);
   const pct1 = (r) => (r === null || r === undefined ? "–" : `${(r * 100).toFixed(1)}%`);
   const rateOf = (p) => (typeof p.rate === "number" ? p.rate : typeof p.success === "number" && p.n ? p.success / p.n : null);
   function boldText(md) {
@@ -519,7 +520,8 @@
       const v = Math.round(p.rate * 10000) / 100, rate = Number.isInteger(Math.round(v * 100) / 10) ? v.toFixed(1) : v.toFixed(2);  // 97.0, 79.13
       const head = el("div", { class: "tt-rate" }, [el("b", { text: p.name }), ` · ${rate}% overall success`]);
       const details = r ? [head, el("div", { class: "tt-title", text: r.title }), el("div", { class: "tt-head", text: r.url.replace(/^https:\/\//, "") })]
-        : [head, el("div", { class: "tt-title", text: "No paper yet" }), el("div", { class: "tt-head", text: (p.page || p.site).replace(/^https:\/\//, "") })];
+        : [head, el("div", { class: "tt-title", text: p.source === "in-preparation" ? "Paper in preparation" : "No paper yet" }),
+          ...((p.page || p.site) ? [el("div", { class: "tt-head", text: (p.page || p.site).replace(/^https:\/\//, "") })] : [])];
       if (p.protocol_note) details.push(el("div", { class: "tt-title", text: p.protocol_note }));
       showTip(evt, details);
     };
@@ -645,6 +647,40 @@
           }
           if (best.cost < Infinity) break;
         }
+        if (best.cost === Infinity) {
+          // no room for dot + label together on the slope: keep the dot on the mountain at its height and join it with a
+          // thin leader line to the nearest free label spot on either side (at the dot's height or a little above/below)
+          const lineFree = (x1, y1, x2, y2) => {  // the leader must not run through another dot or label
+            const n = Math.max(2, Math.ceil(Math.hypot(x2 - x1, y2 - y1) / 3));
+            for (let k = 2; k <= n; k++) { const t = k / n, px = x1 + (x2 - x1) * t, py = y1 + (y2 - y1) * t;
+              if (boxes.some((o) => px > o.x && px < o.x + o.w && py > o.y && py < o.y + o.h)) return false; }
+            return true;
+          };
+          // first with the usual spacing; on a crowded peak, a second pass only keeps the dot's centre out of its
+          // neighbours' margins, so the dot may sit closer to them but stays on the mountain at its own height
+          for (const strict of [true, false]) for (const dy of [0, -3, 3, -6, 6, -9, 9]) {
+            if (best.cost < Infinity) break;
+            const y = yAt(p.rate) + dy, lim = hw(hAt(y)) * (narrow ? 0.97 : 0.9) - st.r;
+            if (lim <= 0) continue;
+            const target = mid != null ? mid + (MIDDLE[p.name] < 0 ? 4 + tw : 0) : cx + (p.order - 0.5) * 2 * lim * 0.95;
+            for (let x = cx - lim; x <= cx + lim + 0.01; x += 2) {
+              const mk = { x: x - st.r - 1.5, y: y - st.r - 1.5, w: 2 * st.r + 3, h: 2 * st.r + 3 };
+              if (strict ? hit(mk) : hit({ x: x - 2, y: y - 2, w: 4, h: 4 })) continue;
+              for (const side of [-1, 1]) for (const ly of [0, -16, 16, -26, 26]) {
+                for (let gap = 14; gap <= (narrow ? 130 : 220); gap += 4) {
+                  const lx = side > 0 ? x + st.r + gap : x - st.r - gap - tw;
+                  const lb = { x: lx - 1, y: y + ly - th / 2 - 1, w: tw + 2, h: th + 2 };
+                  if (lb.x < 2 || lb.x + lb.w > W - 2 || hit(lb)) continue;
+                  const leaderX = side < 0 ? lx + tw + 3 : lx - 3;
+                  if (!lineFree(x, y, leaderX, y + ly)) continue;
+                  const cost = Math.abs(x - target) * 0.5 + gap + Math.abs(ly) * 1.5 + Math.abs(dy) * 6;
+                  if (cost < best.cost) Object.assign(best, { cost, x, y, side, lx, ly, mk, lb, leaderX });
+                  break;  // nearest free gap for this side and height
+                }
+              }
+            }
+          }
+        }
         if (best.cost === Infinity) {  // nothing on the slope: any free spot across the figure, a little further up or down
           for (const dy of narrow ? [0, -4, 4, -8, 8, -12, 12, -16, 16, -20, 20, -26, 26, -32, 32, -40, 40] : [0, -4, 4, -8, 8, -12, 12, -16, 16, -20, 20]) {
             const y = yAt(p.rate) + dy, target = mid ?? cx + (p.order - 0.5) * W * 0.6 - half;
@@ -671,12 +707,17 @@
         }
         // keep a margin around every placed dot and label so neighbouring methods stay apart
         boxes.push(pad(best.mk)); if (best.lb) boxes.push(pad(best.lb));
+        if (best.leaderX !== undefined && !summitSide.has(p.name)) {  // reserve the leader line too, so later labels avoid it
+          const x1 = Math.min(best.x, best.leaderX), y1 = Math.min(best.y, best.y + best.ly);
+          boxes.push({ x: x1, y: y1 - 2, w: Math.abs(best.leaderX - best.x), h: Math.abs(best.ly) + 4 });
+        }
         return { p, st, ...best };
       });
       measure.remove();
       placed.forEach(({ p, x, y, side, lx, ly = 0, leaderX }) => {
         // the whole item links to the project website
-        const g = svg("a", { class: "mtn-item", "data-method": p.name, href: p.site, target: "_blank", rel: "noopener" });
+        const g = p.site ? svg("a", { class: "mtn-item", "data-method": p.name, href: p.site, target: "_blank", rel: "noopener" })
+          : svg("g", { class: "mtn-item", "data-method": p.name });  // no public page yet (paper in preparation)
         if (leaderX !== undefined) g.append(svg("line", { x1: x, y1: y, x2: leaderX, y2: y + ly, stroke: "#718099", "stroke-width": 1 }));
         g.append(...dot(shade(binOf(p.released)), x, y));
         if (side) {
@@ -779,7 +820,7 @@
         const { pts, key, xs } = smvSweep(task);
         const holder = el("div", { class: "f2-chart" });
         left.append(el("div", { class: "f2-row-title" }, [el("span", { class: "task-name", text: task }), ` · ${F2_ROW[task]}`]), holder);
-        lineChart(holder, { xs, height: 132, noLegend: true, bandLabel: ti ? " " : "training range",
+        lineChart(holder, { xs, height: 132, noLegend: true, bandLabel: "training range",  // on all three plots
           series: [{ entity: "simplememvla", values: Object.fromEntries(pts.map((p) => [key(p), p])) }],
           selected: task === cur ? { entity: "simplememvla", key: sel } : null, onPick: (_, k) => { cur = task; sel = k; draw(); } });
       });
@@ -1054,9 +1095,7 @@
     let suite = "Counting", task = "PickXtimes";
     const boldNums = (t) => String(t || "").split(/(\d+(?:–\d+)?)/).map((x, i) => (i % 2 ? el("b", { text: x }) : x));
     const draw = () => {
-      const c = card(host, figTitle(8, "Comparison examples of RoboMME and RoboMME-Plus."),
-        "Each side plays an oracle rollout, with the wrist camera inset in the corner; the line under each video summarizes that " +
-        "setup. Use ‹ › to switch between the easy, medium, and hard examples (MoveCube: one per manipulation method).");
+      const c = card(host, figTitle(8, "Example episodes from RoboMME and RoboMME-Plus."));
       // Speed at the right end of the Suite line; the wrist-camera and oracle-subgoal checkboxes at the end of the Task line
       const suiteRow = tabRow("Suite", tabs(SUITES.map(([s]) => ({ label: s, value: s })), (v) => { suite = v; task = SUITES.find(([s]) => s === v)[1][0]; draw(); }, suite));
       const taskRow = tabRow("Task", tabs(SUITES.find(([s]) => s === suite)[1].map((t) => ({ label: t, value: t })), (v) => { task = v; draw(); }, task));
@@ -1090,12 +1129,66 @@
     draw();
   }
 
-  /* ------------------------------------------------------------ Table 1: results */
-  const SIX = [
-    { id: "framesamp-modul", label: "FrameSamp+Modul" },
-    { id: "simplememvla", label: "SimpleMemVLA" }, { id: "ponderpounce", label: "PonderPounce" },
-    { id: "3-tier-astra", label: "3-tier Astra" }, { id: "embodied-astra", label: "Embodied Astra" }, { id: "embodied-astra-fs", label: "Embodied Astra (one-shot)" },
+  /* ------------------------------------------------------------ Figure 10: held-out variations, off | on */
+  function cardVariations(host) {
+    // Figure 10: one RoboMME-Plus test episode played twice from the same seed, its held-out variation off (left) and on
+    // (right). Variation (Perceptual | Mechanism) and Task tabs pick the example; the line under each video says what differs.
+    // Clips: experiments/variation_examples/oracle_clips.py (oracle rollouts; "scene" clips hold the robot still).
+    const FAMILIES = [["Perceptual", "perceptual"], ["Mechanism", "mechanism"]];
+    let family = "perceptual", task = null;
+    const title = figTitle(10, "Held-out variations: one test episode with its variation off and on.");
+    const caption = "Pick a variation type and a task. Both sides replay the episode from the same seed, " +
+      "with the wrist camera inset in the corner.";
+    const draw = (D) => {
+      const c = card(host, title, caption);
+      const list = (D || {})[family] || [];
+      if (!list.length) { c.body.textContent = "No examples."; return; }
+      if (!list.some((x) => x.task === task)) task = list[0].task;
+      const famRow = tabRow("Variation", tabs(FAMILIES.map(([l, v]) => ({ label: l, value: v })), (v) => { family = v; task = null; draw(D); }, family));
+      const taskRow = tabRow("Selected Task", tabs(list.map((x) => ({ label: x.task, value: x.task })), (v) => { task = v; draw(D); }, task));
+      c.tabsBox.append(famRow, taskRow);
+      if (!window.RolloutPlayer) return;
+      c.tabsBox.classList.add("has-speed", "speed-inline");
+      famRow.classList.add("with-speed"); famRow.appendChild(RolloutPlayer.speedSelect({ subgoal: false }));
+      taskRow.classList.add("with-speed"); taskRow.appendChild(RolloutPlayer.speedSelect({ subgoal: false, speed: false, wrist: true, oracle: true }));
+      host.classList.add("rp-fit");
+      c.body.classList.add("single");
+      const ex = list.find((x) => x.task === task);
+      const pair = el("div", { class: "f8-pair" });
+      c.body.appendChild(pair);
+      // the two goal bars share one height so the videos line up
+      const even = () => { const bars = [...pair.querySelectorAll(".rp-task")]; bars.forEach((b) => (b.style.minHeight = ""));
+        const h = Math.max(...bars.map((b) => b.offsetHeight)); bars.forEach((b) => (b.style.minHeight = `${h}px`)); };
+      [["off", "Variation off"], ["on", "Variation on"]].forEach(([side, label]) => {
+        const col = el("div", { class: `f8-side f10-${side}` }), mount = el("div");
+        col.append(el("div", { class: "f8-title", text: label }), mount, el("div", { class: "f8-setup", text: ex.setup[side] }));
+        pair.appendChild(col);
+        RolloutPlayer.mount(mount, [ex[side]], { band: "card", view: "pip", nav: false, onShow: () => requestAnimationFrame(even) });  // no task goal
+      });
+      if (ex.mode === "scene") c.body.appendChild(el("div", { class: "f10-note",
+        text: "The oracle does not solve this variant, so the robot holds still while the scene plays out." }));
+      if (ex.mode === "expert") c.body.appendChild(el("div", { class: "f10-note",
+        text: "Variation on: the expert reference recorded for this test episode. Variation off: the oracle on the base task." }));
+    };
+    card(host, title, caption);
+    lazy("fig10_variations").then(draw);
+  }
+
+  /* ------------------------------------------------------------ Table 1: per-task success, one block per setting */
+  // methods as rows, tasks as columns; methods are compared only within a block (one setting and rollout budget)
+  const T1_NAME = { "framesamp-modul": "FrameSamp+Modul", simplememvla: "SimpleMemVLA", ponderpounce: "PonderPounce",
+    "3-tier-astra": "3-tier Astra", "embodied-astra": "Embodied Astra", "embodied-astra-fs": "One-shot Emb. Astra" };
+  const T1_BLOCKS = [
+    ["Zero-shot", ["framesamp-modul", "simplememvla", "ponderpounce", "3-tier-astra", "embodied-astra"]],
+    ["Demo-only", ["embodied-astra-fs", "aspire:Demos:0", "rax:Demos:0"]],
+    ["Interaction-only \u00b7 10 rollouts per task", ["aspire:Interaction:10", "rax:Interaction:10"]],
+    ["Hybrid \u00b7 10 rollouts per task", ["aspire:Demos+Interaction:10", "rax:Demos+Interaction:10"]],
   ];
+  // two-line task headers, as in the paper's per-task table
+  const T1_HEAD = { BinFill: "Bin\nFill", PickXtimes: "Pick\nXtimes", SwingXtimes: "Swing\nXtimes", StopCube: "Stop\nCube",
+    VideoUnmask: "Video\nUmsk", VideoUnmaskSwap: "Video\nUmskS", ButtonUnmask: "Button\nUmsk", ButtonUnmaskSwap: "Button\nUmskS",
+    PickHighlight: "Pick\nHighL", VideoRepick: "Video\nRepick", VideoPlaceButton: "Video\nPlcBtn", VideoPlaceOrder: "Video\nPlcOrd",
+    MoveCube: "Move\nCube", InsertPeg: "Insert\nPeg", PatternLock: "Pattern\nLock", RouteStick: "Route\nStick" };
   const REGULAR_OVERALL = { "framesamp-modul": 0.445, simplememvla: 0.883, ponderpounce: 0.608, "3-tier-astra": 0.79125, "embodied-astra": 0.921,
     "embodied-astra-fs": 0.94625 };  // one-shot Astra on RoboMME: our run, 757/800
   function seqColor(r) {
@@ -1103,46 +1196,54 @@
     const steps = ["--seq-0", "--seq-1", "--seq-2", "--seq-3", "--seq-4", "--seq-5", "--seq-6", "--seq-7"];
     const k = r <= 0 ? 0 : Math.min(7, 1 + Math.floor(r * 7 - 1e-9));
     return [`var(${steps[k]})`, k >= 4 ? "#ffffff" : "#0b0b0b"];
-  }
-  function cardResults(host) {
-    const R = results(), PH = (DATA.placeholders && DATA.placeholders.methods) || {};
-    host.classList.add("table-card");
-    host.replaceChildren(el("div", { class: "card-title" }, [el("b", { text: "Table 1. " }), "Success rates on RoboMME-Plus by task."]));
+  }  function cardResults(host) {
+    const R = results();
+    host.classList.add("table-card", "wide");  // the full text-column width
+    host.replaceChildren(el("div", { class: "card-title" }, [el("b", { text: "Table 1. " }), "Per-task success (%) on RoboMME-Plus, by setting."]));
     if (!R) return;
-    const td = (r, ph, digits1) => {
+    const A = {};
+    ((DATA.agentic_per_task && DATA.agentic_per_task.configurations) || []).forEach((c) => { A[`${c.method}:${c.setting}:${c.budget}`] = c; });
+    const TASKS = SUITES.flatMap(([, ts]) => ts);
+    const row = (id) => {
+      if (A[id]) return { name: A[id].label, rate: A[id].rate, tasks: A[id].tasks, regular: null };
+      if (!R[id]) return null;
+      const tasks = {}; TASKS.forEach((t) => { tasks[t] = R[id].tasks[t] ? R[id].tasks[t].rate : null; });
+      return { name: T1_NAME[id], rate: R[id].rate, tasks, regular: REGULAR_OVERALL[id] };
+    };
+    const td = (r, text, cls) => {
       const [bg, fg] = seqColor(r);
-      const x = el("td", { class: ph ? "ph-cell" : null, text: r === null || r === undefined ? "–" : `${digits1 ? pct1(r) : pct(r)}${ph ? "†" : ""}` });
-      if (!ph) { x.style.background = bg; x.style.color = fg; }
+      const x = el("td", { class: cls, text: r === null || r === undefined ? "–" : text });
+      x.style.background = bg; x.style.color = fg;
       return x;
     };
-    // Embodied Astra spans its two variants; every method column has the same width.
-    const dag = (id) => (PH[id] ? "\u00a0†" : "");
     const head = [
-      el("tr", {}, [el("th", { rowspan: 2 }), el("th", { class: "task", rowspan: 2, text: "Task" }),
-        el("th", { rowspan: 2, class: "two", text: "FrameSamp\n+Modul" }), el("th", { rowspan: 2, class: "two", text: "SimpleMem\nVLA" }),
-        el("th", { rowspan: 2, class: "two", text: "Ponder\nPounce" + dag("ponderpounce") }), el("th", { rowspan: 2, class: "two", text: "3-tier\nAstra" }),
-        el("th", { class: "group", colspan: 2, text: "Embodied Astra" })]),
-      el("tr", { class: "sub" }, [el("th", { text: "zero-shot" }), el("th", { text: "one-shot" })]),
+      el("tr", {}, [el("th", { class: "m", rowspan: 2, text: "Method" }), ...SUITES.map(([s]) => el("th", { class: "group", colspan: 4, text: s })),
+        el("th", { class: "group", colspan: 2, text: "Overall" })]),
+      el("tr", { class: "sub" }, [...TASKS.map((t) => el("th", { class: "two", title: t, text: T1_HEAD[t] })),
+        el("th", { class: "two", text: "RoboMME\n-Plus" }), el("th", { class: "two", text: "RoboMME\n(original)" })]),
     ];
-    const gap = (cls) => el("tr", { class: cls }, [el("td", { colspan: SIX.length + 2 })]);
-    const body = [el("tr", { class: "regular-row" }, [el("td"), el("td", { class: "task", text: "RoboMME (original)" }), ...SIX.map((m) => el("td", { text: REGULAR_OVERALL[m.id] ? pct1(REGULAR_OVERALL[m.id]) : "–" }))])];
-    SUITES.forEach(([s, tasks]) => { body.push(gap("suite-gap")); tasks.forEach((t, k) => body.push(el("tr", {}, [
-      k === 0 ? el("td", { class: "suite", rowspan: 4, text: s }) : null, el("td", { class: "task", text: t }),
-      ...SIX.map((m) => (PH[m.id] ? td(PH[m.id].tasks[t], true) : td(R[m.id] && R[m.id].tasks[t] ? R[m.id].tasks[t].rate : null))),
-    ]))); });
-    body.push(gap("overall-gap"));
-    body.push(el("tr", { class: "overall" }, [el("td"), el("td", { class: "task", text: "Overall" }), ...SIX.map((m) => (PH[m.id] ? td(PH[m.id].rate, true, true) : td(R[m.id] ? R[m.id].rate : null, false, true)))]));
-    const cols = el("colgroup", {}, [el("col", { class: "c-suite" }), el("col", { class: "c-task" }), ...SIX.map(() => el("col", { class: "c-method" }))]);
-    host.appendChild(el("div", { class: "results-wrap" }, el("table", { class: "results" }, [cols, el("thead", {}, head), el("tbody", {}, body)])));
-    const ramp = el("span", { class: "ramp" }, ["--seq-0", "--seq-1", "--seq-2", "--seq-3", "--seq-4", "--seq-5", "--seq-6", "--seq-7"].map((v) => { const i = el("i"); i.style.background = `var(${v})`; return i; }));
-    host.appendChild(el("div", { class: "scale-legend" }, ["0%", ramp, "100%"]));
+    const body = [];
+    T1_BLOCKS.forEach(([title, ids]) => {
+      const rows = ids.map(row).filter(Boolean);
+      if (!rows.length) return;
+      const best = Math.max(...rows.map((r) => r.rate));  // bold: best overall within the block, never across blocks
+      body.push(el("tr", { class: "blk" }, [el("td", { colspan: TASKS.length + 3, text: title })]));
+      rows.forEach((r) => body.push(el("tr", {}, [
+        el("td", { class: "m", text: r.name }),
+        ...TASKS.map((t) => td(r.tasks[t], String(Math.round(r.tasks[t] * 100)))),
+        td(r.rate, pct2(r.rate).replace("%", ""), rows.length > 1 && r.rate === best ? "ov best" : "ov"),
+        el("td", { class: "reg", text: r.regular ? (r.regular * 100).toFixed(1) : "–" }),
+      ])));
+    });
+    const cols = el("colgroup", {}, [el("col", { class: "c-m" }), ...TASKS.map(() => el("col")), el("col", { class: "c-ov" }), el("col", { class: "c-reg" })]);
+    host.appendChild(el("div", { class: "results-wrap" }, el("table", { class: "results t1" }, [cols, el("thead", {}, head), el("tbody", {}, body)])));
   }
 
   /* ------------------------------------------------------------ Figure 6: occlusion (E16c, same layouts with and without the fence) */
   function cardOcclusion(host) {
     sweepCard(host, DATA.e16_occlusion_rungs, {
       fig: 6, title: "Embodied Astra’s performance on VideoUnmask without occlusion (original) versus with a fence that hides at least half of every target cube from the front camera (new).",
-      caption: () => "Click a bar to see its rollouts; the wrist camera is inset in the corner.",
+      caption: () => "Click a bar to see its rollouts.",
       start: () => ({ g: 2, s: "board" }), groupName: (g) => `${g.label} containers`, xTitle: "Containers",
       tick: (g) => g.label, setup: (g, s) => `${g.label} containers · ${s === "board" ? "New" : "Original"}`,
       spec: (g, s) => `cfence:${s}:${g}`, epCaption: epNote, player: "fig6_rollouts", view: "pip", goalIntro: { mount: "same" }, goalBold: ["white", "violet"],
@@ -1223,14 +1324,14 @@
     const sec = (v) => (v == null ? "–" : `${v.toFixed(1)} s`), ms = (v) => (v == null ? "–" : `${Math.round(v * 1000)} ms`);
     const money = (v) => `$${Math.round(v).toLocaleString("en-US")}`;
     // headers on two balanced lines ("\n", white-space: pre-line)
-    const FEW_SHOT = new Set(["embodied-astra-fs"]);  // the rest are evaluated zero-shot
+    const FROM_DEMOS = new Set(["embodied-astra-fs"]);  // the rest are evaluated zero-shot
     const head = el("tr", {}, ["Method", "Setting", "Overall\nsuccess rate", "Avg. time\nper episode", "Avg. model\ntime per step", "Avg. API\nlatency", "Total\nAPI cost"]
       .map((t, i) => el("th", { class: i > 1 ? "num" : i === 1 ? "set" : null, text: t })));
     const partial = rows.filter((r) => r.completed < r.planned);
     const body = rows.map((r) => el("tr", {}, [
       el("td", { class: "m", text: (OVERALL_LABEL[r.method] || r.label) + (r.completed < r.planned ? " †" : "") }),
-      el("td", { class: "set", text: FEW_SHOT.has(r.method) ? "FS" : "ZS" }),
-      el("td", { class: "num", text: pct1(r.success_rate) }),
+      el("td", { class: "set", text: FROM_DEMOS.has(r.method) ? "AfD" : "ZS" }),
+      el("td", { class: "num", text: pct2(r.success_rate) }),
       el("td", { class: "num", text: sec(r.wall_per_episode) }),
       el("td", { class: "num", text: ms(r.model_per_step) }),
       el("td", { class: "num", text: r.api_applicable ? sec(r.api_per_request) : "–" }),
@@ -1239,7 +1340,8 @@
     const cols = el("colgroup", {}, ["c-method", "c-set", "c-succ", "c-ep", "c-step", "c-api", "c-cost"].map((c) => el("col", { class: c })));
     host.appendChild(el("div", { class: "results-wrap" }, el("table", { class: "overall-table" }, [cols, el("thead", {}, head), el("tbody", {}, body)])));
     host.appendChild(el("div", { class: "table-note", text:
-      "FS: few-shot (one in-context example); ZS: zero-shot evaluation. Timings were measured on a machine with 2× NVIDIA RTX 6000 Ada GPUs and a " +
+      "AfD: adapt from demos (one in-context example); ZS: zero-shot transfer. Success rates use the V2 test variations, updated 16 November 2026. " +
+      "Runtime and API cost estimates retain their earlier snapshot values. Timings were measured on a machine with 2× NVIDIA RTX 6000 Ada GPUs and a " +
       "32-core AMD EPYC CPU and vary with hardware and API load. Model time is policy inference time per control step. API cost is " +
       "estimated from token usage across all test episodes." +
       (partial.length ? ` † ${partial.map((r) => `${r.completed} of ${r.planned}`).join(", ")} episodes so far.` : "") }));
@@ -1382,7 +1484,7 @@
 
   /* ------------------------------------------------------------ boot */
   const CARDS = { timeline: cardTimeline, sweeps: cardSweepsStack, "sweeps-all": cardSweepsAll, stopcube: cardStopCube, repick: cardRepick, placeorder: cardPlaceOrder,
-    insertpeg: cardInsertPeg, movecube: cardMoveCube, occlusion: cardOcclusion, design: cardDesign, results: cardResults, overall: cardOverall, horizon: cardHorizon };
+    insertpeg: cardInsertPeg, movecube: cardMoveCube, occlusion: cardOcclusion, design: cardDesign, variations: cardVariations, results: cardResults, overall: cardOverall, horizon: cardHorizon };
   // walk the page in reading order so citations are numbered by first appearance, figure captions included
   document.querySelectorAll("cite[data-ref], [data-card]").forEach((h) => {
     if (h.matches("cite")) { fillCite(h, h.dataset.ref.split(",").map((x) => x.trim())); return; }

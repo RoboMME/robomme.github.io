@@ -3,37 +3,37 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Do RoboMME Policies Generalize to RoboMME? RoboMME-Plus: Benchmarking Memory Generalization for Robot Policies</title>
+<title>Do RoboMME Policies Generalize Beyond RoboMME? RoboMME-Plus: Benchmarking Memory Generalization and Adaptation for Robot Policies</title>
 <meta name="description" content="Memory-augmented policies now exceed human performance on RoboMME. RoboMME-Plus tests whether their memory generalizes beyond the conditions they were trained on.">
 <link rel="icon" href="data:,">
 <link rel="stylesheet" href="rollout_player.css?v=dd9783b1d5">
-<link rel="stylesheet" href="style.css?v=178b3b6e72">
+<link rel="stylesheet" href="style.css?v=47e6ff1f1b">
 </head>
 <body>
 <header class="hero">
-  <h1>Do RoboMME Policies Generalize to RoboMME?</h1>
+  <h1>Do RoboMME Policies Generalize Beyond RoboMME?</h1>
   <p class="subtitle">RoboMME-Plus: Benchmarking Memory Generalization for Robot Policies</p>
   <div class="byline">
     <span class="author"><a href="https://yinpeidai.github.io/" target="_blank" rel="noopener">Yinpei Dai</a><sup>1</sup></span>,
-    <span class="author"><a href="https://hongzefu.github.io/" target="_blank" rel="noopener">Hongze Fu</a><sup>1</sup></span>,
     <span class="author"><a href="https://sites.google.com/view/yuejiangliu/home" target="_blank" rel="noopener">Yuejiang Liu</a><sup>2</sup></span>,
+    <span class="author"><a href="https://hongzefu.github.io/" target="_blank" rel="noopener">Hongze Fu</a><sup>1</sup></span>,
     <span class="author"><a href="https://ai.stanford.edu/~cbfinn/" target="_blank" rel="noopener">Chelsea Finn</a><sup>2</sup></span>,
     <span class="author"><a href="https://www.mmintlab.com/people/nima-fazeli/" target="_blank" rel="noopener">Nima Fazeli</a><sup>1</sup></span>,
     <span class="author"><a href="https://web.eecs.umich.edu/~chaijy/" target="_blank" rel="noopener">Joyce Chai</a><sup>1</sup></span>
   </div>
   <div class="affiliations"><span><sup>1</sup>University of Michigan</span><span><sup>2</sup>Stanford University</span></div>
-  <p class="lede">Memory is essential for long-horizon robotic manipulation, helping robots recall object locations, track
-    task progress, avoid repeating mistakes, and learn new tasks from video demonstrations. RoboMME
-    <cite data-ref="2603.04639"></cite> was designed to evaluate these capabilities. In less than eight months, its best
-    reported success rate has risen from 44.5% to 97.1%, exceeding the reported human baseline of 90.5%.</p>
-  <p class="lede">But how much of this progress carries over when task conditions change? Our pilot studies reveal two
-    gaps: fine-tuned policies struggle beyond their training ranges, while a strong proprietary model transfers better but
-    falters under precise timing, dynamic scenes, occlusion, and limited interaction.</p>
-  <p class="lede">These findings motivate <b>RoboMME-Plus</b>, a more challenging extension that retains RoboMME’s 16 tasks and
-    interfaces while making success harder to achieve. Fine-tuned policies achieving up to 88% success on
-    RoboMME fall below 3% without adaptation, while even the strongest Astra-based policy achieves only 35.3% success.
-    These results highlight the need for memory-augmented policies that generalize to more challenging memory-dependent
-    settings.</p>
+  <p class="lede">Within eight months, leading methods surpassed human performance on RoboMME. However, it remains unclear
+    whether these methods have learned generalizable memory capabilities or simply overfit to the benchmark’s specific
+    conditions. To investigate this question, we introduce <b>RoboMME-Plus</b>, a new benchmark that extends RoboMME’s 16 tasks
+    with longer horizons, harder conditions, and held-out variations, while limiting adaptation to a few demonstrations and
+    simulator interactions.</p>
+  <p class="lede">We evaluate three approaches: (1) fine-tuned robot policies, (2) frontier models that directly predict robot
+    actions, and (3) coding agents that develop reusable skill programs through iterative exploration. We find substantial
+    performance drops: fine-tuned policies fall from up to 88.3% success on RoboMME to below 3% on RoboMME-Plus, while
+    direct frontier-model control drops from 92.1% to 24.3%. Coding agents achieve up to 46.5% through exploration, but
+    their performance degrades sharply under held-out variations. Our results reveal that <b>strong benchmark performance does
+    not necessarily imply robust generalization, and successful adaptation does not necessarily imply transferable
+    skills.</b></p>
 </header>
 
 <nav class="toc" aria-label="Contents"></nav>
@@ -42,13 +42,8 @@
 <!-- ================================================================ MOTIVATION -->
 <section id="motivation">
   <div class="part-label">Motivation</div>
-  <h2>1. The current state of the RoboMME benchmark</h2>
-  <p>RoboMME evaluates robot memory through 16 tasks across four suites: <b>Counting</b> tests memory for repeated
-    actions and events; <b>Permanence</b> tests tracking objects once they are hidden; <b>Reference</b> tests which objects were
-    indicated earlier; and <b>Imitation</b> tests how demonstrated actions were reproduced. Together, these tasks assess
-    whether policies can use past information to guide current actions.</p>
-  <p>Since its release, the benchmark has supported steady progress across a variety of memory-augmented policies (Figure 1). As leading methods approach its
-    performance ceiling, a natural question emerges:</p>
+  <h2>1. The current state of RoboMME</h2>
+  <p>RoboMME evaluates robot memory through 16 tasks across four suites: <b>Counting</b> tests remembering repeated actions and events; <b>Permanence</b> tests tracking objects after they are hidden; <b>Reference</b> tests recalling which objects were indicated earlier; and <b>Imitation</b> tests reproducing demonstrated actions. As performance approaches the benchmark’s ceiling (Figure 1), an important question remains:</p>
   <p class="key-question">Can these policies generalize their memory capabilities beyond their training conditions?</p>
   <div class="card" data-card="timeline"></div>
 </section>
@@ -56,14 +51,12 @@
 <!-- ================================================================ FINE-TUNED -->
 <section id="finetuned">
   <h2>2. Fine-tuned policies: limited generalization</h2>
-  <p>We begin with SimpleMemVLA <cite data-ref="2609.05533"></cite>, the strongest open-source policy on the
+  <p>We begin with SimpleMemVLA <cite data-ref="2609.05533"></cite>, one of the strongest open-source policies on the
     leaderboard. Its approach to memory modeling is surprisingly simple: fine-tune a Qwen3.5-4B VLM to draw directly on
-    native video history, without dedicated memory design. The VLM predicts subgoals, and their hidden representations
-    guide a DiT-based action expert. After 2,560 H100 GPU-hours of training, the policy achieves 88% overall success,
-    including 100% on the PickXtimes task.</p>
+    native video history, without a dedicated memory module. The VLM predicts subgoals, and their hidden representations
+    guide a DiT-based action expert. After 2,560 H100 GPU-hours of training, the policy achieves 88.3% overall success, including 100% on PickXtimes.</p>
   <p>To probe its generalization, we retain the original RoboMME scenes but extend task parameters beyond their
-    training ranges, evaluating each setting over 10 episodes. Figure 2 reveals clear limits. On PickXtimes, the policy succeeds in every episode
-    requiring up to five repetitions but fails when more are required. Its predicted subgoals never advance past “for the
+    training ranges, evaluating each setting over 10 episodes. Figure 2 reveals clear limits. On PickXtimes, the policy succeeds in every episode with up to five repetitions but fails every episode with more. Its predicted subgoals never advance past “for the
     fifth time,” matching the largest count in the training data (Figure 2, top).</p>
   <p>Similarly, on PickHighlight, it solves 27 of
     30 episodes within the training range, where 1–3 cubes are highlighted among 3–6 total cubes. When 4–6
@@ -76,7 +69,7 @@
     happened.</p>
   <div class="card" data-card="sweeps"></div>
   <p>These results indicate that the policy’s ability to count and track objects remains bounded by its training data.
-    Despite extensive fine-tuning, it struggles to apply these capabilities beyond training conditions, even with familiar setups. Other fine-tuned
+    Despite extensive fine-tuning, it struggles to apply these capabilities beyond training conditions, even in familiar scenes. Other fine-tuned
     policies, including FrameSamp+Modul <cite data-ref="2603.04639"></cite> and PonderPounce
     <cite data-ref="2608.24115"></cite>, show similar limitations (Figure 2b). Together, these findings suggest that high
     success within the training distribution may reflect learned task patterns rather than generalizable memory
@@ -92,58 +85,49 @@
   <h2>3. Proprietary policies: strong transfer, remaining challenges</h2>
   <p>Large proprietary models offer a different route. Embodied Astra <cite data-ref="2610.17350"></cite> prompts
     GPT-6-Astra with the full image history, robot state, and camera calibration to generate reasoning and end-effector
-    waypoints directly. Without task-specific fine-tuning, it achieves 92.1% success on RoboMME, exceeding the
-    <span class="note" tabindex="0" data-note="note-human">reported human baseline</span> of 90.5%.</p>
-  <p>On the <a href="#fig2b" class="show-link" data-show="sweeps-all" data-task="PickXtimes" data-method="embodied-astra"
-    data-setting="n9">same out-of-range tests</a>, Embodied Astra succeeds in 91 of 100 episodes, showing strong transfer
-    within these tabletop settings. But this capability comes with practical constraints: Astra is unavailable for downstream
-    fine-tuning, and a full RoboMME evaluation costs approximately $300 and takes around 40 hours with a single worker. Its undisclosed model
-    size also limits direct comparison with smaller open-source policies.</p>
-  <p>Beyond these practical constraints, Astra’s success raises a broader question: How reliable are its capabilities under
+    waypoints directly. Without task-specific fine-tuning, it scores 92.1% on RoboMME, above the
+    <span class="note" tabindex="0" data-note="note-human">reported human baseline</span> of 90.5%, and succeeds in 91/100 of the
+    <a href="#fig2b" class="show-link" data-show="sweeps-all" data-task="PickXtimes" data-method="embodied-astra"
+    data-setting="n9">same out-of-range tests</a>. However, it cannot be fine-tuned, and a full RoboMME
+    evaluation costs about $300 and 40 hours with one worker. More demanding tasks also reveal four challenges.</p>
+  <!-- <p>Beyond these practical constraints, Astra’s success raises a broader question: How reliable are its capabilities under
     more demanding manipulation conditions? Our experiments reveal limitations in four settings: (1) <b>time-sensitive
     tasks</b>, where the robot must act at the right moment based on remembered events; (2) <b>continuous scene changes</b>,
     where it must track target identities as objects move; (3) <b>occlusion</b>, where it must establish and remember target
     associations despite partial observations; and (4) <b>interaction-limited tasks</b>, where it must learn from previous
-    attempts with few opportunities for correction. The following studies examine each challenge in detail.</p>
+    attempts with few opportunities for correction. The following studies examine each challenge in detail.</p> -->
 
   <h3 id="challenge-timing">Challenge 1: Time-sensitive tasks</h3>
-  <p>StopCube is a time-sensitive task in RoboMME, where the robot must press a button when a moving cube reaches a
-    target for the k-th time. Success requires both remembering the number of passes and acting at the critical moment. Fine-tuned open-source policies perform
-    well: SimpleMemVLA reaches 92% success, PonderPounce <cite data-ref="2608.24115"></cite> 83%, and T²Mem
-    <cite data-ref="2609.36720"></cite> 70%. However, Astra reaches only 54%.</p>
-  <p>On inspection, Astra often counts the passes correctly in its reasoning but misses the 0.4–0.8-second window for pressing the
-    button. It sometimes oscillates above the button while waiting, then moves closer as the critical moment approaches,
-    but this strategy can trigger premature presses (Figure 3). These failures highlight the gap
-    between remembering events correctly and acting on them at the right time.</p>
+  <p>In StopCube, the robot needs to press a button when a moving cube reaches a target for the k-th time, demanding both
+    accurate counting and precise timing. Fine-tuned policies perform well, with SimpleMemVLA achieving 92% success,
+    PonderPounce <cite data-ref="2608.24115"></cite> 83%, and T²Mem <cite data-ref="2609.36720"></cite> 70%, while Astra
+    reaches only 54%. Although Astra often counts correctly, it struggles to press within the narrow 0.4–0.8-second window,
+    sometimes oscillating above the button or pressing prematurely (Figure 3). This reveals a gap between remembering events
+    and executing time-critical actions.</p>
   <div class="card" data-card="stopcube"></div>
 
   <h3 id="challenge-motion">Challenge 2: Continuous scene changes</h3>
   <p>In VideoRepick, the robot watches a demonstration to identify a cube, then picks it up a specified number of times.
     In the original condition, the cubes swap positions 0–2 times at the end of the demonstration and then remain
-    stationary.</p>
-  <p>To test continuous tracking, we instead keep the cubes moving throughout the demonstration. Both conditions use the
+    stationary. We introduce continuous cube motion throughout the demonstration to test object tracking.
+    Across 50 episodes with 3–7 identical cubes, Astra’s success drops from 100% (50/50) to 50% (25/50), reaching only 20% (2/10) with seven cubes (Figure 4). This highlights the difficulty of tracking object identity under continuous motion.</p>
+  <!-- <p>To test continuous tracking, we instead keep the cubes moving throughout the demonstration. Both conditions use the
     same initial layouts, with 3–7 identical cubes, running 10 episodes per count under each condition. Astra succeeds in all
     50 original-condition episodes but only 25 of 50 with continuous motion, falling to 2 of 10 with N=7 cubes
-    (Figure 4).</p>
+    (Figure 4).</p> -->
   <div class="card" data-card="repick"></div>
   <p>VideoPlaceOrder shows a similar pattern. The robot must place a cube on the ring it visited at a requested step of the demonstration. We
     compare the original condition, with at most one ring swap at the end, against continuous swaps throughout the
-    demonstration. With 3–7 rings and 10 episodes per count under each condition, success falls from 50 of 50 to 27 of 50,
-    including just 3 of 10 with N=7 continuously swapping rings (Figure 5). Placements remain spatially accurate, but
-    target identities are lost.</p>
+    demonstration. With 3–7 rings and 10 episodes per count under each condition, success falls from 100% (50/50) to 54% (27/50) (Figure 5).</p>
   <div class="card" data-card="placeorder"></div>
 
   <h3 id="challenge-occlusion">Challenge 3: Occlusion</h3>
   <p>Real scenes often obscure task-relevant objects, requiring robots to combine viewpoints and remember earlier
-    observations. In VideoUnmask, the robot watches colored cubes being simultaneously covered by containers, then lifts
-    the containers hiding the requested colors in order. Some containers are empty, and no other cube shares a target’s
-    color. The original task provides an unobstructed front view of the cubes before they are covered. To stress-test
-    Astra under partial observability, we introduce a fence that obscures at least half of each target cube from this
-    view without fully hiding any target.</p>
-  <p>We compare identical layouts with and without the fence across five container-count ranges, from 6–10 to 26–30,
-    with 2–4 targets per episode and 10 episodes per range. Astra succeeds in all 50 episodes without the fence but only 40 of 50
-    with it (Figure 6). In nine of the ten failures, it lifts a container that does not hide the requested cube, revealing
-    difficulty in establishing or retaining the correct target–container association under occlusion.</p>
+    observations. In VideoUnmask, the robot needs to remember which containers hide target-colored cubes and uncover them in
+    order. To test partial observability, we introduce a fence that obscures at least half of each target cube before it is
+    covered. Across 50 episodes with 6–30 containers and 2–4 targets, Astra’s success drops from 100% (50/50) to 80%
+    (40/50). In nine of the ten failures, Astra selects the wrong container (Figure 6), highlighting the difficulty of
+    maintaining accurate object associations under occlusion.</p>
   <div class="card" data-card="occlusion"></div>
 
   <h3 id="challenge-interaction">Challenge 4: Interaction-limited tasks</h3>
@@ -151,10 +135,8 @@
     deviates from its intended path (Figure 7, left). But can it use a failed attempt to improve the next when continuous
     correction is unavailable?</p>
   <p>We test a variant in which the robot must roll a ball into the cube. Once released, the ball cannot be redirected.
-    We allow two attempts, giving Astra one opportunity to use the first trajectory to adjust its aim or release.</p>
-  <p>Astra succeeds in only 2 of 10 episodes (Figure 7, right). This result exposes a challenge beyond recalling
-    execution history: using that history to make an effective action adjustment within a limited number of attempts.
-    Both successes come on the second attempt; no first attempt succeeds.</p>
+    We allow two attempts, giving Astra one opportunity to use the first trajectory to adjust its aim or release. Astra succeeds in only 2 of 10 episodes (Figure 7, right). This result exposes a challenge beyond recalling
+    execution history: using that history to adjust actions effectively within a few attempts.</p>
   <div class="card" data-card="movecube"></div>
 
   <!-- Challenge 5 (precise manipulation, InsertPeg): hidden for now, kept for later.
@@ -175,89 +157,177 @@
 <!-- ================================================================ DESIGN -->
 <section id="design">
   <h2>4. Designing RoboMME-Plus</h2>
-  <p>Our out-of-range tests expose generalization limits in fine-tuned policies that Astra largely overcomes, while Section 3
-    reveals challenges that remain even for Astra. RoboMME-Plus combines these findings into a benchmark for memory-guided
-    behavior under more demanding conditions. It retains RoboMME’s 16 tasks, four suites, observation format, and action
-    spaces, allowing direct evaluation of existing policies, and introduces four types of variation:</p>
-  <ol>
-    <li><b>Larger counts and more objects.</b> Higher repetition counts, more distractors, and more goal objects test
-      counting and tracking beyond the original training ranges.</li>
-    <li><b>Continuous motion and tighter timing.</b> Moving targets, conveyor belts, and swapping containers and rings
-      test tracking during demonstrations and execution. Shorter action windows require timely responses to remembered
-      events.</li>
-    <li><b>Partial observability.</b> Barriers obscure task-relevant objects from the front camera, requiring policies to
-      combine front and wrist views with earlier observations.</li>
-    <li><b>Limited correction.</b> Some tasks permit only two attempts and no correction after release; others end
-      immediately after errors such as a repeated button press or interaction with the wrong object. These constraints
-      test execution precision and the ability to use feedback across attempts.</li>
-  </ol>
-  <p>Figure 8 compares the original and extended tasks. All tasks have easy, medium, and hard levels except MoveCube,
-    which varies the manipulation method. Easy levels preserve the original mechanics but extend parameters beyond the
-    training ranges (variation 1). Medium and hard levels add increasingly demanding motion, timing, visibility, or
-    correction constraints (variations 2–4). The evaluation contains 800 episodes across 16 tasks, with overall success
-    reflecting combined demands on memory, perception, timing, and control. Episodes also require longer execution: the
-    oracle’s median episode length increases from 241 to 608 steps (2.5×), with the distribution shifting toward longer
-    episodes (Figure 9).</p>
-  <div class="card" data-card="design"></div>
-  <div class="card" data-card="horizon"></div>
+  <p>Building on the findings above, RoboMME-Plus extends RoboMME with harder tasks, held-out variations, and controlled
+    adaptation budgets. It preserves the original 16 tasks, four suites, observation format, and action spaces, enabling
+    direct evaluation of existing policies.</p>
 
+  <h3 id="harder-tasks">Harder tasks and held-out variations</h3>
+  <p>We increase difficulty along four dimensions: (1) larger counts and more objects, (2) continuous motion and tighter
+    timing, (3) partial observability, and (4) limited correction. Most tasks have easy, medium, and hard levels,
+    progressing from expanded parameter ranges to more demanding execution conditions; MoveCube instead varies the
+    manipulation method (Figure 8).</p>
+  <div class="card" data-card="design"></div>
+  <details class="more" id="fig9">
+    <summary>See episode length comparison</summary>
+    <div class="card" data-card="horizon"></div>
+  </details>
+  <p id="variations">To test generalization beyond adaptation experience, 286 of the 800 test episodes introduce held-out variations
+    (Figure 10): 182 alter perception (e.g., lighting, colors, noise), while 104 modify task mechanisms (e.g., motion,
+    swapping, activation rules). During training, each factor appears at most once and in isolation; test episodes include unseen combinations.</p>
+  <div class="card" data-card="variations"></div>
+
+  <h3 id="settings">Controlled adaptation protocol</h3>
+  <p id="training">To compare methods with different adaptation strategies fairly, we explicitly control access to
+    demonstrations and simulator interactions. The training set provides 50 successful demonstrations (three per task, five
+    for MoveCube), alongside up to 10 simulator rollouts per task on the training seeds.</p>
+  <p>We define four settings: (1) Zero-shot, (2) Demo-only, (3) Interaction-only, and (4) Hybrid (demonstrations and interactions). Together, they distinguish transfer from adaptation and measure the contributions of offline demonstrations and online interaction. All methods share the same rollout limits, and adapted systems must be frozen before testing.</p>
+  <div class="card table-card">
+    <div class="card-title"><b>Adaptation settings</b></div>
+    <div class="results-wrap"><table class="overall-table compact">
+      <thead><tr><th>Setting</th><th class="set">Released demos</th><th class="num">Rollouts / task</th><th>Typical use</th></tr></thead>
+      <tbody>
+        <tr><td class="m">Zero-shot</td><td class="set">–</td><td class="num">0</td><td>transfer or evaluate directly</td></tr>
+        <tr><td class="m">Demo-only</td><td class="set">50</td><td class="num">0</td><td>fine-tuning, in-context demos</td></tr>
+        <tr><td class="m">Interaction-only</td><td class="set">–</td><td class="num">up to 10</td><td>trial and error, exploration</td></tr>
+        <tr><td class="m">Hybrid</td><td class="set">50</td><td class="num">up to 10</td><td>both</td></tr>
+      </tbody>
+    </table></div>
+    <div class="table-note">The rollout budget caps simulator starts per task on the released training seeds and counts every start, including
+      debugging, verification and model selection. Demonstrations are offline data; replaying one in the simulator counts as a rollout.</div>
+  </div>
 </section>
 
 <!-- ================================================================ RESULTS -->
 <section id="results">
   <h2>5. Experimental results</h2>
-  <p>We evaluate six methods on all 800 test episodes:</p>
+  <h3 id="baselines">Baselines</h3>
+  <p>We evaluate eight methods across all 800 test episodes, covering three approaches:</p>
   <ul>
-    <li><b>FrameSamp+Modul</b> (MME-VLA) <cite data-ref="2603.04639"></cite>: trained on RoboMME with a batch size of 64 for
-      80k steps, requiring approximately 300 A40 GPU-hours.</li>
-    <li><b>SimpleMemVLA</b> <cite data-ref="2609.05533"></cite>: trained on RoboMME for 20 hours using 128 H100 GPUs,
-      totaling 2,560 H100 GPU-hours.</li>
-    <li><b>PonderPounce</b> <cite data-ref="2608.24115"></cite>: the released 9B checkpoint, pairing a Qwen3.5-9B planner
-      that retains the full episode history with a π0.5 <cite data-ref="2504.16054"></cite> controller fine-tuned on
-      RoboMME.</li>
-    <li><b>3-tier Astra</b> <cite data-ref="astra-on-robomme"></cite>: GPT-6-Astra plans grounded subtasks, a small
-      vision-language model checks completion, and a π0.5-based VLA executes them.</li>
-    <li><b>Embodied Astra</b> <cite data-ref="2610.17350"></cite>: GPT-6-Astra predicts end-effector waypoints, which
-      RoboMME’s motion planner executes.</li>
-    <li><b>One-shot Embodied Astra</b>: Embodied Astra with one in-context training example.</li>
+    <li><b>Fine-tuned policies:</b> FrameSamp+Modul (MME-VLA) <cite data-ref="2603.04639"></cite>, SimpleMemVLA
+      <cite data-ref="2609.05533"></cite>, and PonderPounce <cite data-ref="2608.24115"></cite>, all trained on RoboMME.</li>
+    <li><b>Frontier-model control:</b> 
+      3-tier Astra <cite data-ref="astra-on-robomme"></cite> uses a VLM to decide when to call GPT-6-Astra for subtask planning and executes subtasks with π0.5. Embodied Astra <cite data-ref="2610.17350"></cite>
+      directly predicts end-effector waypoints using GPT-6-Astra, while one-shot Embodied Astra additionally takes <span class="note" tabindex="0" data-note="note-oneshot">one
+      in-context demonstration</span>.</li>
+    <li><b>Agent-developed code policies:</b> ASPIRE <cite data-ref="2607.00272"></cite> and RAX <cite data-ref="rax"></cite>
+      use Claude Opus 5.5 to develop executable robot programs from demonstrations, simulator interaction, or both. Their frozen programs require no proprietary model calls at test time.</li>
   </ul>
-  <p>The first five methods are evaluated zero-shot, while one-shot Embodied Astra receives a single in-context example
-    from the RoboMME-Plus training set. We leave few-shot fine-tuning of open-source policies on the 50
-    RoboMME-Plus demonstrations to future work.</p>
+  <p>The first five methods are evaluated zero-shot. For ASPIRE and RAX, we evaluate independently developed policies using
+    demonstrations only, interactions only, or both, with up to 10 rollouts per task. Few-shot fine-tuning of open-source policies is left to future work.</p>
+
+  <h3 id="transfer">Transfer and few-shot adaptation</h3>
+  <p>Table 1 compares zero-shot transfer, in-context demonstrations, and simulator-based adaptation.</p>
   <div class="card" data-card="results"></div>
-  <div class="card" data-card="overall"></div>
-  <p>Table 1 reports per-task success rates; Table 2 summarizes overall success, runtime, and API cost. Three findings
-    stand out.</p>
+  <details class="more" id="fig11">
+    <summary>More results for ASPIRE and RAX</summary>
+    <div class="card table-card" id="agentic">
+      <div class="card-title"><b>Table 2. </b>Overall success (%) of ASPIRE and RAX by setting and rollout budget.</div>
+      <div class="results-wrap"><table class="overall-table compact">
+        <thead>
+          <tr><th rowspan="2">Method</th><th class="set" rowspan="2">Setting</th><th class="grp" colspan="5">Rollouts per task</th></tr>
+          <tr><th class="num">0</th><th class="num">1</th><th class="num">3</th><th class="num">5</th><th class="num">10</th></tr>
+        </thead>
+        <tbody>
+          <!-- AUTO:budget -->
+        <tr><td class="m">ASPIRE</td><td class="set">Demo-only</td><td class="num">17.50</td><td class="num">–</td><td class="num">–</td><td class="num">–</td><td class="num">–</td></tr>
+        <tr><td class="m">ASPIRE</td><td class="set">Interaction-only</td><td class="num">–</td><td class="num">14.63</td><td class="num">17.75</td><td class="num">24.13</td><td class="num">37.75</td></tr>
+        <tr><td class="m">ASPIRE</td><td class="set">Hybrid</td><td class="num">–</td><td class="num">19.38</td><td class="num">34.25</td><td class="num">38.00</td><td class="num">42.75</td></tr>
+        <tr><td class="m">RAX</td><td class="set">Demo-only</td><td class="num">17.38</td><td class="num">–</td><td class="num">–</td><td class="num">–</td><td class="num">–</td></tr>
+        <tr><td class="m">RAX</td><td class="set">Interaction-only</td><td class="num">–</td><td class="num">3.25</td><td class="num">35.25</td><td class="num">36.88</td><td class="num"><b>46.50</b></td></tr>
+        <tr><td class="m">RAX</td><td class="set">Hybrid</td><td class="num">–</td><td class="num">19.50</td><td class="num">37.75</td><td class="num">37.25</td><td class="num">40.88</td></tr>
+        <tr class="ref ref-first"><td class="m">Embodied Astra</td><td class="set">Zero-shot</td><td class="num">24.25</td><td class="num">–</td><td class="num">–</td><td class="num">–</td><td class="num">–</td></tr>
+        <tr class="ref"><td class="m">One-shot Embodied Astra</td><td class="set">Demo-only</td><td class="num">35.13</td><td class="num">–</td><td class="num">–</td><td class="num">–</td><td class="num">–</td></tr>
+          <!-- /AUTO:budget -->
+        </tbody>
+      </table></div>
+    </div>
+    <div class="card table-card">
+      <div class="card-title"><b>Figure 11. </b>Held-out success and adaptation cost versus the rollout budget.</div>
+      <img src="figures/adaptation_budget.png" alt="Success of ASPIRE and RAX rises with the number of rollouts per task, while development cost stays between about 70 and 210 US dollars per configuration" style="width: 100%; height: auto;">
+      <div class="table-note">(a) Overall success for Interaction-only (dashed) and Hybrid
+        (solid); diamonds are Demo-only, without rollouts; dotted lines are the Embodied Astra references. (b) Development API cost over
+        all 16 tasks.</div>
+    </div>
+  </details>
+  <p>Four findings stand out:</p>
   <ol>
-    <li><b>Fine-tuned policies transfer poorly.</b> SimpleMemVLA falls from 88.3% on RoboMME to 2.0% on RoboMME-Plus,
-      FrameSamp+Modul from 44.5% to 2.8%, and PonderPounce from 60.8% to 2.9%. High performance on the original
-      benchmark carries over only minimally without adaptation.</li>
-    <li><b>Astra’s transfer has clear limits.</b> Embodied Astra falls from 92.1% on RoboMME to 22.6% on RoboMME-Plus.
-      It succeeds on 59% of easy episodes but only 10% of hard ones, and reaches just 2% on VideoUnmaskSwap. Its strong
-      performance on the initial out-of-range tests does not extend to the full range of challenges.</li>
-    <li><b>One example helps, but selectively.</b> One-shot Embodied Astra reaches 35.3% overall, a gain of 12.6
-      percentage points. The largest improvements occur on SwingXtimes (28% → 98%), ButtonUnmask (34% → 94%), and
-      PickXtimes (56% → 84%), suggesting that an example can clarify an effective strategy. But it does not improve
-      VideoUnmaskSwap, VideoRepick, VideoPlaceOrder, or RouteStick, where tracking or execution remains challenging.</li>
+    <li><b>Fine-tuned policies transfer poorly.</b> SimpleMemVLA drops from 88.3% on RoboMME to 1.75% on RoboMME-Plus,
+      FrameSamp+Modul from 44.5% to 2.38%, and PonderPounce from 60.8% to 2.50%. Strong performance on the original benchmark does not translate into robust transfer.</li>
+    <li><b>Frontier models transfer better, but remain limited.</b> Embodied Astra achieves 24.25% overall, down from 92.1%
+      on RoboMME, while 3-tier Astra reaches 8.75%. A single in-context demonstration raises Embodied Astra’s overall success to 35.13%, with large gains
+      on SwingXtimes (32% → 98%) and ButtonUnmask (34% → 78%), but little improvement on tasks requiring continuous tracking
+      or precise execution.</li>
+    <li><b>Simulator interaction substantially improves code policies.</b> With demonstrations alone, ASPIRE and RAX reach 17.50% and 17.38%. With 10 rollouts per task, their best configurations reach 42.75% and 46.50%, respectively, surpassing one-shot Embodied Astra. Adding demonstrations to the 10 rollouts gives mixed results: it helps ASPIRE (37.75% → 42.75%) but hurts RAX (46.50% → 40.88%).</li>
+    <li><b>Different approaches excel at different tasks.</b> With 10 rollouts per task, RAX reaches 76% on VideoUnmaskSwap and ASPIRE 80% on StopCube, compared with Embodied Astra’s 2% and 22%. However, code policies still trail on dexterous manipulation: on MoveCube, they reach at most 6%, compared with Embodied Astra’s 22%.</li>
   </ol>
+
+  <h3 id="generalization">Generalization and efficiency</h3>
+  <p><b>Held-out variations reveal substantial overfitting.</b> Table 3 compares the same episodes with each variation switched off and on. Embodied Astra remains relatively robust, while adapted code policies degrade sharply. ASPIRE drops from 54.5% to 22.3% under perceptual variations and from 58.7% to 17.3% under mechanism variations. RAX similarly drops from 62.5% to 8.0% and from 68.3% to 27.9%. These results suggest that code policies often exploit regularities of their
+    limited training seeds rather than learning transferable skills.</p>
+  <div class="card table-card">
+    <div class="card-title"><b>Table 3. </b>Ablation study of held-out variations on the same hard-level test episodes.</div>
+    <div class="results-wrap"><table class="overall-table compact robust">
+      <thead>
+        <tr><th rowspan="2">Method</th><th class="grp" colspan="2">Perceptual variation</th><th class="grp" colspan="2">Mechanism variation</th></tr>
+        <tr><th class="num">w/o</th><th class="num">w/</th><th class="num">w/o</th><th class="num">w/</th></tr>
+      </thead>
+      <tbody>
+        <!-- AUTO:robustness -->
+        <tr><td class="m">Embodied Astra (Zero-shot)</td><td class="num">9.8</td><td class="num">8.9 <span class="delta-down">(−0.9)</span></td><td class="num">14.4</td><td class="num">24.0 <span class="delta-up">(+9.6)</span></td></tr>
+        <tr><td class="m">One-shot Embodied Astra (Demos)</td><td class="num">24.1</td><td class="num">23.2 <span class="delta-down">(−0.9)</span></td><td class="num">25.0</td><td class="num">33.7 <span class="delta-up">(+8.7)</span></td></tr>
+        <tr><td class="m">ASPIRE (Demos + 10 rollouts)</td><td class="num">54.5</td><td class="num">22.3 <span class="delta-down">(−32.2)</span></td><td class="num">58.7</td><td class="num">17.3 <span class="delta-down">(−41.4)</span></td></tr>
+        <tr><td class="m">RAX (10 rollouts)</td><td class="num">62.5</td><td class="num">8.0 <span class="delta-down">(−54.5)</span></td><td class="num">68.3</td><td class="num">27.9 <span class="delta-down">(−40.4)</span></td></tr>
+        <!-- /AUTO:robustness -->
+      </tbody>
+    </table></div>
+    <div class="table-note">Perceptual: 112 hard episodes on 14 tasks; mechanism: 104 hard episodes on 13 tasks. Each
+      episode runs twice from the same seed, with its variation switched off and on. In parentheses: change from switching
+      the variation on. ASPIRE and RAX are shown at their best configurations.</div>
+  </div>
+  <p><b>Code policies are efficient at inference, but adaptation does not guarantee generalization.</b> Table 4 compares
+    success, runtime, and cost. RAX and ASPIRE require only 17 ms and 8 ms of computation per step, respectively, with no
+    test-time API costs. In contrast, Embodied Astra requires 344 ms per step and about $0.95 per episode; its one-shot variant requires 686 ms and $2.63. Developing code policies costs about $70–210 in API usage per configuration, paid
+    once during adaptation.</p>
+  <div class="card table-card" id="overall">
+    <div class="card-title"><b>Table 4. </b>Overall success, runtime, and API cost of all baselines on RoboMME-Plus.</div>
+    <div class="results-wrap"><table class="overall-table compact tight">
+      <thead><tr><th>Method</th><th class="set">Setting</th><th class="num">Success</th><th class="num">Avg. model<br>time per step</th><th class="num">Avg. API<br>latency</th><th class="num">Eval.<br>cost</th><th class="num">Adapt.<br>cost</th><th class="num">Total<br>cost</th></tr></thead>
+      <tbody>
+        <!-- AUTO:overall -->
+        <tr><td class="m">RAX</td><td class="set">10 rollouts</td><td class="num">46.50%</td><td class="num">17 ms</td><td class="num">–</td><td class="num">$0</td><td class="num">$90</td><td class="num"><b>$90</b></td></tr>
+        <tr><td class="m">ASPIRE</td><td class="set">Demos + 10 rollouts</td><td class="num">42.75%</td><td class="num">8 ms</td><td class="num">–</td><td class="num">$0</td><td class="num">$160</td><td class="num"><b>$160</b></td></tr>
+        <tr><td class="m">One-shot Embodied Astra</td><td class="set">Demos</td><td class="num">35.13%</td><td class="num">686 ms</td><td class="num">19.1 s</td><td class="num">$2,100</td><td class="num">–</td><td class="num"><b>$2,100</b></td></tr>
+        <tr><td class="m">Embodied Astra</td><td class="set">Zero-shot</td><td class="num">24.25%</td><td class="num">344 ms</td><td class="num">12.2 s</td><td class="num">$760</td><td class="num">–</td><td class="num"><b>$760</b></td></tr>
+        <tr><td class="m">3-tier Astra</td><td class="set">Zero-shot</td><td class="num">8.75%</td><td class="num">79 ms</td><td class="num">8.5 s</td><td class="num">$840</td><td class="num">–</td><td class="num"><b>$840</b></td></tr>
+        <tr><td class="m">PonderPounce</td><td class="set">Zero-shot</td><td class="num">2.50%</td><td class="num">199 ms</td><td class="num">–</td><td class="num">–</td><td class="num">–</td><td class="num"><b>–</b></td></tr>
+        <tr><td class="m">FrameSamp+Modul</td><td class="set">Zero-shot</td><td class="num">2.38%</td><td class="num">7 ms</td><td class="num">–</td><td class="num">–</td><td class="num">–</td><td class="num"><b>–</b></td></tr>
+        <tr><td class="m">SimpleMemVLA</td><td class="set">Zero-shot</td><td class="num">1.75%</td><td class="num">69 ms</td><td class="num">–</td><td class="num">–</td><td class="num">–</td><td class="num"><b>–</b></td></tr>
+        <!-- /AUTO:overall -->
+      </tbody>
+    </table></div>
+    <div class="table-note">Timings were measured on a shared machine with 2× NVIDIA RTX 6000 Ada GPUs and a 32-core
+      AMD EPYC 9334 CPU and may vary with the number of concurrent jobs. API costs are rough estimates. Both are for reference
+      only.</div>
+  </div>
+  <p>Overall, <b>no method exceeds 50% success</b>. Frontier-model control offers stronger zero-shot generalization, while code policies reach higher success with limited interaction and run at much lower inference cost, but remain vulnerable to unseen variations. RoboMME-Plus exposes the gap between successful adaptation and robust generalization.</p>
 </section>
 
 <!-- ================================================================ FORWARD -->
 <section id="forward">
   <h2>6. Looking forward</h2>
-  <p>RoboMME-Plus shifts the focus from remembering in familiar settings to using memory reliably under more demanding
-    conditions. Our findings point to four promising directions:</p>
+  <p>RoboMME-Plus moves beyond memory in familiar settings toward reliable generalization, efficient exploration, and effective adaptation under changing conditions. Our findings point to several promising directions:</p>
   <ul>
-    <li><b>Memory discovery</b> <cite data-ref="memi"></cite> to learn which information to retain
-      and how to update it.</li>
-    <li><b>Self-improving agents</b> <cite data-ref="2607.00272, 2610.12424"></cite> that refine their strategies through
-      simulator interaction on the provided training seeds.</li>
-    <li><b>World models</b> <cite data-ref="2608.27549, 2610.07922"></cite> that anticipate scene changes and guide
-      precisely timed actions.</li>
-    <li><b>Hybrid systems</b> that combine high-level reasoning and recovery planning with responsive VLA control.</li>
+    <li><b>Memory discovery</b> <cite data-ref="memi"></cite>: Learning what information to retain, how to update it, and
+      when to use it for decision-making.</li>
+    <li><b>Self-improving agents</b> <cite data-ref="2607.00272, rax, 2610.12424"></cite>: Learning efficiently from limited
+      interactions while developing policies that generalize beyond observed training conditions.</li>
+    <li><b>World models</b> <cite data-ref="2608.27549, 2610.07922"></cite>: Predicting scene dynamics to support continuous
+      tracking, anticipation, and precisely timed actions.</li>
+    <li><b>Hybrid systems</b>: Combining the adaptability and perception of frontier models, the efficiency of executable
+      programs, and the responsive control of VLAs.</li>
   </ul>
-  <p>We hope RoboMME-Plus helps reveal where current memory-augmented policies fall short and advances robots that can
-    turn remembered experience into reliable action.</p>
+  <p>We hope RoboMME-Plus encourages research beyond benchmark-specific success, toward robot policies that can remember,
+    adapt, and act reliably in unfamiliar environments.</p>
 </section>
 
 <!-- ================================================================ CITATION -->
@@ -265,10 +335,10 @@
   <h2>Citation</h2>
   <p>If you find this blog useful, please cite:</p>
   <div class="bib-wrap"><button type="button" class="bib-copy" aria-label="Copy BibTeX">Copy</button><pre class="bib">@misc{dai2026robommeplus,
-  title = {{RoboMME-Plus}: Benchmarking Memory Generalization for Robot Policies},
-  author = {Dai, Yinpei and Fu, Hongze and Liu, Yuejiang and Finn, Chelsea and Fazeli, Nima and Chai, Joyce},
+  title = {{RoboMME-Plus}: Benchmarking Memory Generalization and Adaptation for Robot Policies},
+  author = {Dai, Yinpei and Liu, Yuejiang and Fu, Hongze and Finn, Chelsea and Fazeli, Nima and Chai, Joyce},
   year = {2026},
-  month = {October},
+  month = {November},
   url = {https://robomme.github.io/plus.html}
 }</pre></div>
 </section>
@@ -283,8 +353,10 @@
 <!-- text of the hover notes (class="note" data-note="<id>") -->
 <div hidden id="note-human">In our human study, participants could watch the video demonstration <b>only once</b>, while the latest
   policies on RoboMME often keep the full history in context, which may make the comparison unfair.</div>
-<script src="data/bundle.js?v=3ea944e8f0"></script>
+<div hidden id="note-oneshot">GPT-6-Astra accepts at most <b>1,500 images</b> per request. With two demonstrations, the
+  demonstration frames plus the episode&rsquo;s own image history would exceed this limit on many tasks, so we use one.</div>
+<script src="data/bundle.js?v=16fdd35542"></script>
 <script src="rollout_player.js?v=1fc84c51ce"></script>
-<script src="app.js?v=4d541badee"></script>
+<script src="app.js?v=00b65a863d"></script>
 </body>
 </html>

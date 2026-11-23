@@ -114,7 +114,7 @@
         else high = mid;
       }
       const raw = track.cues[low][1];
-      const empty = !raw.trim() || /^(NO RECORD|Unknown|None)$/i.test(raw.trim());
+      const empty = !raw.trim() || /^(NO RECORD|Unknown|None|static)$/i.test(raw.trim());
       const text = empty ? 'No recorded subgoal for this frame.' : raw;
       if (caption.textContent !== text) caption.textContent = text;
       content.classList.toggle('is-empty', empty);
@@ -435,7 +435,7 @@
     carousel.append(intro, samples, controls, comparisonSlot);
     cardObserver.observe(introContent);
     cardObserver.observe(comparison);
-    showSample(Math.max(0, task.samples.findIndex(sample => sample.difficulty === 'medium')));
+    showSample(0);
     return carousel;
   }
 

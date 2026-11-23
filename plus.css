@@ -25,7 +25,8 @@
 .plus-samples video { display: block; width: 100%; aspect-ratio: 2 / 1; background: #171923; border-radius: 0 0 6px 6px; }
 .plus-samples figcaption { margin-top: 0.5rem; font-size: 0.85rem; color: #666; text-align: center; }
 .plus-video-note { color: #666; font-size: 0.9rem; margin-top: 1rem; }
-.plus-page section[id], .plus-page article[id] { scroll-margin-top: 4rem; }
+.plus-page section[id], .plus-page article[id], .plus-page #settings { scroll-margin-top: 4rem; }
+.plus-page #dataset .plus-budget-guide { margin-top: 1.5rem; }
 .plus-page button:focus-visible, .plus-page a:focus-visible { outline: 3px solid #7aa6ec; outline-offset: 3px; }
 .plus-page { --plus-accent: #4f46e5; --plus-ink: #24243b; color: var(--plus-ink); }
 .plus-page .button.is-link { background: var(--plus-accent); }
@@ -92,6 +93,19 @@
 .plus-protocols article { padding: 1.25rem; background: white; border: 1px solid #e7e7ef; border-radius: 8px; }
 .plus-protocols h3 { color: var(--plus-accent); font-weight: 600; margin-bottom: 0.4rem; }
 .plus-protocols p { line-height: 1.7; }
+.plus-budget-guide { padding: 1.5rem; border: 1px solid #d9d5fa; border-radius: 10px; background: #fff; }
+.plus-budget-guide h3, .plus-protocol-rules h3 { margin: 0 0 1rem; font-size: 1.2rem; font-weight: 600; }
+.plus-budget-guide > p { line-height: 1.7; }
+.plus-protocol-table-wrap { margin-top: 1.25rem; overflow-x: auto; border: 1px solid #e7e7ef; border-radius: 7px; }
+.plus-protocol-table { width: 100%; border-collapse: collapse; font-size: 0.92rem; line-height: 1.5; }
+.plus-protocol-table th, .plus-protocol-table td { padding: 0.75rem 1rem; text-align: left; vertical-align: middle; }
+.plus-protocol-table thead { background: #eeedf8; }
+.plus-protocol-table th { font-weight: 600; }
+.plus-protocol-table tbody th { font-weight: 500; }
+.plus-protocol-table tbody tr { border-top: 1px solid #efeff4; }
+.plus-budget-note { margin-top: 0.8rem; color: #656579; font-size: 0.88rem; line-height: 1.6; }
+.plus-protocol-rules { margin-top: 2rem; }
+.plus-protocol-rules li { margin-bottom: 0.65rem; line-height: 1.7; }
 .plus-code-example { margin: 1rem 0 1.5rem; }
 .plus-code-example summary { cursor: pointer; font-weight: 600; color: var(--plus-accent); padding: 0.7rem 0; }
 .plus-code-example pre { border-radius: 6px; background: #212334; color: #f0f0ff; font-size: 0.85rem; }
@@ -106,6 +120,8 @@
   .plus-page .publication-title { font-size: 2rem; }
   .plus-page .button { max-width: 100%; height: auto; min-height: 2.5em; white-space: normal; }
   .plus-protocols { grid-template-columns: 1fr; }
+  .plus-protocol-table th, .plus-protocol-table td { padding: 0.65rem 0.5rem; font-size: 0.85rem; }
+  .plus-budget-guide { padding: 1rem; }
   .plus-page .task-card { padding: 1rem; }
   .plus-page .task-grid { grid-template-columns: minmax(0, 1fr); }
   .plus-page .section { padding: 2rem 1rem; }
@@ -115,3 +131,5 @@
 @media (prefers-reduced-motion: reduce) {
   .plus-page *, .plus-page *::before, .plus-page *::after { animation: none !important; transition: none !important; scroll-behavior: auto !important; }
 }
+.plus-protocol-table thead th:first-child { width: 22%; }
+.plus-protocol-table tbody th { white-space: nowrap; }

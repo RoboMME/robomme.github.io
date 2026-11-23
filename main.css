@@ -440,3 +440,10 @@
         padding: 0.35rem 0.65rem;
       }
     }
+
+    /* narrow screens: let the title wrap; keep the link row and the section nav reachable (no clipped buttons) */
+    @media screen and (max-width: 768px) {
+      .publication-title-line { white-space: normal; }
+      .publication-links.one-line { flex-wrap: wrap; white-space: normal; }
+      .section-nav-inner { justify-content: flex-start; overflow-x: auto; }
+    }

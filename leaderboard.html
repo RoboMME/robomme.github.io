@@ -8,7 +8,14 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bulma/0.9.4/css/bulma.min.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-  <link rel="stylesheet" href="leaderboard.css?v=3448d35ac923">
+  <link rel="stylesheet" href="leaderboard.css?v=4a2802481a34">
+  <style>
+    .leaderboard-table .setting-expand { margin-left: 8px; padding: 1px 8px; border: 1px solid var(--line, #d7dbe2); border-radius: 999px; background: var(--surface, #fff); color: var(--accent, #4f46e5); font-size: 0.78rem; font-weight: 600; cursor: pointer; white-space: nowrap; vertical-align: middle; }
+    .leaderboard-table .setting-expand:hover { background: rgba(79, 70, 229, 0.08); }
+    .leaderboard-table tr.setting-child-row td { background: #f7f8fb; }
+    .leaderboard-table tr.setting-child-row .model-name { padding-left: 18px; opacity: 0.8; }
+    .leaderboard-table tr.setting-child-row .model-name::before { content: "\21B3\00a0"; color: #9aa1ad; }
+  </style>
 </head>
 <body class="leaderboard-page">
 
@@ -55,7 +62,7 @@
         </button>
         <button type="button" data-benchmark="plus" aria-label="RoboMME-Plus" aria-pressed="false" aria-controls="lb-table">
           <span class="benchmark-symbol" aria-hidden="true">🧗</span>
-          <span class="benchmark-copy"><span class="benchmark-name">RoboMME-Plus</span><span class="benchmark-description">Distribution shift</span></span>
+          <span class="benchmark-copy"><span class="benchmark-name">RoboMME-Plus</span><span class="benchmark-description">Memory generalization</span></span>
         </button>
       </div>
       <div class="columns is-centered leaderboard-stats">
@@ -84,7 +91,7 @@
   <p id="benchmark-notice" class="benchmark-notice" role="status" hidden></p>
   <div class="section-heading">
     <div>
-      <h2 class="title is-4" id="results-title"><span id="results-emoji" aria-hidden="true">📊</span> <span id="results-name">Standard Leaderboard</span></h2>
+      <h2 class="title is-4" id="results-title"><span id="results-emoji" aria-hidden="true">📊</span> <span id="results-name">RoboMME Leaderboard</span></h2>
     </div>
     <div class="view-controls">
       <button type="button" id="details-toggle" class="details-toggle-btn is-active" aria-pressed="true" aria-controls="lb-table model-details-notes">Hide details</button>
@@ -99,24 +106,34 @@
       <div id="lb-toolbar" role="group" aria-label="Group results by"></div>
       <div class="ranking-controls">
         <div id="method-legend" class="method-legend" role="group" aria-label="Show oracle references"></div>
-        <label class="ranking-toggle" title="Rank Standard and Agentic methods together. Human and oracle references remain unranked. Selecting a track returns to its separate ranking.">
-          <input type="checkbox" id="combined-ranking" aria-controls="lb-table radar-chart">
-          <span>Combined ranking</span>
-        </label>
       </div>
     </div>
     <div class="track-selection" role="group" aria-labelledby="track-caption">
       <span class="filter-caption" id="track-caption">Track</span>
-      <label class="track-option track-standard" title="Open-source models without proprietary agents.">
-        <input type="radio" name="leaderboard-track" value="standard" checked aria-controls="lb-table radar-chart" aria-describedby="track-note">
-        <span>Standard</span>
+      <label class="track-option track-standard" title="Robot policies trained or fine-tuned for control, such as VLAs.">
+        <input type="radio" name="leaderboard-track" value="standard" checked aria-controls="lb-table radar-chart">
+        <span>Non-Agentic</span>
       </label>
-      <label class="track-option track-agentic" title="Agents using proprietary frontier models.">
-        <input type="radio" name="leaderboard-track" value="agentic" aria-controls="lb-table radar-chart" aria-describedby="track-note">
+      <label class="track-option track-agentic" title="Systems that prompt pretrained foundation models, open or proprietary, to plan, act, or write code.">
+        <input type="radio" name="leaderboard-track" value="agentic" aria-controls="lb-table radar-chart">
         <span>Agentic</span>
       </label>
+      <label class="track-option track-all" title="Rank Non-Agentic and Agentic methods together in the current view. Human and oracle references remain unranked.">
+        <input type="radio" name="leaderboard-track" value="all" aria-controls="lb-table radar-chart">
+        <span>All</span>
+      </label>
     </div>
-    <p class="track-note" id="track-note">Policies built with open-source (Standard) or proprietary frontier models (Agentic).</p>
+    <div id="plus-adaptation-selection" class="adaptation-selection" hidden>
+      <span class="filter-caption" id="adaptation-caption">Setting</span>
+      <div id="adaptation-options" role="group" aria-labelledby="adaptation-caption"></div>
+      <p id="adaptation-description" class="setting-description" aria-live="polite"></p>
+      <div id="plus-rollout-selection" class="rollout-selection" hidden>
+        <span class="filter-caption" id="rollout-caption">Rollout budget / task</span>
+        <div id="rollout-options" role="group" aria-labelledby="rollout-caption">
+          <button type="button" class="adaptation-option" data-rollouts="10" aria-controls="lb-table radar-chart" aria-pressed="false">10 rollouts</button>
+        </div>
+      </div>
+    </div>
     <div id="radar-container" style="display:none;">
       <div class="radar-plot"><canvas id="radar-chart" role="img" aria-label="Success rates of top-ranked models across the selected task groups"></canvas></div>
       <p class="radar-note">Shows the <b>top 5</b> ranked models overall and ranked models with the <b>best score</b> in any category. Uses the table's ranking rules; human and oracle references are excluded.<br>Click a model name in the legend to show or hide its line.</p>
@@ -128,16 +145,17 @@
         <tbody id="lb-body"></tbody>
       </table>
     </div>
+    <p id="empty-results-notice" class="empty-results" role="status" hidden></p>
     <div class="table-footer"><span><strong id="visible-count">—</strong> methods &amp; references shown</span><span>16 tasks · 50 test episodes per task</span></div>
-    <p id="plus-setting-note" class="setting-note" hidden>ZS: Zero-shot · FS: Few-shot</p>
-    <p id="plus-rollout-note" class="setting-note" hidden>Model rollouts are available on <a href="https://huggingface.co/datasets/Yinpei/RoboMME-OOD-model-rollout" target="_blank" rel="noopener noreferrer">Hugging Face</a>.</p>
+    <p id="plus-setting-note" class="setting-note" hidden><span id="plus-ranking-note">Rankings are separate for each setting. Interaction-only and Hybrid are ranked at 10 rollouts per task; results with other rollout budgets may be reported optionally.</span></p>
+    <p id="plus-rollout-note" class="setting-note" hidden>Model rollouts are available on <a href="https://huggingface.co/collections/Yinpei/robomme-plus" target="_blank" rel="noopener noreferrer">Hugging Face</a>. Results reflect the latest RoboMME-Plus release, including its held-out test variations.</p>
   </div>
       <details id="model-details-notes" class="compute-note">
         <summary>Metric notes</summary>
         <p data-metric-note="parameters"><strong>Params:</strong> approximate parameter count. B = billion; M = million.</p>
-        <p id="regular-api-note" data-metric-note="apiCost" hidden><strong>API Cost:</strong> reported API spending in USD for the RoboMME result, excluding local GPU compute. Hover over a value for its scope.</p>
+        <p id="regular-api-note" data-metric-note="apiCost" hidden><strong>API cost:</strong> reported API spending in USD for the RoboMME result, excluding local GPU compute. Hover over a value for its scope.</p>
         <div id="plus-api-notes" hidden>
-          <p data-metric-note="apiCost"><strong>API cost:</strong> approximate total API spending across all 800 test episodes; excludes local GPU compute.</p>
+          <p data-metric-note="apiCost"><strong>API cost:</strong> approximate total API spending in USD, excluding local GPU compute. For Embodied-Astra and 3-tier Astra it covers all 800 test episodes; for ASPIRE and RAX it covers development, since their frozen programs make no API calls at test time.</p>
         </div>
         <p><strong>N/R:</strong> not reported. <strong>N/A:</strong> not applicable. <strong>≈:</strong> approximate.</p>
       </details>
@@ -153,7 +171,7 @@
         </div>
         <div class="column section-block">
           <h2 class="title is-5" id="submit">Submit</h2>
-          <p class="content" id="benchmark-submit">(1) Download the <a href="https://huggingface.co/datasets/Yinpei/robomme_data_h5" target="_blank">dataset</a> and <a href="https://github.com/RoboMME/robomme_benchmark" target="_blank">RoboMME repository</a>, (2) train and evaluate with your policy, (3) submit a PR following the <a href="https://github.com/RoboMME/robomme_benchmark?tab=readme-ov-file#-submit-your-models" target="_blank">submission instructions</a>.</p>
+          <p class="content" id="benchmark-submit">(1) Download the <a href="https://huggingface.co/datasets/Yinpei/robomme_data_h5" target="_blank">dataset</a> and the <a href="https://github.com/RoboMME/robomme_benchmark" target="_blank">RoboMME repository</a>, (2) train and evaluate your policy, (3) submit a PR following the <a href="https://github.com/RoboMME/robomme_benchmark?tab=readme-ov-file#-submit-your-models" target="_blank">submission instructions</a>.</p>
         </div>
       </div>
     </div>
@@ -162,7 +180,7 @@
 
 <footer class="footer">
   <div class="content has-text-centered">
-    <p><a href="index.html">RoboMME</a> · <a href="https://github.com/RoboMME/robomme_benchmark" target="_blank">GitHub</a> · <a href="https://huggingface.co/collections/Yinpei/RoboMME" target="_blank">Hugging Face</a></p>
+    <p><a href="index.html">RoboMME</a> · <a href="https://github.com/RoboMME/robomme_benchmark" target="_blank">GitHub</a> · <a id="footer-hf" href="https://huggingface.co/collections/Yinpei/robomme" target="_blank">Hugging Face</a></p>
   </div>
 </footer>
 
@@ -712,7 +730,7 @@ var RESULTS = {
       }
     },
     {
-      "name": "PonderPounce (Suhwan et al.)",
+      "name": "PonderPounce (Choi et al.)",
       "model_type": "VLM+VLA",
       "training_compute": {"status": "not_reported", "note": "RoboMME training steps are reported, but GPU count and training duration are not.", "source": "https://arxiv.org/html/2608.24115"},
       "tags": ["open_sourced_model"],
@@ -828,11 +846,15 @@ var RESULTS = {
           updated_utc: data.evaluation && data.evaluation.updated_utc,
           task_suites: suites,
           task_characteristics: RESULTS.task_characteristics,
-          models: data.methods.map(function(method) {
+          models: data.methods.filter(function(method) {
+            return !Number.isInteger(method.training_rollout_limit) || [0, 10].includes(method.training_rollout_limit);
+          }).map(function(method) {
             return {
               name: method.name,
               model_type: method.model_type,
               setting: method.setting,
+              training_rollout_limit: method.training_rollout_limit,
+              released_demonstrations_used: method.released_demonstrations_used,
               tags: method.tags,
               tasks: method.results,
               total_size: method.total_size,
@@ -858,21 +880,22 @@ var RESULTS = {
     document.getElementById('leaderboard-emoji').innerHTML = plus ? plusTrophy : '🏆';
     document.getElementById('leaderboard-name').textContent = plus ? 'RoboMME-Plus' : 'RoboMME';
     document.getElementById('leaderboard-subtitle').textContent = plus
-      ? 'Benchmarking memory generalization for robot policies'
+      ? 'Benchmarking memory generalization and adaptation for robot policies'
       : 'Benchmarking memory-augmented robotic generalist policies';
     document.getElementById('results-emoji').textContent = plus ? '🧗' : '📊';
     document.getElementById('lb-table').setAttribute('aria-label', plus ? 'RoboMME-Plus model success rates' : 'RoboMME model success rates');
     document.querySelectorAll('[data-benchmark]').forEach(function(button) {
       button.setAttribute('aria-pressed', String(button.dataset.benchmark === benchmark));
     });
-    document.getElementById('stat-models').textContent = D.models.filter(function(model) { return model.name !== 'Human Performance'; }).length;
+    document.getElementById('stat-models').textContent = new Set(D.models.filter(function(model) { return model.name !== 'Human Performance'; })
+      .map(function(model) { return model.name; })).size;  // distinct models; several settings/budgets count once
     document.getElementById('stat-models-label').textContent = 'Models Evaluated';
     if (plus) {
-      document.getElementById('benchmark-about').innerHTML = 'RoboMME-Plus benchmarks memory generalization for robot policies across <b>16 tasks</b> in four suites. Explore the <a href="plus.html#task-examples">task examples</a>.';
-      document.getElementById('benchmark-evaluation').innerHTML = 'Test <b>zero-shot transfer (ZS)</b> or <b>few-shot adaptation (FS)</b> on <b>800 episodes</b>, with 50 per task. Report each setting separately.';
+      document.getElementById('benchmark-about').innerHTML = 'RoboMME-Plus benchmarks memory generalization and adaptation for robot policies across <b>16 tasks</b>. Explore the <a href="plus.html#task-examples">task examples</a>.';
+      document.getElementById('benchmark-evaluation').innerHTML = 'Compare zero-shot transfer with adaptation from demonstrations, interactions (up to 10 rollouts per task), or both. See the <a href="plus.html#settings">adaptation settings</a>.';
       document.getElementById('submit').textContent = 'Submit';
-      document.getElementById('benchmark-submit').innerHTML = 'Use the <a href="https://github.com/RoboMME/robomme_benchmark/blob/main/doc/submission/model_example_plus.md" target="_blank" rel="noopener noreferrer">submission template</a> to report per-task scores and your ZS or FS setting. Submit a <a href="https://github.com/RoboMME/robomme_benchmark/pulls" target="_blank" rel="noopener noreferrer">pull request</a>.';
-      document.querySelector('.radar-note').innerHTML = 'Shows the <b>top 5</b> fully evaluated methods overall and methods with the <b>best score</b> in any category. Rankings follow the selected Standard or Agentic track, or Combined ranking.<br>Click a model name in the legend to show or hide its line.';
+      document.getElementById('benchmark-submit').innerHTML = 'Report per-task scores, setting, demonstration use, and rollout usage in the <a href="docs/model_example_plus.md">submission template</a>, then submit a <a href="https://github.com/RoboMME/robomme_benchmark/pulls" target="_blank" rel="noopener noreferrer">pull request</a>.';
+      document.querySelector('.radar-note').innerHTML = 'Shows the <b>top 5</b> fully evaluated methods and category leaders using the table’s ranking rules.<br>Click a model name in the legend to show or hide its line.';
     } else {
       ['benchmark-about', 'benchmark-evaluation', 'benchmark-submit', 'submit'].forEach(function(id) {
         document.getElementById(id).innerHTML = regularContent[id];
@@ -911,15 +934,19 @@ var RESULTS = {
     renderMethodLegend();
     render();
     if (updateURL) {
-      var url = new URL(window.location.href);
-      if (benchmark === 'plus') url.searchParams.set('benchmark', 'plus');
-      else url.searchParams.delete('benchmark');
-      history.replaceState(null, '', url);
+      syncLeaderboardURL();
     }
   }
+  // Agentic track: systems built around prompted foundation models. Entries are marked by the proprietary_model tag
+  // or, for agents built on open models, by the agentic_system tag.
+  function isAgenticRow(row) {
+    return row.tags.indexOf('proprietary_model') !== -1 || row.tags.indexOf('agentic_system') !== -1;
+  }
+
   var methodTags = {
+    agentic_system: { label: 'Agentic system', description: 'Prompts pretrained foundation models, open or proprietary, to plan, act, or write code.' },
     open_sourced_model: { label: 'Open-sourced model', description: 'Built on public model weights, without a proprietary model dependency; does not imply the full method and trained checkpoints are released.' },
-    proprietary_model: { label: 'Proprietary model', description: 'Uses a proprietary model whose weights are not public. Combined ranking compares open-source and proprietary models together.' },
+    proprietary_model: { label: 'Proprietary model', description: 'Uses a proprietary model whose weights are not public. The All track compares open-source and proprietary models together.' },
     oracle_subgoal: { label: 'Oracle subgoal', description: 'Uses ground-truth subgoals from the simulator.' },
     oracle_action_planner: { label: 'Oracle execution', description: 'Oracle execution of selected high-level actions. Human Performance is always shown as a reference.' }
   };
@@ -928,7 +955,89 @@ var RESULTS = {
     oracle_subgoal: true
   };
   var activeTrack = 'standard';
-  var trackNames = { standard: 'Standard', agentic: 'Agentic' };
+  var trackNames = { standard: 'Non-Agentic', agentic: 'Agentic', all: 'All' };
+  var activeAdaptation = 'zero-shot';
+  var adaptationDescriptions = {
+    'zero-shot': 'No RoboMME-Plus data: the policy is tested directly, or trained only on the original RoboMME data.',
+    demos: 'Demonstrations only: the 50 released RoboMME-Plus demonstrations, used offline. No simulator rollouts.',
+    interactions: 'Interactions only: up to 10 simulator rollouts per task on the provided training seeds, where one rollout is one episode from one seed. No released demonstrations.',
+    both: 'Demonstrations and interactions: the 50 released demonstrations plus up to 10 simulator rollouts per task on the provided training seeds.',
+    unreported: 'Demonstration and rollout use not reported; unranked.',
+    all: 'Every setting ranked together; each method appears with its best setting.'
+  };
+  var activeRolloutLimit = 10;
+  var adaptationLabels = {
+    'zero-shot': 'Zero-shot', demos: 'Demo-only',
+    interactions: 'Interaction-only', both: 'Hybrid', unreported: 'Setting N/R', all: 'All'
+  };
+  function adaptationKey(model) {
+    var demos = model.released_demonstrations_used, limit = model.training_rollout_limit;
+    // Missing resource metadata must never be silently classified as no adaptation.
+    if (typeof demos !== 'boolean' || [0, 10].indexOf(limit) === -1) return 'unreported';
+    if (limit === 0) return demos ? 'demos' : 'zero-shot';
+    return demos ? 'both' : 'interactions';
+  }
+
+  function hasRolloutSelection() {
+    return activeAdaptation === 'interactions' || activeAdaptation === 'both';
+  }
+
+  function selectedAdaptationLabel() {
+    return adaptationLabels[activeAdaptation] + (hasRolloutSelection() ? ' · ' + rolloutText(activeRolloutLimit) : '');
+  }
+
+
+  function rankingKey(row) {
+    if (benchmark !== 'plus') return 'regular';
+    return activeAdaptation === 'all' ? 'all' : row.adaptation + ':' + row.rolloutLimit;
+  }
+
+  function syncLeaderboardURL() {
+    var url = new URL(window.location.href);
+    if (benchmark === 'plus') {
+      url.searchParams.set('benchmark', 'plus');
+      url.searchParams.set('setting', activeAdaptation);
+      if (hasRolloutSelection()) url.searchParams.set('rollouts', activeRolloutLimit);
+      else url.searchParams.delete('rollouts');
+      url.searchParams.set('track', activeTrack);
+      url.searchParams.delete('view');
+    } else {
+      ['benchmark', 'setting', 'rollouts', 'track', 'view'].forEach(function(key) { url.searchParams.delete(key); });
+    }
+    history.replaceState(null, '', url);
+  }
+
+  function syncAdaptationControls() {
+    var selection = document.getElementById('plus-adaptation-selection');
+    selection.hidden = benchmark !== 'plus';
+    document.getElementById('footer-hf').href = benchmark === 'plus'  // footer: the collection of the benchmark shown
+      ? 'https://huggingface.co/collections/Yinpei/robomme-plus' : 'https://huggingface.co/collections/Yinpei/robomme';
+    if (benchmark !== 'plus') return;
+    var keys = ['zero-shot', 'demos', 'interactions', 'both'];
+    if (D.models.some(function(m) { return adaptationKey(m) === 'unreported'; })) keys.push('unreported');
+    keys.push('all');
+    if (keys.indexOf(activeAdaptation) === -1) activeAdaptation = 'zero-shot';
+    var options = document.getElementById('adaptation-options');
+    var signature = keys.join(',');
+    if (options.dataset.settings !== signature) {
+      options.dataset.settings = signature;
+      options.innerHTML = keys.map(function(key) {
+        var label = adaptationLabels[key].replace('+', '+<wbr>');
+        return '<button type="button" class="adaptation-option" data-setting="' + key + '" title="' + (adaptationDescriptions[key] || adaptationLabels[key]) + '" aria-controls="lb-table radar-chart" aria-pressed="false">' + label + '</button>';
+      }).join('');
+    }
+    options.querySelectorAll('[data-setting]').forEach(function(button) {
+      button.setAttribute('aria-pressed', String(button.dataset.setting === activeAdaptation));
+    });
+    document.getElementById('plus-rollout-selection').hidden = true;  // 10 rollouts per task is the single leaderboard budget
+    document.getElementById('adaptation-description').textContent = adaptationDescriptions[activeAdaptation] || '';
+    document.querySelectorAll('[data-rollouts]').forEach(function(button) {
+      button.setAttribute('aria-pressed', String(Number(button.dataset.rollouts) === activeRolloutLimit));
+    });
+    document.getElementById('plus-ranking-note').textContent = activeAdaptation === 'all'
+      ? 'All settings share one overall ranking within the selected track. Interaction settings use 10 rollouts per task; each method shows its best setting.'
+      : 'Rankings are separate for each setting. Interaction-only and Hybrid are ranked at 10 rollouts per task; results with other rollout budgets may be reported optionally.';
+  }
 
   function renderMethodLegend() {
     document.getElementById('method-legend').innerHTML = ['oracle_subgoal', 'oracle_action_planner'].filter(function(key) {
@@ -952,13 +1061,13 @@ var RESULTS = {
   // View modes: 'suite', 'char', 'task'
   var mode = 'suite';
   var sortCol = 'Avg';
+  var expandedMethods = {};  // RoboMME-Plus All view: methods whose other settings are expanded
   var sortAsc = false;
 
   var viewMode = 'table';
   var showDetails = true;
-  var combinedRanking = false;
   var modelTypes = {
-    'Code': 'Executable policies generated offline by a coding agent. Code-as-Memory uses Claude Opus 5.5 during development; its frozen Python policies run without learned weights or model/API calls during evaluation.',
+    'Code': 'Executable policies written by a coding agent during development (Claude Opus 5.5 for Code-as-Memory, ASPIRE and RAX). Evaluation runs the frozen programs without LLM or API calls; ASPIRE programs use local perception and planning models.',
     'Agent': 'A vision-language model with weights that are not publicly available directly selects robot actions or waypoints.',
     'Agent+Oracle': 'A model with private weights chooses high-level subgoals from benchmark options, and the benchmark oracle executes them. MEMI-Astra-Plan uses text scene descriptions derived from simulator segmentation.',
     'Agent+VLA': 'A vision-language model with weights that are not publicly available generates subgoals for a VLA controller; 3-tier Astra also uses a learned completion monitor.',
@@ -973,25 +1082,19 @@ var RESULTS = {
     'Human': 'Human reference performance using oracle execution.'
   };
   var detailColumns = [
+    { key: 'setting', label: 'Setting', width: 5.5, title: 'Setting and rollout budget per task. Select a setting and budget to compare like with like, or All for one overall ranking.' },
     { key: 'type', label: 'Type', width: 5.25, title: 'Architecture of the evaluated system. Hover over a value for its definition.' },
     { key: 'parameters', label: 'Total<br>Params', width: 4.5, title: 'Approximate number of model parameters.' },
-    { key: 'apiCost', label: 'API<br>Cost', width: 4.5, title: 'Total API cost in USD for the reported evaluation. Excludes local GPU compute.' }
+    { key: 'apiCost', label: 'API<br>Cost', width: 4.5, title: 'Total API cost in USD (test-time, or development for frozen programs). Excludes local GPU compute. Hover over a value for its scope.' }
   ];
 
-  var settingLabels = {
-    ZS: { label: 'ZS', title: 'Zero-shot: no RoboMME-Plus training examples.' },
-    FS: { label: 'FS', title: 'Few-shot: adaptation using RoboMME-Plus training examples.' }
-  };
-
   function getDetailColumns() {
-    var columns = benchmark === 'plus'
-      ? [{ key: 'setting', label: 'Setting', width: 3.25, title: 'ZS = Zero-shot; FS = Few-shot' }]
-      : [];
-    if (!showDetails) return columns;
-    return columns.concat(detailColumns.filter(function(column) {
+    return detailColumns.filter(function(column) {
+      if (column.key === 'setting') return benchmark === 'plus';
+      if (!showDetails) return false;
       if (column.key === 'type') return true;
-      return combinedRanking || column.key === (activeTrack === 'agentic' ? 'apiCost' : 'parameters');
-    }));
+      return activeTrack === 'all' || column.key === (activeTrack === 'agentic' ? 'apiCost' : 'parameters');
+    });
   }
 
   function syncViewControls() {
@@ -1014,22 +1117,24 @@ var RESULTS = {
   }
 
   function syncTrackControls() {
-    document.getElementById('combined-ranking').checked = combinedRanking;
+    syncAdaptationControls();
     document.querySelectorAll('[name="leaderboard-track"]').forEach(function(input) {
       input.checked = input.value === activeTrack;
     });
-    var title = combinedRanking ? 'Combined' : trackNames[activeTrack];
-    document.getElementById('results-name').textContent = (benchmark === 'plus' ? 'RoboMME-Plus · ' : '') + title + ' Leaderboard';
-    document.getElementById('lb-table').setAttribute('aria-label', (benchmark === 'plus' ? 'RoboMME-Plus ' : 'RoboMME ') + title + ' leaderboard');
+    var title = trackNames[activeTrack];
+    var prefix = benchmark === 'plus' ? 'RoboMME-Plus · ' + selectedAdaptationLabel() + ' · ' : '';
+    document.getElementById('results-name').textContent = benchmark === 'plus' ? 'RoboMME-Plus Leaderboard' : 'RoboMME Leaderboard';
+    document.getElementById('lb-table').setAttribute('aria-label', (prefix || 'RoboMME ') + title + ' leaderboard');
   }
 
   function setViewMode(next) {
     viewMode = next;
     var radar = next === 'radar';
-    document.querySelector('.lb-wrap').style.display = radar ? 'none' : '';
+    document.querySelector('.lb-wrap').style.display = next === 'table' ? '' : 'none';
     document.getElementById('radar-container').style.display = radar ? 'block' : 'none';
     document.getElementById('view-toggle-icon').className = radar ? 'fas fa-table' : 'fas fa-chart-area';
     document.getElementById('view-toggle-label').textContent = radar ? 'Table View' : 'Radar View';
+    document.getElementById('view-toggle').setAttribute('aria-pressed', String(radar));
     syncViewControls();
     if (radar) {
       applyRadarData();
@@ -1037,6 +1142,15 @@ var RESULTS = {
     }
     updateStickyHeader();
   }
+
+  var budgetLevels = [10];  // rollout budgets per task offered for the interaction settings
+  // table cell: what the method used (full setting name in the cell's hover text)
+  function settingCell(row) {
+    return { 'zero-shot': 'Zero-shot', demos: 'Demos', interactions: rolloutText(row.rolloutLimit),
+             both: 'Demos +<br>' + rolloutText(row.rolloutLimit) }[row.adaptation] || 'N/R';
+  }
+  function round10(v) { return v >= 10 ? Math.round(v / 10) * 10 : Math.round(v); }  // RoboMME-Plus costs: nearest $10
+  function rolloutText(n) { return n + (n === 1 ? ' rollout' : ' rollouts'); }  // budgets are written as rollout counts
 
   var radarChart = null;
   var pendingRadarData = null;
@@ -1061,48 +1175,63 @@ var RESULTS = {
   }
 
   function isOtherTrack(row) {
-    if (row.baseline || combinedRanking) return false;
-    var isAgentic = row.tags.indexOf('proprietary_model') !== -1;
+    if (row.baseline || activeTrack === 'all') return false;
+    var isAgentic = isAgenticRow(row);
     return isAgentic !== (activeTrack === 'agentic');
   }
 
   function isRanked(row) {
+    if (benchmark === 'plus' && row.adaptation === 'unreported') return false;
     return isScore(row.Avg) && !row.baseline && !isOtherTrack(row);
   }
 
   function updateRadar(cols, rows) {
     var ranked = rows.filter(isRanked);
-    var bestInCol = {};
-    cols.forEach(function(c) {
-      var maxVal = -1;
-      ranked.forEach(function(r) { if (r[c.key] > maxVal) maxVal = r[c.key]; });
-      bestInCol[c.key] = maxVal;
-    });
-
+    if (benchmark === 'plus' && activeAdaptation === 'all') {
+      // one method counts once: keep each method's best setting, as in the collapsed All table
+      var bestOf = {};
+      ranked.forEach(function(r) { if (!bestOf[r.name] || r.Avg > bestOf[r.name].Avg) bestOf[r.name] = r; });
+      ranked = ranked.filter(function(r) { return bestOf[r.name] === r; });
+    }
     var byAvg = ranked.slice().sort(function(a, b) { return b.Avg - a.Avg; });
     var top5Ids = {};
-    for (var t = 0; t < Math.min(5, byAvg.length); t++) { top5Ids[byAvg[t].id] = true; }
-
     var rankMap = {};
-    byAvg.forEach(function(r, i) { rankMap[r.id] = i; });
+    var settingCounts = {};
+    var bestBySetting = {};
+    byAvg.forEach(function(r) {
+      var key = rankingKey(r);
+      var rank = settingCounts[key] || 0;
+      rankMap[r.id] = rank;
+      settingCounts[key] = rank + 1;
+      if (rank < 5) top5Ids[r.id] = true;
+      if (!bestBySetting[key]) bestBySetting[key] = {};
+      cols.forEach(function(c) {
+        if (!(c.key in bestBySetting[key]) || r[c.key] > bestBySetting[key][c.key]) bestBySetting[key][c.key] = r[c.key];
+      });
+    });
     var medals = ['🥇', '🥈', '🥉'];
 
     var topModels = ranked.filter(function(r) {
       if (top5Ids[r.id]) return true;
+      var bestInCol = bestBySetting[rankingKey(r)];
       for (var i = 0; i < cols.length; i++) {
         if (isBestScore(r[cols[i].key], bestInCol[cols[i].key])) return true;
       }
       return false;
     });
-    topModels.sort(function(a, b) { return rankMap[a.id] - rankMap[b.id]; });
+    topModels.sort(function(a, b) { return b.Avg - a.Avg; });
 
     var labels = cols.map(function(c) { return cleanLabel(c.label); });
     var datasets = topModels.map(function(m, i) {
       var color = radarColors[i % radarColors.length];
       var ri = rankMap[m.id];
       var prefix = ri < 3 ? medals[ri] + ' ' : '#' + (ri + 1) + ' ';
+      var setting = benchmark === 'plus' && activeAdaptation === 'all'
+        ? ' · ' + adaptationLabels[m.adaptation] + (m.rolloutLimit ? ' · ' + rolloutText(m.rolloutLimit) : '')
+        : '';
       return {
-        label: prefix + m.name + (benchmark === 'plus' && settingLabels[m.setting] ? ' (' + m.setting + ')' : ''),
+        label: prefix + m.name + setting,
+        settingLabel: benchmark === 'plus' && activeAdaptation !== 'all' ? adaptationLabels[m.adaptation] + (m.rolloutLimit ? ' · ' + rolloutText(m.rolloutLimit) : '') : null,
         data: cols.map(function(c) { return +pct(m[c.key]); }),
         fill: true,
         backgroundColor: color.bg,
@@ -1164,7 +1293,8 @@ var RESULTS = {
               bodyFont: { size: 13 },
               callbacks: {
                 label: function(context) {
-                  return context.dataset.label + ': ' + context.parsed.r.toFixed(2) + '%';
+                  var setting = context.dataset.settingLabel ? ' (' + context.dataset.settingLabel + ')' : '';
+                  return context.dataset.label + setting + ': ' + context.parsed.r.toFixed(2) + '%';
                 }
               }
             }
@@ -1198,8 +1328,8 @@ var RESULTS = {
   var charLabels = {
     "Motion-Centric":      "Motion<br>Centric",
     "Time-Sensitive":      "Time<br>Sensitive",
-    "Short-Horizon Video": "Short Video<br> Reasoning",
-    "Long-Horizon Video":  "Long Video<br> Reasoning",
+    "Short-Horizon Video": "Short-Horizon<br> Reasoning",
+    "Long-Horizon Video":  "Long-Horizon<br> Reasoning",
     "Dynamic Scene-Change":"Dynamic<br> Scene Change",
     "Event-Salient":       "Event<br>Salient"
   };
@@ -1258,16 +1388,20 @@ var RESULTS = {
   function buildRows(cols) {
     return D.models.map(function(m, idx) {
       var row = { id: idx, name: m.name, org: m.organization, memory: m.memory || '\u2014', tasks: m.tasks, baseline: !!m.baseline, alwaysVisible: !!m.always_visible, link: m.link || null, tags: m.tags || [], totalSize: m.total_size || 'Not reported' };
-      row.setting = m.setting;
+      row.adaptation = adaptationKey(m);
+      row.rolloutLimit = m.training_rollout_limit;
       var apiCost = m.api_cost;
       row.details = {
-        setting: settingLabels[m.setting] || { label: '—', title: 'Evaluation setting is not reported.' },
+        setting: {
+          label: settingCell(row),
+          title: adaptationLabels[row.adaptation] + (row.adaptation === 'unreported' ? '; unranked until resource use is reported.' : (row.rolloutLimit ? '; ' + rolloutText(row.rolloutLimit) + ' per task on training seeds.' : '; no simulator rollouts.'))
+        },
         type: { label: m.model_type ? m.model_type.replace(/\+/g, ' + ') : 'N/R', title: modelTypes[m.model_type] || 'Architecture type is not reported.', badgeClass: m.model_type ? 'type-' + m.model_type.toLowerCase().replace(/[+\s]+/g, '-') : '' },
         parameters: { label: row.totalSize, title: m.size_note || 'Approximate parameter count; B = billion, M = million.' },
         apiCost: apiCost && typeof apiCost.display_usd === 'number'
-          ? { label: '$' + apiCost.display_usd.toLocaleString('en-US'), title: apiCost.display_note || apiCost.note }
+          ? { label: '$' + (benchmark === 'plus' ? round10(apiCost.display_usd) : apiCost.display_usd).toLocaleString('en-US'), title: apiCost.display_note || apiCost.note }
           : apiCost && typeof apiCost.total_usd === 'number'
-          ? { label: (apiCost.lower_bound ? '≥' : apiCost.approximate ? '≈' : '') + '$' + (benchmark === 'plus' ? (apiCost.lower_bound ? Math.floor(apiCost.total_usd) : Math.round(apiCost.total_usd)) : apiCost.total_usd).toLocaleString('en-US'), title: apiCost.note }
+          ? { label: (apiCost.lower_bound ? '≥' : apiCost.approximate ? '≈' : '') + '$' + (benchmark === 'plus' ? (apiCost.lower_bound ? Math.floor(apiCost.total_usd) : round10(apiCost.total_usd)) : apiCost.total_usd).toLocaleString('en-US'), title: apiCost.note }
           : { label: row.tags.indexOf('proprietary_model') !== -1 ? 'N/R' : 'N/A', title: apiCost ? apiCost.note : 'Inference API spending is not applicable to this local model or reference.' }
       };
       row.Avg = avgTasks(m, allTasks);
@@ -1384,9 +1518,12 @@ var RESULTS = {
     var visibleDetails = getDetailColumns();
     var cols = getColumns();
     var rows = buildRows(cols).filter(function(r) {
+      if (benchmark === 'plus' && activeAdaptation !== 'all' && r.adaptation !== activeAdaptation) return false;
+      if (benchmark === 'plus' && hasRolloutSelection() && r.rolloutLimit !== activeRolloutLimit) return false;
       if (r.alwaysVisible) return true;
       if (r.baseline) return r.tags.some(function(key) { return selectedTags[key]; });
-      return activeTrack !== 'agentic' || combinedRanking || r.tags.indexOf('proprietary_model') !== -1;
+      // each track lists only its own methods (no greyed-out rows from the other track); All lists both
+      return activeTrack === 'all' || isAgenticRow(r) === (activeTrack === 'agentic');
     });
     document.getElementById('visible-count').textContent = rows.length;
 
@@ -1408,12 +1545,16 @@ var RESULTS = {
 
     sortRows(rows);
 
-    // Compare the active track and visible references; the other track stays muted.
-    var best = {};
-    cols.forEach(function(c) { best[c.key] = 0; });
-    best.Avg = 0;
+    // All adaptation settings share one comparison pool; specific settings keep their own pool.
+    var bestBySetting = {};
     rows.forEach(function(r) {
-      if (isOtherTrack(r)) return;
+      if (isOtherTrack(r) || benchmark === 'plus' && r.adaptation === 'unreported') return;
+      var key = rankingKey(r);
+      if (!bestBySetting[key]) {
+        bestBySetting[key] = { Avg: 0 };
+        cols.forEach(function(c) { bestBySetting[key][c.key] = 0; });
+      }
+      var best = bestBySetting[key];
       cols.forEach(function(c) { if (r[c.key] > best[c.key]) best[c.key] = r[c.key]; });
       if (r.Avg > best.Avg) best.Avg = r.Avg;
     });
@@ -1457,7 +1598,8 @@ var RESULTS = {
       }).join('');
     }
 
-    function renderRow(r, rankLabel, rowClass) {
+    function renderRow(r, rankLabel, rowClass, expandable) {
+      var best = bestBySetting[rankingKey(r)] || {};
       var typeClasses = r.tags.map(function(key) { return 'method-' + key; }).join(' ');
       var typeLabels = r.tags.map(function(key) { return methodTags[key].label; }).join(', ');
       var otherTrack = isOtherTrack(r);
@@ -1467,7 +1609,12 @@ var RESULTS = {
       }
       html += '<tr class="' + typeClasses + (rowClass ? ' ' + rowClass : '') + '" title="' + typeLabels + '">';
       html += '<td class="rank">' + rankLabel + '</td>';
-      html += '<td>' + nameHtml(r) + '</td>';
+      var toggle = expandable
+        ? '<button type="button" class="setting-expand" data-method="' + encodeURIComponent(r.name) + '" aria-expanded="'
+          + expandable.open + '" title="' + (expandable.open ? 'Hide' : 'Show') + ' all ' + expandable.count
+          + ' settings of this method">' + (expandable.open ? '\u25BE hide settings' : '\u25B8 ' + expandable.count + ' settings') + '</button>'
+        : '';
+      html += '<td>' + nameHtml(r) + toggle + '</td>';
       visibleDetails.forEach(function(c) {
         var value = r.details[c.key];
         var label = benchmark === 'plus' ? value.label : value.label.replace(/≈/g, '');
@@ -1486,11 +1633,51 @@ var RESULTS = {
       html += '</tr>';
     }
 
-    // All visible rows share score ordering; medals follow the active ranking pool.
-    var modelRank = 0;
-    rows.forEach(function(r) {
-      renderRow(r, isRanked(r) ? medal(modelRank++) : '', r.baseline ? 'baseline-row' : '');
+    // All uses one overall ranking; specific settings rank within their selected budget.
+    // In the RoboMME-Plus All view, a method evaluated in several settings shows only its first row in the current
+    // sort (its best setting); its other settings expand below it, unranked.
+    var collapse = benchmark === 'plus' && activeAdaptation === 'all';
+    var groups = {};
+    if (collapse) rows.forEach(function(r) { (groups[r.name] = groups[r.name] || []).push(r); });
+    // Ranks (and each collapsed method's lead row) come from the descending order, so an ascending sort only
+    // reverses the display: the gold medal always marks the best row.
+    var desc = sortAsc ? rows.slice().reverse() : rows;
+    var modelRanks = {}, rankOf = new Map(), lead = {};
+    desc.forEach(function(r) {
+      if (collapse && groups[r.name].length > 1) {
+        if (lead[r.name]) return;
+        lead[r.name] = r;
+      }
+      if (isRanked(r)) {
+        var key = rankingKey(r);
+        var rank = modelRanks[key] || 0;
+        rankOf.set(r, medal(rank));
+        modelRanks[key] = rank + 1;
+      }
     });
+    var shown = 0;
+    rows.forEach(function(r) {
+      var group = collapse ? groups[r.name] : null;
+      if (group && group.length > 1 && lead[r.name] !== r) return;
+      var rankLabel = rankOf.get(r) || '';
+      var rowClass = r.baseline ? 'baseline-row' : '';
+      var expandable = group && group.length > 1 ? { count: group.length, open: !!expandedMethods[r.name] } : null;
+      renderRow(r, rankLabel, rowClass, expandable);
+      shown += 1;
+      if (expandable && expandable.open) {
+        group.filter(function(child) { return child !== r; }).forEach(function(child) { renderRow(child, '', 'setting-child-row'); shown += 1; });
+      }
+    });
+    document.getElementById('visible-count').textContent = shown;
+
+    var empty = benchmark === 'plus' && rows.length === 0;
+    document.querySelector('.lb-wrap').hidden = empty;
+    var emptyNotice = document.getElementById('empty-results-notice');
+    emptyNotice.hidden = !empty;
+    if (empty) {
+      var track = 'the ' + trackNames[activeTrack] + ' track';
+      emptyNotice.textContent = 'No results reported for ' + selectedAdaptationLabel() + ' in ' + track + ' yet.';
+    }
 
     document.getElementById('lb-body').innerHTML = html;
     updateStickyHeader();
@@ -1518,7 +1705,9 @@ var RESULTS = {
         el.setAttribute('aria-expanded', String(el.classList.contains('is-active')));
       });
     });
-    document.getElementById('stat-models').textContent = D.models.filter(function(m) { return !m.baseline || m.name !== 'Human Performance'; }).length;
+    // distinct models: a method reported at several settings or budgets (ASPIRE, RAX) counts once
+    document.getElementById('stat-models').textContent = new Set(D.models.filter(function(m) { return !m.baseline || m.name !== 'Human Performance'; })
+      .map(function(m) { return m.name; })).size;
 
     document.getElementById('details-toggle').addEventListener('click', function() {
       showDetails = !showDetails;
@@ -1528,27 +1717,54 @@ var RESULTS = {
     document.querySelectorAll('[name="leaderboard-track"]').forEach(function(input) {
       input.addEventListener('click', function() {
         activeTrack = this.value;
-        combinedRanking = false;
         render();
+        if (benchmark === 'plus') syncLeaderboardURL();
       });
     });
 
-    document.getElementById('combined-ranking').addEventListener('change', function() {
-      combinedRanking = this.checked;
+    document.getElementById('adaptation-options').addEventListener('click', function(event) {
+      var button = event.target.closest('[data-setting]');
+      if (!button) return;
+      activeAdaptation = button.dataset.setting;
       render();
+      syncLeaderboardURL();
+    });
+
+    document.getElementById('rollout-options').addEventListener('click', function(event) {
+      var button = event.target.closest('[data-rollouts]');
+      if (!button) return;
+      activeRolloutLimit = Number(button.dataset.rollouts);
+      render();
+      syncLeaderboardURL();
     });
 
     document.getElementById('view-toggle').addEventListener('click', function() {
-      if (!this.disabled) setViewMode(viewMode === 'table' ? 'radar' : 'table');
+      if (!this.disabled) setViewMode(viewMode === 'radar' ? 'table' : 'radar');
+      if (benchmark === 'plus') syncLeaderboardURL();
     });
+
+    document.getElementById('lb-body').addEventListener('click', function(event) {
+      var button = event.target.closest('.setting-expand');
+      if (!button) return;
+      var name = decodeURIComponent(button.dataset.method);
+      expandedMethods[name] = !expandedMethods[name];
+      render();
+    });
+
 
     render();
 
     if (['plus', 'ood'].includes(new URLSearchParams(window.location.search).get('benchmark'))) {
+      var params = new URLSearchParams(window.location.search);
+      if (Object.prototype.hasOwnProperty.call(adaptationLabels, params.get('setting'))) activeAdaptation = params.get('setting');
+      else if (params.get('setting') === 'zs') activeAdaptation = 'zero-shot';
+      else if (params.get('setting') === 'fs-r0') activeAdaptation = 'demos';
+      var rolloutLimit = Number(params.get('rollouts'));
+      if (budgetLevels.indexOf(rolloutLimit) !== -1) activeRolloutLimit = rolloutLimit;
+      if (Object.prototype.hasOwnProperty.call(trackNames, params.get('track'))) activeTrack = params.get('track');
+      else if (params.get('track') === 'combined') activeTrack = 'all';
       await switchBenchmark('plus', false);
-      var canonicalURL = new URL(window.location.href);
-      canonicalURL.searchParams.set('benchmark', 'plus');
-      window.history.replaceState({}, '', canonicalURL);
+      syncLeaderboardURL();
     }
 
     // If linked with #radar-view, group by task characteristics and switch to radar view

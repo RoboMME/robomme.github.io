@@ -61,20 +61,26 @@ and the [Hugging Face collection](https://huggingface.co/collections/Yinpei/robo
   changes, including the demonstration/execution boundary. Captions load on demand.
 - **Leaderboard tracks:** Standard ranks open-source methods; Agentic ranks methods
   that use proprietary frontier models. Standard also shows Agentic methods as
-  muted, unranked references; Agentic hides Standard methods. Combined ranking
+  muted, unranked references; Agentic hides Standard methods. The All track
   compares both tracks. Human Performance is always shown on the regular
   leaderboard, with other oracle references controlled separately. Rankings,
   best-score highlights, and radar plots follow the selected track. RoboMME-Plus
   keeps its ZS/FS setting within each track. Details show model type and parameter
-  counts for Standard, API cost for Agentic, and both for Combined ranking.
+  counts for Standard, API cost for Agentic, and both for All.
+  The final **All** adaptation filter shows every setting and rollout budget,
+  with one overall ranking, best-score comparison, and radar selection within
+  the selected track. Specific settings rank only their selected category and
+  budget. Interaction settings are ranked at 10 rollouts per task; other budgets are optional.
 - **Results:** replace a method's per-task `null` values with success rates
   between `0` and `1`. For example, `"BinFill": 0.5` displays `50.00`.
   Unreported values stay as dashes. Suite and overall means appear only when
   all their tasks have scores; only complete methods receive an overall rank.
-  Set each RoboMME-Plus method's `setting` to `"ZS"` (zero-shot) or `"FS"` (few-shot).
-  The Setting column is always visible on the RoboMME-Plus leaderboard; `null` displays
-  a dash until reported. Use separate entries with unique IDs when reporting
-  both settings for one model. Radar labels also include the setting.
+  Set each RoboMME-Plus method's `released_demonstrations_used` to `true` or `false`
+  and `training_rollout_limit` to `0`, `1`, `3`, `5`, or `10`. These determine the
+  setting shown as ZS, AfD, AfI, or AfD+I in the always-visible Setting column;
+  missing resource metadata displays N/R. Full names appear in selector labels
+  and tooltips. Use separate entries with unique IDs for different settings or
+  budgets. Radar labels in All also include the setting abbreviation.
   `scripts/prepare_plus_results.py --results-dir /path/to/plus_eval_1019 --note
   "Description of these completed evaluations"` imports the six published runs,
   checking all 800 episode outcomes and their per-task summaries for each method.
@@ -90,7 +96,7 @@ and the [Hugging Face collection](https://huggingface.co/collections/Yinpei/robo
   RoboMME-Plus-finetuned FrameSamp variants are excluded. The snapshot note is retained
   in the JSON for provenance and is not displayed on the leaderboard.
 - **Samples:** each task shows one video at a time in the two-column card layout.
-  Tasks open on their Medium example by default; MoveCube opens on its first method.
+  Tasks open on their Easy example by default; MoveCube opens on its first method.
   Arrows cycle through three examples, or all five methods for MoveCube.
   The selected episode's instruction appears above the video. Below it, sample
   labels include Easy, Medium, or Hard, and the comparison shows only that level's

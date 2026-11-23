@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -9,7 +9,7 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bulma/0.9.4/css/bulma.min.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   
-  <link rel="stylesheet" href="main.css?v=664a5dbf78ab">
+  <link rel="stylesheet" href="main.css?v=bb84f23526ae">
 </head>
 <body>
 
@@ -125,8 +125,8 @@
               <img src="image/plus-logo.png?v=ac700cd9fece" alt="RoboMME-Plus logo" width="1001" height="319">
             </a>
             <span class="plus-announcement-copy">
-              <span aria-hidden="true">🔥</span> We’ve released <a href="plus.html">RoboMME-Plus</a> Preview!
-              <span class="plus-announcement-title">Benchmarking Memory Generalization for Robot Policies</span>
+              <span aria-hidden="true">🔥</span> We’ve released <a href="plus.html">RoboMME-Plus</a>!
+              <span class="plus-announcement-title">Benchmarking Memory Generalization and Adaptation for Robot Policies</span>
             </span>
           </div>
 
@@ -223,7 +223,7 @@
         <b>RoboMME</b> is a large-scale, cognitively motivated robotic benchmark for memory-augmented manipulation, comprising four task suites that target distinct memory types:
         (1) The <b>Counting</b> task suite emphasizes <b>temporal memory</b>, requiring robots to accumulate and reason over past events;
         (2) The <b>Permanence</b> task suite focuses on <b>spatial memory</b>, requiring tracking of object locations under occlusion and environmental changes;
-        (3) The <b>Reference</b> task suite evaluates <b>object memory</b>, requiring identification under varied referential cues;
+        (3) The <b>Reference</b> task suite evaluates <b>object memory</b>, requiring robots to identify the referred object under varied cues;
         (4) The <b>Imitation</b> task suite assesses <b>procedural memory</b>, measuring the ability to reproduce previously demonstrated behaviors.
         <!-- Overall, RoboMME includes 16 tasks with 770k high-quality training timesteps for systematic evaluation of memory-augmented robotic policies -->
       </figcaption>
@@ -576,17 +576,17 @@
       <p style="margin-bottom: 1rem; margin-left: 4.5rem;">We fine-tune a total of <b>14 memory-augmented VLA</b> variants based on π<sub>0.5</sub>:</p>
       <!-- <span style="font-variant: small-caps;">GroundSG+Oracle</span>. -->
       <ul style="margin-left: 6rem; max-width: 1150px; font-size: 1.05rem; line-height: 1.6; list-style-type: disc;">
-        <li style="margin-bottom: 0.5rem;"><b>Symbolic Memory Variants:</b> <span style="font-variant: small-caps; color: #060606;">SimpleSG</span> (Simple Subgoal) or <span style="font-variant: small-caps; color: #060606;">GroundSG</span> (Grounded Subgoal), and leverage <span style="font-variant: small-caps; color: #e83636;">Gemini</span> (prompt-based Gemini-2.5-Pro), <span style="font-variant: small-caps; color: #e83636;">QwenVL</span> (fine-tuned Qwen3-VL-4B), or <span style="font-variant: small-caps; color: #e83636;">Oracle</span> (simulator ground-truth) as subgoal predictors → <b>2 VLA variants & 3 subgoal predictors</b></li>
+        <li style="margin-bottom: 0.5rem;"><b>Symbolic Memory Variants:</b> <span style="font-variant: small-caps; color: #060606;">SimpleSG</span> (Simple Subgoal) or <span style="font-variant: small-caps; color: #060606;">GroundSG</span> (Grounded Subgoal), each paired with a <span style="font-variant: small-caps; color: #e83636;">Gemini</span> (prompt-based Gemini-2.5-Pro), <span style="font-variant: small-caps; color: #e83636;">QwenVL</span> (fine-tuned Qwen3-VL-4B), or <span style="font-variant: small-caps; color: #e83636;">Oracle</span> (simulator ground-truth) subgoal predictor → <b>2 VLA variants & 3 subgoal predictors</b></li>
         <li style="margin-bottom: 0.5rem;"><b>Perceptual Memory Variants:</b> <span style="font-variant: small-caps; color: #060606;">TokenDrop</span> (Token dropping) or <span style="font-variant: small-caps; color: #060606;">FrameSamp</span> (Frame sampling), combined with <span style="font-variant: small-caps; color: #e83636;">Context</span> (memory-as-context), <span style="font-variant: small-caps; color: #e83636;">Modul</span> (memory-as-modulator), or <span style="font-variant: small-caps; color: #e83636;">Expert</span> (memory-as-expert) integration  mechanisms → <b>2 × 3 = 6 VLA variants</b></li>
         <li style="margin-bottom: 0.5rem;"><b>Recurrent Memory Variants:</b> <span style="font-variant: small-caps; color: #060606;">TTT</span> (Test-Time Training) or <span style="font-variant: small-caps; color: #060606;">RMT</span> (Recurrent Memory Transformer), combined with <span style="font-variant: small-caps; color: #e83636;">Context</span> (memory-as-context), <span style="font-variant: small-caps; color: #e83636;">Modul</span> (memory-as-modulator), or <span style="font-variant: small-caps; color: #e83636;">Expert</span> (memory-as-expert) integration mechanisms → <b>2 × 3 = 6 VLA variants</b></li>
       </ul>
       
       <table style="width: auto; max-width: 900px; margin: 1rem auto; border-collapse: collapse; font-size: 1.05rem;">
         <tr style="background: #f5f5f5;">
-          <th style="padding: 0.75rem; text-align: middle; border: 1px solid #ddd;">Memory Representation</th>
-          <th style="padding: 0.75rem; text-align: middle; border: 1px solid #ddd;">Method</th>
-          <th style="padding: 0.75rem; text-align: middle; border: 1px solid #ddd;">Subgoal Predictor</th>
-          <th style="padding: 0.75rem; text-align: middle; border: 1px solid #ddd;">Integration Mechanism</th>
+          <th style="padding: 0.75rem; text-align: center; border: 1px solid #ddd;">Memory Representation</th>
+          <th style="padding: 0.75rem; text-align: center; border: 1px solid #ddd;">Method</th>
+          <th style="padding: 0.75rem; text-align: center; border: 1px solid #ddd;">Subgoal Predictor</th>
+          <th style="padding: 0.75rem; text-align: center; border: 1px solid #ddd;">Integration Mechanism</th>
         </tr>
         <tr>
           <td style="padding: 0.75rem; border: 1px solid #ddd;">Symbolic</td>
@@ -648,7 +648,7 @@
               <li style="margin-bottom: 0.5rem;"><b>Integration Mechanism:</b> Memory-as-Modulator > Memory-as-Expert > Memory-as-Context</li>
               <li style="margin-bottom: 0.5rem;"><b>Within Perceptual Memory:</b> Frame Sampling > Token Dropping</li>
               <li style="margin-bottom: 0.5rem;"><b>Within Symbolic Memory:</b> Grounded Subgoal > Simple Subgoal</li>
-              <li style="margin-bottom: 0.5rem;"><b>Recurrent Memory</b> performs worst likely due to training instability</li>
+              <li style="margin-bottom: 0.5rem;"><b>Recurrent Memory</b> performs worst, likely due to training instability</li>
             </ul>
           </div>
           <figure class="image" style="max-width: 100%; margin: 0 auto;">
@@ -668,7 +668,7 @@
             <ul style="margin-left: 1.5rem; list-style-type: disc;">
               <li style="margin-bottom: 0.5rem;">As the upper bound of symbolic memory, <b><span style="font-variant: small-caps; color: #060606;">GroundSG</span>+<span style="font-variant: small-caps; color: #e83636;">Oracle</span></b> successfully solves many tasks (84% overall success rate), confirming the strong representational capacity of language for high-level reasoning (<a href="leaderboard.html#each-task" style="color: #3273dc;" target="_blank">see leaderboard</a>).</li>
               <li style="margin-bottom: 0.5rem;">Performance still degrades on manipulation-intensive tasks such as <i>StopCube</i> and <i>InsertPeg</i>, where language offers limited guidance and precise visuomotor control becomes the primary bottleneck.</li>
-              <li style="margin-bottom: 0.5rem;">The VLA policy still struggles in cluttered scenes, often manipulating wrong objects and causing unintended collisions despite unambiguous subgoals (see <a href="#sim-binfill-groundsg-oracle-ep3" style="color: #3273dc;">simulation demo</a> below). </li>
+              <li style="margin-bottom: 0.5rem;">The VLA policy still struggles in cluttered scenes, often manipulating the wrong objects and causing unintended collisions despite unambiguous subgoals (see <a href="#sim-binfill-groundsg-oracle-ep3" style="color: #3273dc;">simulation demo</a> below). </li>
             </ul>
           </div>
         </div>
@@ -706,9 +706,9 @@
           <div class="finding-caption" style="margin-bottom: 1rem; color: #4a4a4a; font-size: 1.05rem; line-height: 1.6;">
             <p style="margin-bottom: 0.75rem;"><b>Different memory designs provide complementary strengths:</b></p>
             <ul style="margin-left: 1.5rem; list-style-type: disc;">
-              <li style="margin-bottom: 0.5rem;"><b>Symbolic Memory</b> excels on Event-Salient (e.g., counting) and Short-Horizon Video Reasoning tasks</li>
+              <li style="margin-bottom: 0.5rem;"><b>Symbolic Memory</b> excels on Event-Salient (e.g., counting) and Short-Horizon Reasoning tasks</li>
               <li style="margin-bottom: 0.5rem;"><b>Perceptual Memory</b> excels on Motion-Centric and Time-Sensitive tasks</li>
-              <li style="margin-bottom: 0.5rem;"><b>MemER <a href="https://arxiv.org/abs/2510.20328" target="_blank" style="color: #3273dc;">(Sridhar et al., 2025)</a></b> excels on Dynamic Scene-Change tasks due to its reuse of all past keyframe images</li>
+              <li style="margin-bottom: 0.5rem;"><b>MemER <a href="https://arxiv.org/abs/2510.20328" target="_blank" style="color: #3273dc;">(Sridhar et al., 2025)</a></b> excels on Dynamic Scene-Change tasks because it reuses all past keyframe images</li>
             </ul>
           </div>
           <figure class="image" style="max-width: 75%; margin: 0 auto 1rem auto;">
@@ -731,7 +731,7 @@
           <div class="finding-caption" style="margin-bottom: 1rem; color: #4a4a4a; font-size: 1.05rem; line-height: 1.6;">
             <p style="margin-bottom: 0.75rem;"><b>Perceptual memory achieves the best efficiency-performance balance:</b></p>
             <ul style="margin-left: 1.5rem; list-style-type: disc;">
-              <li style="margin-bottom: 0.5rem;"><b><span style="font-variant: small-caps;">FrameSamp</span>/<span style="font-variant: small-caps;">TokenDrop</span>+<span style="font-variant: small-caps; color: #e83636;">Modul</span></b>: consistent gains with modest cost increase</li>
+              <li style="margin-bottom: 0.5rem;"><b><span style="font-variant: small-caps;">FrameSamp</span>/<span style="font-variant: small-caps;">TokenDrop</span>+<span style="font-variant: small-caps; color: #e83636;">Modul</span></b>: consistent gains at a modest increase in cost</li>
               <li style="margin-bottom: 0.5rem;"><b><span style="font-variant: small-caps;">SimpleSG</span>/<span style="font-variant: small-caps;">GroundSG</span>+<span style="font-variant: small-caps; color: #e83636;">QwenVL</span></b>: ~3× computation of π<sub>0.5</sub></li>
               <li style="margin-bottom: 0.5rem;"><b>MemER <a href="https://arxiv.org/abs/2510.20328" target="_blank" style="color: #3273dc;">(Sridhar et al., 2025)</a></b>: ~5× computation of π<sub>0.5</sub></li>
             </ul>
@@ -749,12 +749,12 @@
         </summary>
         <div style="margin-top: 0.5rem; background: white; border-radius: 8px; padding: 1.5rem; box-shadow: 0 2px 8px rgba(0,0,0,0.1);">
           <div class="finding-caption" style="margin-bottom: 1rem; color: #4a4a4a; font-size: 1.05rem; line-height: 1.6;">
-            <p style="margin-bottom: 0.75rem;"><b>Yes</b>. We evaluate four real-world tasks designed to mirror simulation tasks on each task suite:</p>
+            <p style="margin-bottom: 0.75rem;"><b>Yes</b>. We evaluate four real-world tasks, each designed to mirror a simulation task from one suite:</p>
             <ul style="margin-left: 1.5rem; margin-bottom: 1rem; list-style-type: disc;">
               <li style="margin-bottom: 0.5rem;"><b>Counting</b>: <i>PutFruits</i> → <i>BinFill</i></li>
               <li style="margin-bottom: 0.5rem;"><b>Permanence</b>: <i>TrackCube</i> → <i>VideoUnmask/VideoUnmaskSwap</i></li>
               <li style="margin-bottom: 0.5rem;"><b>Reference</b>: <i>RepickBlock</i> → <i>VideoRepick</i></li>
-              <li style="margin-bottom: 0.5rem;"><b>Imitation</b>: <i>PatternLock</i> → <i>DrawPattern</i></li>
+              <li style="margin-bottom: 0.5rem;"><b>Imitation</b>: <i>DrawPattern</i> → <i>PatternLock</i></li>
             </ul>
             <p><b>The results exhibit similar patterns:</b> <b>Symbolic Memory</b> performs best on counting (<i>PutFruits</i>), while <b>Perceptual Memory</b> excels on motion-centric tasks (<i>DrawPattern</i>). On the remaining tasks, both achieve comparable performance.</p>
           </div>
@@ -1843,7 +1843,7 @@
     </div>
 
     <!-- The task goals come from an earlier version of the dataset used for training. Although the wording differs slightly from the final version, this should not affect the results. -->
-    <p style="font-size: 0.8rem; color: #666; margin-top: 0.5rem; line-height: 1.4; margin-left: 11rem; margin-right: 11rem;">For demonstration purposes, we visualize only the first 10 episodes for each task (the full evaluation contains 50). In simulation experiments, we use the front-view images for memory feature construction or VLM subgoal prediction. For the GroundSG policy, we overlay the predicted grounding information as yellow dots on the front-view images for visualization when it is available. Red-bordered frames indicate the video-based initial observation before execution. </p>
+    <p style="font-size: 0.8rem; color: #666; margin-top: 0.5rem; line-height: 1.4; margin-left: 11rem; margin-right: 11rem;">For demonstration purposes, we visualize only the first 10 episodes for each task (the full evaluation contains 50). In simulation experiments, we use the front-view images for memory feature construction or VLM subgoal prediction. When available, GroundSG’s predicted grounding points are overlaid as yellow dots on the front-view images. Red-bordered frames indicate the video-based initial observation before execution. </p>
 
 
   </div>
@@ -1856,7 +1856,7 @@
     <div class="container is-widescreen">
       <h2 class="title is-3 has-text-centered" style="margin-bottom: 1.5rem;">Real Robot Rollout Demos</h2>
       <p style="color: #4a4a4a; font-size: 1.05rem; line-height: 1.6; margin-bottom: 1.5rem;">
-        We evaluate four real-world tasks—<b>PutFruits</b>, <b>TrackCube</b>, <b>RepickBlock</b>, and <b>DrawPattern</b>—designed to mirror the BinFill, VideoUnmask/VideoUnmaskSwap, VideoRepick, and PatternLock tasks in simulation. Real-world results exhibit similar patterns to simulation, validating the transferability of our findings.
+        We evaluate four real-world tasks—<b>PutFruits</b>, <b>TrackCube</b>, <b>RepickBlock</b>, and <b>DrawPattern</b>—designed to mirror the BinFill, VideoUnmask/VideoUnmaskSwap, VideoRepick, and PatternLock tasks in simulation. Real-world results show patterns similar to those in simulation, supporting the transferability of our findings.
       </p>
       <!-- Task 1: Put Fruits -->
       <div class="real-task-row" data-task="put_fruits" style="background: #f9f9f9; border-radius: 8px; padding: 1rem; margin-bottom: 1rem;">
@@ -2018,7 +2018,7 @@
         </div>
       </div>
 
-      <p style="font-size: 0.8rem; color: #666; margin-top: 0.5rem; line-height: 1.4; margin-left: 0rem; margin-right: 0rem;"> In real-world experiments, we use the right-shoulder view images for memory feature construction or VLM subgoal prediction. For the GroundSG policy, we overlay the predicted grounding information as red dots on the right-shoulder view images for visualization when it is available. Red-bordered frames indicate the video-based initial observation before execution. </p>
+      <p style="font-size: 0.8rem; color: #666; margin-top: 0.5rem; line-height: 1.4; margin-left: 0rem; margin-right: 0rem;"> In real-world experiments, we use the right-shoulder view images for memory feature construction or VLM subgoal prediction. When available, GroundSG’s predicted grounding points are overlaid as red dots on the right-shoulder view images. Red-bordered frames indicate the video-based initial observation before execution. </p>
   
     </div>
   </section>
